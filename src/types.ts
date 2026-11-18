@@ -16,6 +16,7 @@ export interface PreviewUser {
   global_name?: string | null;
   avatar?: string | null;
   bot?: boolean;
+  member?: { nick?: string | null };
 }
 
 export interface PreviewMedia {
@@ -254,6 +255,10 @@ export interface PreviewMessage {
   message_snapshots?: { message?: PreviewMessage }[];
   interaction_metadata?: PreviewInteractionMetadata;
   thread?: PreviewThread;
+  member?: { nick?: string | null };
+  call?: { participants?: string[]; ended_timestamp?: string | null };
+  role_subscription_data?: { role_subscription_listing_id?: string; tier_name?: string; total_months_subscribed?: number; is_renewal?: boolean };
+  purchase_notification?: { type?: number; guild_product_purchase?: { listing_id?: string; product_name?: string } };
 }
 
 export interface PreviewModal {
