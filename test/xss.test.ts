@@ -25,6 +25,7 @@ const ATTACKS = [
   '[x](/logout)',
 ];
 const MARKDOWN = /[[\]*_~`|]|https?:|^[#>-]/;
+const LOCAL_ATTACKS = ['javascript:alert(1)', 'data:text/html,<script>alert(1)</script>', 'data:image/svg+xml,"><img src=x onerror=alert(1)>\'"'];
 
 // Judged on the raw attribute, not with the package's own guards: with localMedia unset, only absolute http(s) URLs.
 const WEB = /^https?:\/\//;
@@ -46,6 +47,25 @@ const replaceKeeping = (v: unknown, s: string, key = ''): unknown =>
         ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, replaceKeeping(x, s, k)]))
         : v;
 
+// Deeper still: every value that opens a branch stays (http(s) URLs, CDN hashes, numeric ids, colours, `type`,
+// `content_type`, `format_type`), markdown keeps its marks, tokens and list markers, and every word becomes the attack.
+// So play buttons, file links, role gradients and icons, server tag badges, decorations, burst tints, ordered lists,
+// channel and command pills and Twemoji images all render with the attack around them.
+const KEEP = /^(?:https?:\/\/\S*|(?:a_)?[0-9a-f]{32}|\d+|#[0-9a-fA-F]{6}|attachment:\/\/\S*)$/;
+const KEEP_KEYS = new Set(['type', 'content_type', 'format_type', 'filename', 'waveform', 'guildId']);
+const TOKENS = /(<[^<>\s]+>|https?:\/\/\S+|^[ \t]*(?:\d{1,9}\.|[-*]|#{1,3}|>{1,3}|-#)[ \t]|```\w*)/m;
+const deepText = (v: string, s: string) => v.split(TOKENS).map((part, i) => (i % 2 ? part : part.replace(/[A-Za-z]+/g, s))).join('');
+const replaceDeep = (v: unknown, s: string, key = ''): unknown =>
+  typeof v === 'string'
+    ? KEEP_KEYS.has(key) || KEEP.test(v)
+      ? v
+      : deepText(v, s)
+    : Array.isArray(v)
+      ? v.map((x) => replaceDeep(x, s))
+      : v && typeof v === 'object'
+        ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, replaceDeep(x, s, k)]))
+        : v;
+
 const COLOURS = new Set(['color', 'accent_color']);
 const DROP = Symbol('drop');
 const colours = (v: unknown, to: unknown | typeof DROP): unknown =>
@@ -61,20 +81,28 @@ interface Node {
   childNodes?: Node[];
   content?: Node;
 }
-function* elements(n: Node): Generator<Node> {
-  if (n.attrs) yield n;
-  for (const c of n.childNodes ?? []) yield* elements(c);
-  if (n.content) yield* elements(n.content);
+function* elements(n: Node, inLink = false): Generator<Node> {
+  if (n.attrs) {
+    assert.ok(!(inLink && n.nodeName === 'a'), 'a link inside a link');
+    yield n;
+  }
+  const link = inLink || n.nodeName === 'a';
+  for (const c of n.childNodes ?? []) yield* elements(c, link);
+  if (n.content) yield* elements(n.content, link);
 }
 const parse = (html: string) => [...elements(parseFragment(html) as Node)];
 
-function check(html: string, attack: string | null) {
+// With localMedia, media may also be relative, blob: or data:image/ (an attribute value, never markup), but no other scheme.
+const LOCAL = /^(?:https?:\/\/|blob:|data:image\/|[^:]*$)/;
+
+function check(html: string, attack: string | null, local = false) {
   for (const el of parse(html)) {
     assert.notEqual(el.nodeName, 'script', `${attack}: a script element`);
     for (const { name, value } of el.attrs ?? []) {
       assert.ok(!name.toLowerCase().startsWith('on'), `${attack}: attribute ${name}`);
       // React's preload <link> hints included
-      if (name === 'href' || name === 'src') assert.match(value, WEB, `${attack}: ${el.nodeName} ${name} ${value}`);
+      if (name === 'href' && el.nodeName === 'a') assert.match(value, WEB, `${attack}: ${el.nodeName} ${name} ${value}`);
+      else if (name === 'href' || name === 'src' || name === 'poster') assert.match(value, local ? LOCAL : WEB, `${attack}: ${el.nodeName} ${name} ${value}`);
       if (name === 'style' && attack !== null) assert.ok(!value.includes(attack), `${attack}: style ${value}`);
     }
   }
@@ -107,7 +135,17 @@ for (const { name, props: base } of fixtures) {
         const hostile = draw(replaceStrings(props, attack));
         check(hostile, attack);
         check(draw(replaceKeeping(props, attack)), attack);
+        check(draw(replaceDeep({ ...props, twemoji: true }, attack)), attack);
         if (!MARKDOWN.test(attack)) assert.deepEqual(structure(hostile), benign, `${attack}: the markup's shape changed`);
+      }
+    });
+
+    test(`xss localMedia (${renderer}): ${name}`, () => {
+      const local = { ...props, localMedia: true };
+      for (const attack of LOCAL_ATTACKS) {
+        check(draw(replaceStrings(local, attack)), attack, true);
+        check(draw(replaceKeeping(local, attack)), attack, true);
+        check(draw(replaceDeep(local, attack)), attack, true);
       }
     });
 
@@ -126,3 +164,10 @@ for (const [renderer, render] of RENDERERS) {
     assert.match(text, /\|general\|/);
   });
 }
+
+// The deep replacement still reaches the branches it is there for.
+test('xss: the deep attack reaches play buttons, links, role styles, icons, badges, tints, lists, pills and Twemoji', () => {
+  const html = fixtures.map(({ props }) => renderToStaticMarkup(createElement(DiscordPreview, replaceDeep({ ...props, twemoji: true }, '"><b>x</b>') as PreviewProps))).join('');
+  for (const marker of ['Play video', 'Play audio', 'Play voice message', 'aria-label="Play"', 'aria-label="Download"', 'linear-gradient', 'role-icons/', 'guild-tag-badges/', 'avatar-decoration-presets/', '#ff73fa26', '<ol', 'aria-label="message"', '>/ping<', 'cdn.jsdelivr.net/gh/jdecked/twemoji'])
+    assert.ok(html.includes(marker), marker);
+});

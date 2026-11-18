@@ -78,7 +78,7 @@ importers:
 
   e2e:
     dependencies:
-      '@kyzegs/discord-preview':
+      discord-preview:
         specifier: workspace:*
         version: link:..
     devDependencies:

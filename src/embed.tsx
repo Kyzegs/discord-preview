@@ -1,7 +1,7 @@
-import { BLUE, fit, LINK, Mosaic, Video } from './attachments.tsx';
+import { fit, Mosaic, Video } from './attachments.tsx';
 import { arr, bool, obj, safeHref, str } from './guard.ts';
 import { inline, Markdown } from './markdown.tsx';
-import { dateText, hex, IMG, Img, type Look, mediaSrc, Thumb } from './shared.tsx';
+import { BLUE, dateText, hex, IMG, LINK, type Look, mediaSrc, Thumb } from './shared.tsx';
 import type { Path, PreviewEmbed } from './types.ts';
 
 type Media = { url?: string; width?: number; height?: number } | undefined;
@@ -13,11 +13,13 @@ function stamp(v: unknown, look: Look) {
   return s && Number.isFinite(ms) ? dateText(ms, { dateStyle: 'short', timeStyle: 'short' }, look) : '';
 }
 
-// A large embed image, its space reserved from the payload's size when there is one.
+// A large embed image in a box sized from the payload, or the whole maxW x maxH box (the image contained in it) when the
+// payload gives no size: either way its space is reserved, so nothing moves when it loads.
 function Big({ m, look, maxW = 400, maxH = 300 }: { m: Media; look: Look; maxW?: number; maxH?: number }) {
-  const box = fit(m?.width, m?.height, maxW, maxH);
+  const sized = fit(m?.width, m?.height, maxW, maxH);
+  const box = sized ?? { width: `${maxW}px`, aspectRatio: `${maxW} / ${maxH}` };
   const src = mediaSrc(m?.url, look);
-  if (!box) return <Img url={m?.url} look={look} className="max-h-72" />;
+  if (!sized && src) return <img {...IMG} src={src} alt="" className="block max-w-full rounded-lg object-contain" style={box} />;
   if (!src) return <div aria-hidden className="max-w-full rounded-lg" style={{ ...box, background: look.P.bg }} />;
   return <img {...IMG} src={src} alt="" className="block max-w-full rounded-lg object-cover" style={box} />;
 }
@@ -132,7 +134,7 @@ export function Embed({ e: raw, path, look }: { e: PreviewEmbed | null | undefin
             <div className="font-bold" style={{ color: href ? BLUE : P.head }}>
               {href ? (
                 <a {...LINK} href={href} className="hover:underline">
-                  {inline(title, look)}
+                  {inline(title, look, false)}
                 </a>
               ) : (
                 inline(title, look)

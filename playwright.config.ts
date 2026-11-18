@@ -15,6 +15,7 @@ const astro = (app: string, port: number) =>
 export default defineConfig({
   testDir: 'e2e',
   testMatch: 'preview.spec.ts',
+  fullyParallel: true, // one spec file of about a thousand tests: spread them over the workers
   workers: 4,
   reporter: [['list']],
   use: { browserName: 'chromium', viewport: { width: 1000, height: 900 }, locale: 'en-US' },

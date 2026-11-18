@@ -1,6 +1,6 @@
 <script>
-  import '@kyzegs/discord-preview/element';
-  import '@kyzegs/discord-preview/style.css';
+  import 'discord-preview/element';
+  import 'discord-preview/style.css';
   import { replyFor } from '../shared/protocol.ts';
 
   let { initial } = $props();
@@ -23,6 +23,7 @@
   timeZone={props.timeZone}
   now={props.now}
   localMedia={props.localMedia}
+  twemoji={props.twemoji}
   selectable
   onpress={(e) => e.detail.reply(replyFor(e.detail.component))}
   onselectblock={(e) => (props.selected = e.detail.path)}

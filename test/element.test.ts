@@ -246,3 +246,61 @@ test('element: localMedia gates relative and data: images', async () => {
   await tick();
   assert.equal(el.querySelector('img[src="/local.png"]'), null, 'a property wins');
 });
+
+test('element: twemoji as attribute or property; highlight as a function property only', async () => {
+  const el = make((e) => (e.payload = { content: '👍\n```js\nx\n```' }));
+  await tick();
+  assert.equal(el.querySelector('img[alt="👍"]'), null, 'twemoji off by default');
+  el.setAttribute('twemoji', '');
+  await tick();
+  assert.ok(el.querySelector('img[alt="👍"]')?.getAttribute('src')?.endsWith('/1f44d.svg'));
+  el.setAttribute('highlight', '<b>x</b>');
+  await tick();
+  assert.equal(el.querySelector('pre code'), null, 'no highlight attribute');
+  el.highlight = '<b>x</b>' as never;
+  await tick();
+  assert.equal(el.querySelector('pre code'), null, 'a string is ignored');
+  el.highlight = (code: string, lang: string) => `<i class="${lang}">${code}</i>`;
+  await tick();
+  assert.equal(el.querySelector('pre code')?.innerHTML, '<i class="js">x</i>');
+});
+
+test('element: pressing play makes players whose src and poster are absolute http(s)', async () => {
+  const el = make(
+    (e) =>
+      (e.payload = {
+        flags: 8192,
+        attachments: [
+          { filename: 'v.mp4', url: 'https://cdn.example/v.mp4', width: 640, height: 360 },
+          { filename: 'a.mp3', url: 'https://cdn.example/a.mp3' },
+          { filename: 'voice-message.ogg', content_type: 'audio/ogg', url: 'https://cdn.example/v.ogg', waveform: 'AAAA', duration_secs: 3 },
+          { filename: 'bad.mp4', url: 'javascript:alert(1)' },
+        ],
+        embeds: [{ type: 'gifv', thumbnail: { url: 'https://cdn.example/t.png' }, video: { url: 'https://cdn.example/g.mp4' } }],
+      }),
+  );
+  await tick();
+  for (const b of el.querySelectorAll('[aria-label^="Play"]')) (b as HTMLElement).click();
+  await tick();
+  const players = [...el.querySelectorAll('video, audio')];
+  assert.equal(players.length, 4);
+  for (const p of players) {
+    assert.match(p.getAttribute('src') ?? '', /^https?:\/\//);
+    if (p.hasAttribute('poster')) assert.match(p.getAttribute('poster')!, /^https?:\/\//);
+  }
+  assert.equal(el.querySelector('video[poster]')?.getAttribute('poster'), 'https://cdn.example/t.png');
+});
+
+test('element: mediaUrl as a function property only', async () => {
+  const el = make((e) => (e.payload = { flags: 32768, components: [{ type: 12, items: [{ media: { url: 'https://cdn.example/a.png' } }] }] }));
+  el.setAttribute('mediaurl', 'https://proxy.example/');
+  el.setAttribute('media-url', 'https://proxy.example/');
+  await tick();
+  assert.ok(el.querySelector('img[src="https://cdn.example/a.png"]'), 'no attribute');
+  el.mediaUrl = 'https://proxy.example/' as never;
+  await tick();
+  assert.ok(el.querySelector('img[src="https://cdn.example/a.png"]'), 'a string is ignored');
+  el.mediaUrl = (u: string) => `https://proxy.example/?u=${encodeURIComponent(u)}`;
+  await tick();
+  assert.ok(el.querySelector('img[src="https://proxy.example/?u=https%3A%2F%2Fcdn.example%2Fa.png"]'));
+});

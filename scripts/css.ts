@@ -19,6 +19,7 @@ const INPUT = `
 @source "./src/*.tsx";
 @source not inline("container");
 @source not inline("ring");
+@source not inline("fixed");
 @theme {
   --breakpoint-xs: 600px;
   --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;

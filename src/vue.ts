@@ -2,7 +2,7 @@ import { defineComponent, h, onMounted, type PropType, ref, watch } from 'vue';
 import { type DiscordPreviewElement, type ElementProps, type PressDetail } from './element.ts';
 import './element.ts';
 import { renderToString } from './server.ts';
-import type { Path, PreviewMessage, PreviewModal, Resolve } from './types.ts';
+import type { Highlight, MediaUrl, Path, PreviewMessage, PreviewModal, Resolve } from './types.ts';
 
 export type * from './types.ts';
 export type { ElementProps, PressDetail, SelectBlockDetail } from './element.ts';
@@ -28,6 +28,9 @@ export const DiscordPreview = defineComponent({
     timeZone: String,
     now: Number,
     localMedia: flag,
+    twemoji: flag,
+    highlight: Function as PropType<Highlight>,
+    mediaUrl: Function as PropType<MediaUrl>,
     selectable: flag,
   },
   emits: {

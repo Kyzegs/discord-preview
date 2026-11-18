@@ -1,51 +1,38 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { Attachments, Stickers } from './attachments.tsx';
 import { Embed } from './embed.tsx';
-import { arr, bool, int, LOOKUP, obj, own, safeSrc, snowflake, str } from './guard.ts';
+import { arr, bool, int, LOOKUP, obj, own, snowflake, str } from './guard.ts';
 import { inline, Markdown } from './markdown.tsx';
-import { type AreaProps, dateText, hex, Icon, IMG, type Look } from './shared.tsx';
+import { type AreaProps, BLUE, DEFAULT_AVATAR, displayName, hex, headerTime, Icon, IMG, type Look, mediaSrc } from './shared.tsx';
 import type { PreviewMember, PreviewMessage, PreviewUser, Resolve } from './types.ts';
 
 const IS_CROSSPOST = 1 << 1;
 const SUPPRESS_EMBEDS = 1 << 2;
 const SUPPRESS_NOTIFICATIONS = 1 << 12;
 const VERIFIED_BOT = 1 << 16;
-const DEFAULT_AVATAR = 'https://cdn.discordapp.com/embed/avatars/0.png';
 const HASH = /^(a_)?[0-9a-f]{32}$/; // a CDN image hash, the only payload string put into these CDN paths
 const BLURPLE = '#5865f2';
-const LINK = '#00A8FC';
-
-// Lucide paths (ISC License), like the shared icons.
-const REPLY = 'M20 18v-2a4 4 0 0 0-4-4H4M9 17l-5-5 5-5';
-const FORWARD = 'M4 18v-2a4 4 0 0 1 4-4h12M15 17l5-5-5-5';
-const IMAGE = 'M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2ZM21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21M7 9a2 2 0 1 0 4 0a2 2 0 1 0-4 0';
 
 export const hasFlag = (m: PreviewMessage, bit: number) => ((int(m.flags) ?? 0) & bit) !== 0;
 
-function Glyph({ d, size }: { d: string; size: number }) {
-  return (
-    <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
-      <path d={d} />
-    </svg>
-  );
-}
-
 // ---- Who wrote it
 
+// resolve's avatar, else the user's own (a URL or a CDN hash), else Discord's default one; undefined when the host's
+// mediaUrl hook drops them.
 function avatarSrc(u: PreviewUser | undefined, look: Look) {
   const id = str(u?.id);
-  const custom = str(own(look.resolve.users, id)?.avatar);
-  if (custom) return safeSrc(custom, look.localMedia);
   const av = str(u?.avatar, 64);
-  if (/[/:]/.test(av)) return safeSrc(av, look.localMedia);
-  if (/^\w+$/.test(av) && snowflake(id)) return `https://cdn.discordapp.com/avatars/${id}/${av}.png?size=80`;
-  return undefined;
+  const url = str(own(look.resolve.users, id)?.avatar) || (/[/:]/.test(av) ? av : /^\w+$/.test(av) && snowflake(id) ? `https://cdn.discordapp.com/avatars/${id}/${av}.png?size=80` : '');
+  return (url ? mediaSrc(url, look) : undefined) ?? mediaSrc(DEFAULT_AVATAR, look);
 }
 
-// resolve's name, then the server nickname, then the display name, then the username.
-export function displayName(u: unknown, member: unknown, look: Look) {
-  const a = obj(u as PreviewUser);
-  return str(own(look.resolve.users, a?.id)?.name, 100) || str(obj(member as PreviewMember)?.nick, 32) || str(a?.global_name, 100) || str(a?.username, 100) || 'Unknown';
+// An avatar already through avatarSrc, or nothing when the host refused it.
+const Face = ({ src, className }: { src: string | undefined; className: string }) => (src ? <img {...IMG} src={src} alt="" className={className} /> : null);
+
+// An image from the CDN or the payload, or nothing when its URL is refused.
+function Pic({ url, look, ...rest }: { url: string | undefined; look: Look; alt: string; className: string; title?: string }) {
+  const src = url && mediaSrc(url, look);
+  return src ? <img {...IMG} src={src} {...rest} /> : null;
 }
 
 type Role = NonNullable<Resolve['roles']>[string];
@@ -93,7 +80,7 @@ function RoleIcon({ member, look }: { member: unknown; look: Look }) {
   const name = str(top.r.name, 100);
   const id = snowflake(top.id);
   const icon = str(top.r.icon);
-  if (id && HASH.test(icon)) return <img {...IMG} src={`https://cdn.discordapp.com/role-icons/${id}/${icon}.png?size=40`} alt={name} title={name} className="size-5 object-contain" />;
+  if (id && HASH.test(icon)) return <Pic look={look} url={`https://cdn.discordapp.com/role-icons/${id}/${icon}.png?size=40`} alt={name} title={name} className="size-5 object-contain" />;
   return (
     <span className="text-base leading-none" title={name}>
       {str(top.r.unicode_emoji, 32)}
@@ -110,7 +97,7 @@ function ServerTag({ u, look }: { u: PreviewUser | undefined; look: Look }) {
   const badge = str(g.badge);
   return (
     <span className="inline-flex h-[18px] items-center gap-1 rounded-[4px] px-1 text-xs leading-none font-semibold" style={{ background: look.P.container, color: look.P.text }}>
-      {guild && HASH.test(badge) && <img {...IMG} src={`https://cdn.discordapp.com/guild-tag-badges/${guild}/${badge}.png?size=16`} alt="" className="size-3.5" />}
+      {guild && HASH.test(badge) && <Pic look={look} url={`https://cdn.discordapp.com/guild-tag-badges/${guild}/${badge}.png?size=16`} alt="" className="size-3.5" />}
       {tag}
     </span>
   );
@@ -138,17 +125,10 @@ export function Avatar({ m, look }: AreaProps) {
   const asset = str(obj(a?.avatar_decoration_data)?.asset);
   return (
     <span className="relative size-10 shrink-0 @max-[320px]:size-8">
-      <img {...IMG} src={avatarSrc(a, look) ?? DEFAULT_AVATAR} alt="" className="size-full rounded-full" />
-      {HASH.test(asset) && <img {...IMG} src={`https://cdn.discordapp.com/avatar-decoration-presets/${asset}.png?size=96`} alt="" className="pointer-events-none absolute top-[-10%] left-[-10%] size-[120%] max-w-none" />}
+      <Face src={avatarSrc(a, look)} className="size-full rounded-full" />
+      {HASH.test(asset) && <Pic look={look} url={`https://cdn.discordapp.com/avatar-decoration-presets/${asset}.png?size=96`} alt="" className="pointer-events-none absolute top-[-10%] left-[-10%] size-[120%] max-w-none" />}
     </span>
   );
-}
-
-// "Today at 16:20" on the day of `now` in the preview's time zone, else a short date and time.
-function headerTime(ms: number, look: Look) {
-  const day = (t: number) => dateText(t, { dateStyle: 'short' }, look);
-  const today = day(ms);
-  return today && today === day(look.now) ? `Today at ${dateText(ms, { timeStyle: 'short' }, look)}` : dateText(ms, { dateStyle: 'short', timeStyle: 'short' }, look);
 }
 
 // The line above the message: name, role icon, server tag, APP tag, time, and the "Sent silently" and "Read aloud" notes.
@@ -190,7 +170,7 @@ function Above({ look, children }: { look: Look; children: ReactNode }) {
   );
 }
 
-const Mini = ({ u, look }: { u: PreviewUser | undefined; look: Look }) => <img {...IMG} src={avatarSrc(u, look) ?? DEFAULT_AVATAR} alt="" className="size-4 shrink-0 rounded-full" />;
+const Mini = ({ u, look }: { u: PreviewUser | undefined; look: Look }) => <Face src={avatarSrc(u, look)} className="size-4 shrink-0 rounded-full" />;
 
 // The replied-to message, as one line: never more than a snippet of it.
 export function ReplyHeader({ m, look }: AreaProps) {
@@ -200,7 +180,7 @@ export function ReplyHeader({ m, look }: AreaProps) {
   const note = (text: string) => (
     <Above look={look}>
       <span className="grid size-4 shrink-0 place-items-center rounded-full" style={{ background: look.P.embed }}>
-        <Glyph d={REPLY} size={10} />
+        <Icon name="reply" size={10} />
       </span>
       <span className="italic">{text}</span>
     </Above>
@@ -220,7 +200,7 @@ export function ReplyHeader({ m, look }: AreaProps) {
       ) : arr(r.attachments).length || arr(r.embeds).length ? (
         <>
           <span className="italic">Click to see attachment</span>
-          <Glyph d={IMAGE} size={18} />
+          <Icon name="image" size={18} />
         </>
       ) : (
         <span className="italic">Click to see original message</span>
@@ -242,7 +222,7 @@ export function InteractionHeader({ m, look }: AreaProps) {
       <Name u={u} look={look} className="shrink-0 font-medium" />
       <span className="shrink-0">{name ? 'used' : 'used a command'}</span>
       {name && (
-        <span className="min-w-0 truncate font-medium" style={{ color: LINK }}>
+        <span className="min-w-0 truncate font-medium" style={{ color: BLUE }}>
           {`/${name}`}
         </span>
       )}
@@ -263,7 +243,7 @@ export function Forwarded({ m, look }: AreaProps) {
   return (
     <div className="mt-1 flex flex-col gap-1 border-l-4 pl-3" style={{ borderColor: P.sep }}>
       <div className="flex items-center gap-1 text-sm italic" style={{ color: P.muted }}>
-        <Glyph d={FORWARD} size={16} />
+        <Icon name="forward" size={16} />
         Forwarded
       </div>
       <div className="flex flex-col gap-2">
@@ -332,7 +312,7 @@ export function ThreadPreview({ m, look }: AreaProps) {
         <span className="truncate font-semibold" style={{ color: P.head }}>
           {str(t.name, 100) || 'Thread'}
         </span>
-        <span className="shrink-0 font-semibold" style={{ color: LINK }}>
+        <span className="shrink-0 font-semibold" style={{ color: BLUE }}>
           {`${count} ›`}
         </span>
       </div>

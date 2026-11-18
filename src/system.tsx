@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { arr, int, obj, own, str } from './guard.ts';
-import { type AreaProps, dateText, Emo, type Look } from './shared.tsx';
+import { type AreaProps, displayName, Emo, headerTime, type Look, plural } from './shared.tsx';
 import type { PreviewEmbed, PreviewMessage, PreviewUser } from './types.ts';
 
 // Message types the client draws itself, each with its icon and colour. Anything else (0, 19, 20, 23, unknown) is ordinary.
@@ -91,10 +91,8 @@ const WELCOMES: ((n: ReactNode) => ReactNode)[] = [
 ];
 export const welcomeIndex = (ms: number) => (Number.isFinite(ms) ? ((Math.trunc(ms) % WELCOMES.length) + WELCOMES.length) % WELCOMES.length : 0);
 
-const userName = (u: PreviewUser | undefined, look: Look) =>
-  str(own(look.resolve.users, u?.id)?.name, 100) || str(obj(u?.member)?.nick, 100) || str(u?.global_name, 100) || str(u?.username, 100) || 'Unknown';
+const userName = (u: PreviewUser | undefined, look: Look) => displayName(u, u?.member, look);
 
-const plural = (n: number, unit: string) => `${n} ${unit}${n === 1 ? '' : 's'}`;
 // "a few seconds", "5 minutes", "2 hours", "3 days"
 function span(ms: number) {
   const min = Math.floor(ms / 60_000);
@@ -111,13 +109,6 @@ const count = (v: string) => {
 };
 const embedField = (e: PreviewEmbed | null | undefined, key: string) => str(arr(obj(e)?.fields, 25).find((f) => f?.name === key)?.value, 1000);
 const embedOf = (m: PreviewMessage, type: string) => arr(m.embeds, 10).find((e) => obj(e)?.type === type) ?? undefined;
-
-// "Today at 4:20 PM" on the day of `now`, else a short date and time.
-function when(ms: number, look: Look) {
-  const day = (t: number) => dateText(t, { dateStyle: 'short' }, look);
-  const d = day(ms);
-  return d && d === day(look.now) ? `Today at ${dateText(ms, { timeStyle: 'short' }, look)}` : dateText(ms, { dateStyle: 'short', timeStyle: 'short' }, look);
-}
 
 function Card({ look, children }: { look: Look; children: ReactNode }) {
   return (
@@ -144,11 +135,8 @@ export function SystemMessage({ m, look }: AreaProps) {
   const sent = Date.parse(str(m.timestamp, 64));
   const ts = Number.isNaN(sent) ? look.now : sent;
   const boosts = count(content);
-  const boosted = (
-    <>
-      {author} just boosted the server{boosts && boosts > 1 ? ` ${boosts} times` : ''}!
-    </>
-  );
+  // Each run of text is one string, so the server's HTML (one text node) and the client's DOM match.
+  const boostedText = ` just boosted the server${boosts && boosts > 1 ? ` ${boosts} times` : ''}!`;
   let card: ReactNode = null;
   let line: ReactNode = null;
 
@@ -157,20 +145,20 @@ export function SystemMessage({ m, look }: AreaProps) {
     case 2: line = <>{author} removed {target} from the group.</>; break;
     case 3: {
       const end = Date.parse(str(obj(m.call)?.ended_timestamp, 64));
-      line = Number.isNaN(end) || end < ts ? <>{author} started a call.</> : <>{author} started a call that lasted {span(end - ts)}.</>;
+      line = Number.isNaN(end) || end < ts ? <>{author} started a call.</> : <>{author}{` started a call that lasted ${span(end - ts)}.`}</>;
       break;
     }
     case 4: line = <>{author} changed the channel name: {strong(content)}</>; break;
     case 5: line = <>{author} changed the group icon.</>; break;
     case 6: line = <>{author} pinned a message to this channel. See all pinned messages.</>; break;
     case 7: line = WELCOMES[welcomeIndex(ts)]!(author); break;
-    case 8: line = boosted; break;
-    case 9: case 10: case 11: line = <>{boosted} {server} has achieved {strong(`Level ${t - 8}`)}!</>; break;
+    case 8: line = <>{author}{boostedText}</>; break;
+    case 9: case 10: case 11: line = <>{author}{`${boostedText} ${server} has achieved `}{strong(`Level ${t - 8}`)}!</>; break;
     case 12: line = <>{author} has added {strong(content)} to this channel. Its most important updates will show up here.</>; break;
-    case 14: line = <>{server} has been removed from Server Discovery because it no longer passes all the requirements. Check Server Settings for more details.</>; break;
-    case 15: line = <>{server} has met all Discovery requirements again and has been re-added to Server Discovery.</>; break;
-    case 16: line = <>{server} has failed Discovery requirements for 1 week. If this server fails to meet the requirements for 3 more weeks, it will be removed from Discovery.</>; break;
-    case 17: line = <>{server} has failed Discovery requirements for 3 weeks. If this server fails to meet the requirements for 1 more week, it will be removed from Discovery.</>; break;
+    case 14: line = <>{`${server} has been removed from Server Discovery because it no longer passes all the requirements. Check Server Settings for more details.`}</>; break;
+    case 15: line = <>{`${server} has met all Discovery requirements again and has been re-added to Server Discovery.`}</>; break;
+    case 16: line = <>{`${server} has failed Discovery requirements for 1 week. If this server fails to meet the requirements for 3 more weeks, it will be removed from Discovery.`}</>; break;
+    case 17: line = <>{`${server} has failed Discovery requirements for 3 weeks. If this server fails to meet the requirements for 1 more week, it will be removed from Discovery.`}</>; break;
     case 18: line = <>{author} started a thread: {strong(content)}. See all threads.</>; break;
     case 21: {
       const ref = obj(m.referenced_message);
@@ -190,15 +178,13 @@ export function SystemMessage({ m, look }: AreaProps) {
       const channel = str(own(resolve.channels, embedField(e, 'channel_id'))?.name, 100);
       const rule = embedField(e, 'rule_name');
       const keyword = embedField(e, 'keyword');
-      line = <>{author} flagged a message{channel ? <> in {strong(`#${channel}`)}</> : null}</>;
+      line = channel ? <>{author} flagged a message in {strong(`#${channel}`)}</> : <>{author} flagged a message</>;
       card = (
         <Card look={look}>
           <div className="break-words whitespace-pre-wrap">{str(obj(e)?.description, 300)}</div>
           {(rule || keyword) && (
             <div className="mt-1 text-xs" style={{ color: P.muted }}>
-              {rule && <>Rule: {rule}</>}
-              {rule && keyword && ' · '}
-              {keyword && <>Keyword: {keyword}</>}
+              {[rule && `Rule: ${rule}`, keyword && `Keyword: ${keyword}`].filter(Boolean).join(' · ')}
             </div>
           )}
         </Card>
@@ -209,12 +195,9 @@ export function SystemMessage({ m, look }: AreaProps) {
       const d = obj(m.role_subscription_data);
       const months = int(d?.total_months_subscribed);
       const tier = str(d?.tier_name, 100);
-      line = (
-        <>
-          {author} {d?.is_renewal === true ? 'renewed' : 'joined'} {tier ? strong(tier) : 'a tier'}
-          {months !== undefined && months > 0 && months < 10_000 ? <> and has been a subscriber of this server for {plural(months, 'month')}</> : null}!
-        </>
-      );
+      const verb = ` ${d?.is_renewal === true ? 'renewed' : 'joined'} `;
+      const since = `${months !== undefined && months > 0 && months < 10_000 ? ` and has been a subscriber of this server for ${plural(months, 'month')}` : ''}!`;
+      line = tier ? <>{author}{verb}{strong(tier)}{since}</> : <>{author}{`${verb}a tier${since}`}</>;
       break;
     }
     case 26: line = <>{author} used a command that requires a premium subscription.</>; break;
@@ -222,14 +205,14 @@ export function SystemMessage({ m, look }: AreaProps) {
     case 28: line = <>{author} ended {strong(content)}</>; break;
     case 29: line = <>{author} is now a speaker.</>; break;
     case 31: line = <>{author} changed the Stage topic: {strong(content)}</>; break;
-    case 32: line = <>{author} upgraded {content ? strong(content) : 'this server'} to premium for this server!</>; break;
+    case 32: line = content ? <>{author} upgraded {strong(content)} to premium for this server!</> : <>{author} upgraded this server to premium for this server!</>; break;
     case 36: line = <>{author} enabled security actions.</>; break;
     case 37: line = <>{author} disabled security actions.</>; break;
     case 38: line = <>{author} reported a raid in this server.</>; break;
     case 39: line = <>{author} resolved an Activity Alert as a false alarm.</>; break;
     case 44: {
       const name = str(obj(obj(m.purchase_notification)?.guild_product_purchase)?.product_name, 100);
-      line = <>{author} has purchased {name ? strong(name) : 'a product'}!</>;
+      line = name ? <>{author} has purchased {strong(name)}!</> : <>{author} has purchased a product!</>;
       break;
     }
     case 46: {
@@ -245,7 +228,8 @@ export function SystemMessage({ m, look }: AreaProps) {
           {answer ? (
             <>
               <div className="flex items-center gap-1.5 font-medium" style={{ color: P.head }}>
-                <Emo e={emoji} /> {answer}
+                <Emo e={emoji} look={look} />
+                {` ${answer}`}
               </div>
               {pct !== undefined && (
                 <>
@@ -253,7 +237,7 @@ export function SystemMessage({ m, look }: AreaProps) {
                     <div className="h-full rounded-full" style={{ background: GREEN, width: `${pct}%` }} />
                   </div>
                   <div className="mt-1 text-xs" style={{ color: P.muted }}>
-                    {plural(votes!, 'vote')} · {pct}%
+                    {`${plural(votes!, 'vote')} · ${pct}%`}
                   </div>
                 </>
               )}
@@ -277,7 +261,7 @@ export function SystemMessage({ m, look }: AreaProps) {
       <div className="min-w-0 flex-1 break-words">
         <span style={{ color: P.muted }}>
           {line}
-          <span className="ml-1 text-xs">{when(ts, look)}</span>
+          <span className="ml-1 text-xs">{headerTime(ts, look)}</span>
         </span>
         {card}
       </div>

@@ -1,5 +1,5 @@
-import { DiscordPreview, type PreviewProps } from '@kyzegs/discord-preview/react';
-import '@kyzegs/discord-preview/style.css';
+import { DiscordPreview, type PreviewProps } from 'discord-preview/react';
+import 'discord-preview/style.css';
 import { useEffect, useState } from 'react';
 import { replyFor } from '../../shared/protocol.ts';
 

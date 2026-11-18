@@ -8,7 +8,8 @@ const SUPER = '#ff73fa'; // Discord's default super-reaction pink, when no valid
 
 // 1234 -> 1.2K, as the client shortens big counts
 const short = (n: number) => (n >= 1e6 ? `${+(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${+(n / 1e3).toFixed(1)}K` : String(n));
-const count = (v: unknown) => Math.max(0, int(v) ?? 0);
+const MAX_COUNT = 1e9; // a count past this is a bad payload, not a real reaction
+const count = (v: unknown) => Math.min(Math.max(0, int(v) ?? 0), MAX_COUNT);
 
 // Display only: no click behaviour.
 export function Reactions({ m, look }: AreaProps): ReactNode {
@@ -30,7 +31,7 @@ export function Reactions({ m, look }: AreaProps): ReactNode {
         }}
       >
         <span className="inline-flex items-center text-base leading-none">
-          <Emo e={r?.emoji} />
+          <Emo e={r?.emoji} look={look} />
         </span>
         <span>{short(n)}</span>
       </span>

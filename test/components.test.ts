@@ -3,7 +3,7 @@ import { after, test } from 'node:test';
 import { Window } from 'happy-dom';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { fileSize } from '../src/components.tsx';
+import { fileSize } from '../src/shared.tsx';
 import { DiscordPreview } from '../src/DiscordPreview.tsx';
 import type { PreviewComponent, PreviewModal, PreviewProps } from '../src/types.ts';
 import { DEFAULTS, fixtures } from './fixtures.ts';
@@ -124,4 +124,42 @@ test('modal: radios and checkboxes change when clicked', async () => {
     boxes().map((b) => b.getAttribute('aria-checked')),
     ['true', 'true', 'false', 'true'],
   );
+});
+
+test('modal: with interactive false nothing reacts', async () => {
+  const el = await mount({ payload: {}, interactive: false, modal: fixtures.find((f) => f.name === 'modal/choices')!.props.modal });
+  const state = () => [...el.querySelectorAll('[role="radio"], [role="checkbox"]')].map((b) => b.getAttribute('aria-checked'));
+  const before = state();
+  for (const b of el.querySelectorAll('[role="radio"], [role="checkbox"]')) (b as HTMLElement).click();
+  await tick();
+  assert.deepEqual(state(), before);
+  const select = await mount({ payload: {}, interactive: false, modal: { components: [{ type: 18, label: 'Pick', component: { type: 3, options: [{ label: 'One', value: '1' }] } }] } });
+  (select.querySelector('[role="combobox"]') as HTMLElement).click();
+  await tick();
+  assert.equal(select.querySelector('[role="combobox"]')?.getAttribute('aria-expanded'), 'false', 'the select stays shut');
+  const text = await mount({ payload: {}, interactive: false, modal: { components: [{ type: 18, label: 'Name', component: { type: 4, value: 'Ana' } }] } });
+  assert.equal((text.querySelector('input') as HTMLInputElement).readOnly, true);
+  const live = await mount({ payload: {}, modal: { components: [{ type: 18, label: 'Name', component: { type: 4 } }] } });
+  assert.equal((live.querySelector('input') as HTMLInputElement).readOnly, false);
+});
+
+test('media: pressing play swaps in the browser player, playing', async () => {
+  const el = await mount({ payload: { embeds: [{ type: 'gifv', thumbnail: { url: 'https://e.example/t.png' }, video: { url: 'https://e.example/v.mp4', width: 400, height: 200 } }] } });
+  assert.equal(el.querySelector('video'), null);
+  (el.querySelector('[aria-label="Play video"]') as HTMLElement).click();
+  await tick();
+  const video = el.querySelector('video');
+  assert.ok(video?.hasAttribute('controls') && video.autoplay && video.loop);
+});
+
+test('modal: a paragraph starts with its value and counts down as it is typed in', async () => {
+  const el = await mount({ payload: {}, modal: { components: [{ type: 18, label: 'Notes', component: { type: 4, style: 2, value: 'abc', max_length: 10 } }] } });
+  const area = el.querySelector('textarea') as HTMLTextAreaElement;
+  assert.equal(area.value, 'abc');
+  assert.ok(el.textContent?.includes('7'));
+  area.value = 'abcdef';
+  area.dispatchEvent(new Event('input', { bubbles: true }));
+  await tick();
+  assert.equal(area.value, 'abcdef');
+  assert.ok(el.textContent?.includes('4'));
 });

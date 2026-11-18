@@ -3,8 +3,28 @@
 @supports (((-webkit-hyphens: none)) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   :is(.discord-preview, .discord-preview *), :is(.discord-preview, .discord-preview *):before, :is(.discord-preview, .discord-preview *):after, :is(.discord-preview, .discord-preview *)::backdrop {
     --tw-border-style: solid;
+    --tw-leading: initial;
     --tw-font-weight: initial;
     --tw-tracking: initial;
+    --tw-ordinal: initial;
+    --tw-slashed-zero: initial;
+    --tw-numeric-figure: initial;
+    --tw-numeric-spacing: initial;
+    --tw-numeric-fraction: initial;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-color: initial;
+    --tw-shadow-alpha: 100.0%;
+    --tw-inset-shadow: 0 0 #0000;
+    --tw-inset-shadow-color: initial;
+    --tw-inset-shadow-alpha: 100.0%;
+    --tw-ring-color: initial;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-inset-ring-color: initial;
+    --tw-inset-ring-shadow: 0 0 #0000;
+    --tw-ring-inset: initial;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-offset-shadow: 0 0 #0000;
     --tw-blur: initial;
     --tw-brightness: initial;
     --tw-contrast: initial;
@@ -32,11 +52,16 @@
   --text-xs--line-height: calc(1 / .75);
   --text-sm: .875rem;
   --text-sm--line-height: calc(1.25 / .875);
+  --text-base: 1rem;
+  --text-base--line-height: calc(1.5 / 1);
+  --text-xl: 1.25rem;
+  --text-xl--line-height: calc(1.75 / 1.25);
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --tracking-wide: .025em;
+  --radius-md: .375rem;
   --radius-lg: .5rem;
   --radius-xl: .75rem;
   --blur-xl: 24px;
@@ -286,6 +311,10 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   pointer-events: none;
 }
 
+.invisible:is(.discord-preview, .discord-preview *) {
+  visibility: hidden;
+}
+
 .absolute:is(.discord-preview, .discord-preview *) {
   position: absolute;
 }
@@ -298,12 +327,76 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   inset: 0;
 }
 
+.inset-y-0:is(.discord-preview, .discord-preview *) {
+  inset-block: 0;
+}
+
+.top-1\/2:is(.discord-preview, .discord-preview *) {
+  top: 50%;
+}
+
+.top-\[-10\%\]:is(.discord-preview, .discord-preview *) {
+  top: -10%;
+}
+
+.right-3:is(.discord-preview, .discord-preview *) {
+  right: calc(var(--spacing) * 3);
+}
+
+.right-full:is(.discord-preview, .discord-preview *) {
+  right: 100%;
+}
+
+.bottom-1\.5:is(.discord-preview, .discord-preview *) {
+  bottom: calc(var(--spacing) * 1.5);
+}
+
+.bottom-2:is(.discord-preview, .discord-preview *) {
+  bottom: calc(var(--spacing) * 2);
+}
+
+.bottom-\[-2px\]:is(.discord-preview, .discord-preview *) {
+  bottom: -2px;
+}
+
+.left-0:is(.discord-preview, .discord-preview *) {
+  left: 0;
+}
+
+.left-1\.5:is(.discord-preview, .discord-preview *) {
+  left: calc(var(--spacing) * 1.5);
+}
+
+.left-\[-10\%\]:is(.discord-preview, .discord-preview *) {
+  left: -10%;
+}
+
+.left-\[-35px\]:is(.discord-preview, .discord-preview *) {
+  left: -35px;
+}
+
+.col-span-2:is(.discord-preview, .discord-preview *) {
+  grid-column: span 2 / span 2;
+}
+
 .col-span-3:is(.discord-preview, .discord-preview *) {
   grid-column: span 3 / span 3;
 }
 
+.col-span-6:is(.discord-preview, .discord-preview *) {
+  grid-column: span 6 / span 6;
+}
+
+.row-span-2:is(.discord-preview, .discord-preview *) {
+  grid-row: span 2 / span 2;
+}
+
 .my-1:is(.discord-preview, .discord-preview *) {
   margin-block: var(--spacing);
+}
+
+.mt-0\.5:is(.discord-preview, .discord-preview *) {
+  margin-top: calc(var(--spacing) * .5);
 }
 
 .mt-1:is(.discord-preview, .discord-preview *) {
@@ -322,8 +415,40 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   margin-top: calc(var(--spacing) * 3);
 }
 
+.mt-\[-1px\]:is(.discord-preview, .discord-preview *) {
+  margin-top: -1px;
+}
+
+.mt-px:is(.discord-preview, .discord-preview *) {
+  margin-top: 1px;
+}
+
+.mr-1:is(.discord-preview, .discord-preview *) {
+  margin-right: var(--spacing);
+}
+
+.mr-2:is(.discord-preview, .discord-preview *) {
+  margin-right: calc(var(--spacing) * 2);
+}
+
 .mb-1:is(.discord-preview, .discord-preview *) {
   margin-bottom: var(--spacing);
+}
+
+.-ml-1:is(.discord-preview, .discord-preview *) {
+  margin-left: calc(var(--spacing) * -1);
+}
+
+.ml-1:is(.discord-preview, .discord-preview *) {
+  margin-left: var(--spacing);
+}
+
+.ml-4:is(.discord-preview, .discord-preview *) {
+  margin-left: calc(var(--spacing) * 4);
+}
+
+.ml-\[54px\]:is(.discord-preview, .discord-preview *) {
+  margin-left: 54px;
 }
 
 .block:is(.discord-preview, .discord-preview *) {
@@ -338,12 +463,47 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   display: grid;
 }
 
+.hidden:is(.discord-preview, .discord-preview *) {
+  display: none;
+}
+
 .inline:is(.discord-preview, .discord-preview *) {
   display: inline;
 }
 
+.inline-block:is(.discord-preview, .discord-preview *) {
+  display: inline-block;
+}
+
 .inline-flex:is(.discord-preview, .discord-preview *) {
   display: inline-flex;
+}
+
+.aspect-\[3\/2\]:is(.discord-preview, .discord-preview *) {
+  aspect-ratio: 3 / 2;
+}
+
+.aspect-\[16\/9\]:is(.discord-preview, .discord-preview *) {
+  aspect-ratio: 16 / 9;
+}
+
+.aspect-square:is(.discord-preview, .discord-preview *) {
+  aspect-ratio: 1;
+}
+
+.size-2\.5:is(.discord-preview, .discord-preview *) {
+  width: calc(var(--spacing) * 2.5);
+  height: calc(var(--spacing) * 2.5);
+}
+
+.size-3:is(.discord-preview, .discord-preview *) {
+  width: calc(var(--spacing) * 3);
+  height: calc(var(--spacing) * 3);
+}
+
+.size-3\.5:is(.discord-preview, .discord-preview *) {
+  width: calc(var(--spacing) * 3.5);
+  height: calc(var(--spacing) * 3.5);
 }
 
 .size-4:is(.discord-preview, .discord-preview *) {
@@ -361,9 +521,19 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   height: calc(var(--spacing) * 6);
 }
 
+.size-8:is(.discord-preview, .discord-preview *) {
+  width: calc(var(--spacing) * 8);
+  height: calc(var(--spacing) * 8);
+}
+
 .size-10:is(.discord-preview, .discord-preview *) {
   width: calc(var(--spacing) * 10);
   height: calc(var(--spacing) * 10);
+}
+
+.size-12:is(.discord-preview, .discord-preview *) {
+  width: calc(var(--spacing) * 12);
+  height: calc(var(--spacing) * 12);
 }
 
 .size-40:is(.discord-preview, .discord-preview *) {
@@ -386,28 +556,70 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   height: 72px;
 }
 
+.size-\[120\%\]:is(.discord-preview, .discord-preview *) {
+  width: 120%;
+  height: 120%;
+}
+
+.size-full:is(.discord-preview, .discord-preview *) {
+  width: 100%;
+  height: 100%;
+}
+
+.h-1:is(.discord-preview, .discord-preview *) {
+  height: var(--spacing);
+}
+
+.h-1\.5:is(.discord-preview, .discord-preview *) {
+  height: calc(var(--spacing) * 1.5);
+}
+
+.h-5:is(.discord-preview, .discord-preview *) {
+  height: calc(var(--spacing) * 5);
+}
+
 .h-8:is(.discord-preview, .discord-preview *) {
   height: calc(var(--spacing) * 8);
+}
+
+.h-10:is(.discord-preview, .discord-preview *) {
+  height: calc(var(--spacing) * 10);
 }
 
 .h-11:is(.discord-preview, .discord-preview *) {
   height: calc(var(--spacing) * 11);
 }
 
-.h-40:is(.discord-preview, .discord-preview *) {
-  height: calc(var(--spacing) * 40);
+.h-14:is(.discord-preview, .discord-preview *) {
+  height: calc(var(--spacing) * 14);
+}
+
+.h-\[15px\]:is(.discord-preview, .discord-preview *) {
+  height: 15px;
+}
+
+.h-\[18px\]:is(.discord-preview, .discord-preview *) {
+  height: 18px;
+}
+
+.h-\[30px\]:is(.discord-preview, .discord-preview *) {
+  height: 30px;
+}
+
+.h-\[38px\]:is(.discord-preview, .discord-preview *) {
+  height: 38px;
+}
+
+.h-full:is(.discord-preview, .discord-preview *) {
+  height: 100%;
 }
 
 .h-px:is(.discord-preview, .discord-preview *) {
   height: 1px;
 }
 
-.max-h-60:is(.discord-preview, .discord-preview *) {
-  max-height: calc(var(--spacing) * 60);
-}
-
-.max-h-72:is(.discord-preview, .discord-preview *) {
-  max-height: calc(var(--spacing) * 72);
+.max-h-\[560px\]:is(.discord-preview, .discord-preview *) {
+  max-height: 560px;
 }
 
 .min-h-11:is(.discord-preview, .discord-preview *) {
@@ -418,24 +630,72 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   min-height: .75em;
 }
 
+.w-1:is(.discord-preview, .discord-preview *) {
+  width: var(--spacing);
+}
+
+.w-10:is(.discord-preview, .discord-preview *) {
+  width: calc(var(--spacing) * 10);
+}
+
+.w-\[3px\]:is(.discord-preview, .discord-preview *) {
+  width: 3px;
+}
+
+.w-\[400px\]:is(.discord-preview, .discord-preview *) {
+  width: 400px;
+}
+
+.w-\[432px\]:is(.discord-preview, .discord-preview *) {
+  width: 432px;
+}
+
+.w-fit:is(.discord-preview, .discord-preview *) {
+  width: fit-content;
+}
+
 .w-full:is(.discord-preview, .discord-preview *) {
   width: 100%;
 }
 
-.max-w-\[400px\]:is(.discord-preview, .discord-preview *) {
-  max-width: 400px;
+.max-w-\[432px\]:is(.discord-preview, .discord-preview *) {
+  max-width: 432px;
 }
 
 .max-w-\[440px\]:is(.discord-preview, .discord-preview *) {
   max-width: 440px;
 }
 
+.max-w-\[480px\]:is(.discord-preview, .discord-preview *) {
+  max-width: 480px;
+}
+
 .max-w-\[520px\]:is(.discord-preview, .discord-preview *) {
   max-width: 520px;
 }
 
+.max-w-\[550px\]:is(.discord-preview, .discord-preview *) {
+  max-width: 550px;
+}
+
+.max-w-full:is(.discord-preview, .discord-preview *) {
+  max-width: 100%;
+}
+
+.max-w-none:is(.discord-preview, .discord-preview *) {
+  max-width: none;
+}
+
 .min-w-0:is(.discord-preview, .discord-preview *) {
   min-width: 0;
+}
+
+.min-w-\[60px\]:is(.discord-preview, .discord-preview *) {
+  min-width: 60px;
+}
+
+.min-w-\[96px\]:is(.discord-preview, .discord-preview *) {
+  min-width: 96px;
 }
 
 .flex-1:is(.discord-preview, .discord-preview *) {
@@ -450,12 +710,40 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   cursor: pointer;
 }
 
+.resize-none:is(.discord-preview, .discord-preview *) {
+  resize: none;
+}
+
+.list-\[circle\]:is(.discord-preview, .discord-preview *) {
+  list-style-type: circle;
+}
+
+.list-\[square\]:is(.discord-preview, .discord-preview *) {
+  list-style-type: square;
+}
+
+.list-decimal:is(.discord-preview, .discord-preview *) {
+  list-style-type: decimal;
+}
+
+.list-disc:is(.discord-preview, .discord-preview *) {
+  list-style-type: disc;
+}
+
 .grid-cols-2:is(.discord-preview, .discord-preview *) {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .grid-cols-3:is(.discord-preview, .discord-preview *) {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid-cols-6:is(.discord-preview, .discord-preview *) {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.grid-rows-2:is(.discord-preview, .discord-preview *) {
+  grid-template-rows: repeat(2, minmax(0, 1fr));
 }
 
 .flex-col:is(.discord-preview, .discord-preview *) {
@@ -472,6 +760,22 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 
 .items-center:is(.discord-preview, .discord-preview *) {
   align-items: center;
+}
+
+.items-start:is(.discord-preview, .discord-preview *) {
+  align-items: flex-start;
+}
+
+.justify-center:is(.discord-preview, .discord-preview *) {
+  justify-content: center;
+}
+
+.justify-end:is(.discord-preview, .discord-preview *) {
+  justify-content: flex-end;
+}
+
+.gap-0\.5:is(.discord-preview, .discord-preview *) {
+  gap: calc(var(--spacing) * .5);
 }
 
 .gap-1:is(.discord-preview, .discord-preview *) {
@@ -494,6 +798,18 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   gap: calc(var(--spacing) * 3.5);
 }
 
+.gap-5:is(.discord-preview, .discord-preview *) {
+  gap: calc(var(--spacing) * 5);
+}
+
+.gap-\[2px\]:is(.discord-preview, .discord-preview *) {
+  gap: 2px;
+}
+
+.self-start:is(.discord-preview, .discord-preview *) {
+  align-self: flex-start;
+}
+
 .truncate:is(.discord-preview, .discord-preview *) {
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -506,6 +822,10 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 
 .overflow-x-auto:is(.discord-preview, .discord-preview *) {
   overflow-x: auto;
+}
+
+.overflow-y-auto:is(.discord-preview, .discord-preview *) {
+  overflow-y: auto;
 }
 
 .rounded:is(.discord-preview, .discord-preview *) {
@@ -528,8 +848,16 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   border-radius: var(--radius-lg);
 }
 
+.rounded-md:is(.discord-preview, .discord-preview *) {
+  border-radius: var(--radius-md);
+}
+
 .rounded-xl:is(.discord-preview, .discord-preview *) {
   border-radius: var(--radius-xl);
+}
+
+.rounded-tl-md:is(.discord-preview, .discord-preview *) {
+  border-top-left-radius: var(--radius-md);
 }
 
 .border:is(.discord-preview, .discord-preview *) {
@@ -542,14 +870,49 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   border-width: 2px;
 }
 
+.border-t-2:is(.discord-preview, .discord-preview *) {
+  border-top-style: var(--tw-border-style);
+  border-top-width: 2px;
+}
+
 .border-b:is(.discord-preview, .discord-preview *) {
   border-bottom-style: var(--tw-border-style);
   border-bottom-width: 1px;
 }
 
+.border-l-2:is(.discord-preview, .discord-preview *) {
+  border-left-style: var(--tw-border-style);
+  border-left-width: 2px;
+}
+
 .border-l-4:is(.discord-preview, .discord-preview *) {
   border-left-style: var(--tw-border-style);
   border-left-width: 4px;
+}
+
+.border-dashed:is(.discord-preview, .discord-preview *) {
+  --tw-border-style: dashed;
+  border-style: dashed;
+}
+
+.border-\[\#5865F2\]:is(.discord-preview, .discord-preview *) {
+  border-color: #5865f2;
+}
+
+.border-current:is(.discord-preview, .discord-preview *) {
+  border-color: currentColor;
+}
+
+.bg-\[\#5865F2\]:is(.discord-preview, .discord-preview *) {
+  background-color: #5865f2;
+}
+
+.bg-\[rgb\(128_128_128\/0\.24\)\]:is(.discord-preview, .discord-preview *) {
+  background-color: #8080803d;
+}
+
+.bg-black:is(.discord-preview, .discord-preview *) {
+  background-color: var(--color-black);
 }
 
 .bg-black\/30:is(.discord-preview, .discord-preview *) {
@@ -560,6 +923,25 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   .bg-black\/30:is(.discord-preview, .discord-preview *) {
     background-color: color-mix(in oklab, var(--color-black) 30%, transparent);
   }
+}
+
+.bg-black\/60:is(.discord-preview, .discord-preview *) {
+  background-color: #0009;
+}
+
+@supports (color: color-mix(in lab, red, red)) {
+  .bg-black\/60:is(.discord-preview, .discord-preview *) {
+    background-color: color-mix(in oklab, var(--color-black) 60%, transparent);
+  }
+}
+
+.bg-transparent:is(.discord-preview, .discord-preview *) {
+  background-color: #0000;
+}
+
+.bg-clip-text:is(.discord-preview, .discord-preview *) {
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
 .object-contain:is(.discord-preview, .discord-preview *) {
@@ -578,12 +960,28 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   padding: calc(var(--spacing) * 3);
 }
 
+.p-4:is(.discord-preview, .discord-preview *) {
+  padding: calc(var(--spacing) * 4);
+}
+
 .px-0\.5:is(.discord-preview, .discord-preview *) {
   padding-inline: calc(var(--spacing) * .5);
 }
 
 .px-1:is(.discord-preview, .discord-preview *) {
   padding-inline: var(--spacing);
+}
+
+.px-1\.5:is(.discord-preview, .discord-preview *) {
+  padding-inline: calc(var(--spacing) * 1.5);
+}
+
+.px-2:is(.discord-preview, .discord-preview *) {
+  padding-inline: calc(var(--spacing) * 2);
+}
+
+.px-2\.5:is(.discord-preview, .discord-preview *) {
+  padding-inline: calc(var(--spacing) * 2.5);
 }
 
 .px-3:is(.discord-preview, .discord-preview *) {
@@ -594,12 +992,20 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   padding-inline: calc(var(--spacing) * 4);
 }
 
+.py-0\.5:is(.discord-preview, .discord-preview *) {
+  padding-block: calc(var(--spacing) * .5);
+}
+
 .py-1:is(.discord-preview, .discord-preview *) {
   padding-block: var(--spacing);
 }
 
 .py-2:is(.discord-preview, .discord-preview *) {
   padding-block: calc(var(--spacing) * 2);
+}
+
+.py-2\.5:is(.discord-preview, .discord-preview *) {
+  padding-block: calc(var(--spacing) * 2.5);
 }
 
 .py-3:is(.discord-preview, .discord-preview *) {
@@ -610,41 +1016,91 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   padding-block: calc(var(--spacing) * 3.5);
 }
 
+.py-6:is(.discord-preview, .discord-preview *) {
+  padding-block: calc(var(--spacing) * 6);
+}
+
+.pt-2\.5:is(.discord-preview, .discord-preview *) {
+  padding-top: calc(var(--spacing) * 2.5);
+}
+
 .pt-4:is(.discord-preview, .discord-preview *) {
   padding-top: calc(var(--spacing) * 4);
+}
+
+.pr-2:is(.discord-preview, .discord-preview *) {
+  padding-right: calc(var(--spacing) * 2);
 }
 
 .pr-4:is(.discord-preview, .discord-preview *) {
   padding-right: calc(var(--spacing) * 4);
 }
 
+.pb-2\.5:is(.discord-preview, .discord-preview *) {
+  padding-bottom: calc(var(--spacing) * 2.5);
+}
+
+.pb-4:is(.discord-preview, .discord-preview *) {
+  padding-bottom: calc(var(--spacing) * 4);
+}
+
 .pb-5:is(.discord-preview, .discord-preview *) {
   padding-bottom: calc(var(--spacing) * 5);
+}
+
+.pb-6:is(.discord-preview, .discord-preview *) {
+  padding-bottom: calc(var(--spacing) * 6);
 }
 
 .pb-\[18px\]:is(.discord-preview, .discord-preview *) {
   padding-bottom: 18px;
 }
 
-.pl-2\.5:is(.discord-preview, .discord-preview *) {
-  padding-left: calc(var(--spacing) * 2.5);
+.pl-3:is(.discord-preview, .discord-preview *) {
+  padding-left: calc(var(--spacing) * 3);
 }
 
 .pl-\[70px\]:is(.discord-preview, .discord-preview *) {
   padding-left: 70px;
 }
 
+.text-center:is(.discord-preview, .discord-preview *) {
+  text-align: center;
+}
+
+.text-left:is(.discord-preview, .discord-preview *) {
+  text-align: left;
+}
+
 .align-\[-0\.3em\]:is(.discord-preview, .discord-preview *) {
   vertical-align: -.3em;
+}
+
+.align-\[-0\.15em\]:is(.discord-preview, .discord-preview *) {
+  vertical-align: -.15em;
+}
+
+.align-middle:is(.discord-preview, .discord-preview *) {
+  vertical-align: middle;
 }
 
 .font-mono:is(.discord-preview, .discord-preview *) {
   font-family: var(--font-mono);
 }
 
+.text-base:is(.discord-preview, .discord-preview *) {
+  font-size: var(--text-base);
+  line-height: var(--tw-leading, var(--text-base--line-height));
+}
+
 .text-sm:is(.discord-preview, .discord-preview *) {
   font-size: var(--text-sm);
   line-height: var(--tw-leading, var(--text-sm--line-height));
+}
+
+.text-xl:is(.discord-preview, .discord-preview *) {
+  font-size: var(--text-xl);
+  line-height: var(--tw-leading, var(--text-xl--line-height));
 }
 
 .text-xs:is(.discord-preview, .discord-preview *) {
@@ -670,6 +1126,31 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 
 .text-\[20px\]:is(.discord-preview, .discord-preview *) {
   font-size: 20px;
+}
+
+.leading-4:is(.discord-preview, .discord-preview *) {
+  --tw-leading: calc(var(--spacing) * 4);
+  line-height: calc(var(--spacing) * 4);
+}
+
+.leading-5:is(.discord-preview, .discord-preview *) {
+  --tw-leading: calc(var(--spacing) * 5);
+  line-height: calc(var(--spacing) * 5);
+}
+
+.leading-6:is(.discord-preview, .discord-preview *) {
+  --tw-leading: calc(var(--spacing) * 6);
+  line-height: calc(var(--spacing) * 6);
+}
+
+.leading-\[18px\]:is(.discord-preview, .discord-preview *) {
+  --tw-leading: 18px;
+  line-height: 18px;
+}
+
+.leading-none:is(.discord-preview, .discord-preview *) {
+  --tw-leading: 1;
+  line-height: 1;
 }
 
 .font-bold:is(.discord-preview, .discord-preview *) {
@@ -705,6 +1186,10 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   word-break: break-all;
 }
 
+.whitespace-nowrap:is(.discord-preview, .discord-preview *) {
+  white-space: nowrap;
+}
+
 .whitespace-pre-wrap:is(.discord-preview, .discord-preview *) {
   white-space: pre-wrap;
 }
@@ -713,8 +1198,38 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   color: #00a8fc;
 }
 
+.text-transparent:is(.discord-preview, .discord-preview *) {
+  color: #0000;
+}
+
 .text-white:is(.discord-preview, .discord-preview *) {
   color: var(--color-white);
+}
+
+.lowercase:is(.discord-preview, .discord-preview *) {
+  text-transform: lowercase;
+}
+
+.italic:is(.discord-preview, .discord-preview *) {
+  font-style: italic;
+}
+
+.tabular-nums:is(.discord-preview, .discord-preview *) {
+  --tw-numeric-spacing: tabular-nums;
+  font-variant-numeric: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
+}
+
+.opacity-70:is(.discord-preview, .discord-preview *) {
+  opacity: .7;
+}
+
+.opacity-80:is(.discord-preview, .discord-preview *) {
+  opacity: .8;
+}
+
+.shadow-lg:is(.discord-preview, .discord-preview *) {
+  --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, #0000001a), 0 4px 6px -4px var(--tw-shadow-color, #0000001a);
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 
 .blur-xl:is(.discord-preview, .discord-preview *) {
@@ -722,15 +1237,32 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
 }
 
+.outline-none:is(.discord-preview, .discord-preview *) {
+  --tw-outline-style: none;
+  outline-style: none;
+}
+
 .select-none:is(.discord-preview, .discord-preview *) {
   -webkit-user-select: none;
   user-select: none;
+}
+
+:is(.\*\:h-full > *):is(.discord-preview, .discord-preview *) {
+  height: 100%;
 }
 
 @media (hover: hover) {
   .hover\:underline:hover:is(.discord-preview, .discord-preview *) {
     text-decoration-line: underline;
   }
+
+  .hover\:opacity-100:hover:is(.discord-preview, .discord-preview *) {
+    opacity: 1;
+  }
+}
+
+.disabled\:cursor-not-allowed:disabled:is(.discord-preview, .discord-preview *) {
+  cursor: not-allowed;
 }
 
 .disabled\:opacity-50:disabled:is(.discord-preview, .discord-preview *) {
@@ -748,6 +1280,14 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 }
 
 @container not (width >= 320px) {
+  .\@max-\[320px\]\:left-\[-27px\]:is(.discord-preview, .discord-preview *) {
+    left: -27px;
+  }
+
+  .\@max-\[320px\]\:ml-\[42px\]:is(.discord-preview, .discord-preview *) {
+    margin-left: 42px;
+  }
+
   .\@max-\[320px\]\:size-8:is(.discord-preview, .discord-preview *) {
     width: calc(var(--spacing) * 8);
     height: calc(var(--spacing) * 8);
@@ -758,13 +1298,42 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
     height: calc(var(--spacing) * 12);
   }
 
+  .\@max-\[320px\]\:w-8:is(.discord-preview, .discord-preview *) {
+    width: calc(var(--spacing) * 8);
+  }
+
   .\@max-\[320px\]\:gap-2\.5:is(.discord-preview, .discord-preview *) {
     gap: calc(var(--spacing) * 2.5);
+  }
+
+  .\@max-\[320px\]\:p-2:is(.discord-preview, .discord-preview *) {
+    padding: calc(var(--spacing) * 2);
   }
 
   .\@max-\[320px\]\:px-3:is(.discord-preview, .discord-preview *) {
     padding-inline: calc(var(--spacing) * 3);
   }
+}
+
+.\[\&_img\]\:size-12 img:is(.discord-preview, .discord-preview *) {
+  width: calc(var(--spacing) * 12);
+  height: calc(var(--spacing) * 12);
+}
+
+.\[\&_img\]\:align-bottom img:is(.discord-preview, .discord-preview *) {
+  vertical-align: bottom;
+}
+
+.\[\&\>div\]\:inline > div:is(.discord-preview, .discord-preview *) {
+  display: inline;
+}
+
+.\[\&\>div\>div\]\:h-full > div > div:is(.discord-preview, .discord-preview *) {
+  height: 100%;
+}
+
+.\[\&\>div\>div\:last-child\]\:inline > div > div:last-child:is(.discord-preview, .discord-preview *) {
+  display: inline;
 }
 
 .dsel:is(.discord-preview, .discord-preview *) {
@@ -866,6 +1435,11 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   initial-value: solid;
 }
 
+@property --tw-leading {
+  syntax: "*";
+  inherits: false
+}
+
 @property --tw-font-weight {
   syntax: "*";
   inherits: false
@@ -874,6 +1448,110 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 @property --tw-tracking {
   syntax: "*";
   inherits: false
+}
+
+@property --tw-ordinal {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-slashed-zero {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-numeric-figure {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-numeric-spacing {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-numeric-fraction {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+
+@property --tw-shadow-color {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+
+@property --tw-inset-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+
+@property --tw-inset-shadow-color {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-inset-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+
+@property --tw-ring-color {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-ring-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+
+@property --tw-inset-ring-color {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-inset-ring-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+
+@property --tw-ring-inset {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-ring-offset-width {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --tw-ring-offset-color {
+  syntax: "*";
+  inherits: false;
+  initial-value: #fff;
+}
+
+@property --tw-ring-offset-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
 }
 
 @property --tw-blur {

@@ -1,8 +1,11 @@
 import { h, render } from 'preact';
 import { DiscordPreview } from './DiscordPreview.tsx';
+import { BUILD } from './shared.tsx';
 import type { Path, Pressed, PreviewProps } from './types.ts';
 
 export type * from './types.ts';
+
+BUILD.preact = true;
 
 // What <discord-preview> takes as properties: the preview's props without the callbacks, which become events.
 export type ElementProps = Omit<PreviewProps, 'onPress' | 'onSelectBlock'> & {
@@ -16,7 +19,7 @@ export interface SelectBlockDetail {
   path: Path;
 }
 
-const KEYS = ['payload', 'modal', 'resolve', 'theme', 'mobile', 'bare', 'channelName', 'interactive', 'selected', 'locale', 'timeZone', 'now', 'localMedia', 'selectable'] as const;
+const KEYS = ['payload', 'modal', 'resolve', 'theme', 'mobile', 'bare', 'channelName', 'interactive', 'selected', 'locale', 'timeZone', 'now', 'localMedia', 'twemoji', 'highlight', 'mediaUrl', 'selectable'] as const;
 type Key = (typeof KEYS)[number];
 
 const json = (v: string) => {
@@ -26,7 +29,8 @@ const json = (v: string) => {
     return undefined; // invalid JSON is ignored
   }
 };
-// attribute name -> [property, parse]; a parse returning undefined leaves the property as it was
+// attribute name -> [property, parse]; a parse returning undefined leaves the property as it was. `highlight` and
+// `mediaUrl` have none: they are functions, so only a property can carry them.
 const ATTRS: Record<string, [Key, (v: string | null) => { v: unknown } | undefined]> = {
   theme: ['theme', (v) => ({ v: v ?? undefined })],
   mobile: ['mobile', (v) => ({ v: v !== null })],
@@ -35,6 +39,7 @@ const ATTRS: Record<string, [Key, (v: string | null) => { v: unknown } | undefin
   interactive: ['interactive', (v) => ({ v: v === null ? undefined : v !== 'false' })],
   'channel-name': ['channelName', (v) => ({ v: v ?? undefined })],
   'local-media': ['localMedia', (v) => ({ v: v !== null })],
+  twemoji: ['twemoji', (v) => ({ v: v !== null })],
   locale: ['locale', (v) => ({ v: v ?? undefined })],
   'time-zone': ['timeZone', (v) => ({ v: v ?? undefined })],
   payload: ['payload', (v) => (v === null ? { v: undefined } : json(v))],

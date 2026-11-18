@@ -1,6 +1,6 @@
-import '@kyzegs/discord-preview/style.css';
+import 'discord-preview/style.css';
 import { createSSRApp } from 'vue';
-import type { PreviewProps } from '@kyzegs/discord-preview/vue';
+import type { PreviewProps } from 'discord-preview/vue';
 import { fixtureParam, propsFor } from '../../shared/protocol.ts';
 import App from './App.vue';
 

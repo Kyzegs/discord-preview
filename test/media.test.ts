@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { duration, fileSize, fit, kind, waveform } from '../src/attachments.tsx';
+import { duration, fit, kind, waveform } from '../src/attachments.tsx';
+import { fileSize } from '../src/shared.tsx';
 import { DiscordPreview } from '../src/DiscordPreview.tsx';
 import type { PreviewAttachment, PreviewEmbed, PreviewMessage, PreviewProps } from '../src/types.ts';
 import { DEFAULTS } from './fixtures.ts';
@@ -62,10 +63,9 @@ test('media: alt badge, spoilers, title and links', () => {
   assert.ok(!render({ attachments: [{ filename: 'a.pdf', url: 'javascript:alert(1)' }] }).includes('<a '));
 });
 
-test('media: video, audio and voice messages never autoplay', () => {
+test('media: video, audio and voice messages are play buttons until pressed', () => {
   const html = render({ attachments: [{ filename: 'a.mp4', url: 'https://cdn.example/a.mp4', width: 1920, height: 1080 }, { filename: 'a.mp3', url: 'https://cdn.example/a.mp3' }] });
-  assert.ok(html.includes('<video') && html.includes('<audio') && !/autoplay/i.test(html));
-  assert.equal(count(html, /preload="none"/g), 2);
+  assert.ok(html.includes('Play video') && html.includes('Play audio') && !html.includes('<video') && !html.includes('<audio') && !/autoplay/i.test(html));
   assert.ok(html.includes('width:550px;aspect-ratio:550 / 309'));
   const voice = render({ flags: 8192, attachments: [{ filename: 'voice-message.ogg', content_type: 'audio/ogg', url: 'https://cdn.example/v.ogg', duration_secs: 7, waveform: '/wAA' }] });
   assert.ok(voice.includes('Play voice message') && voice.includes('0:07') && !voice.includes('<audio'));
@@ -95,7 +95,7 @@ test('embeds: links, provider and types', () => {
   const image = render({ embeds: [{ type: 'image', url: 'https://e.example/x.png', thumbnail: { url: 'https://e.example/x.png', width: 800, height: 600 } }] });
   assert.ok(!image.includes('border-l-4') && image.includes('width:467px'));
   const gifv = render({ embeds: [{ type: 'gifv', thumbnail: { url: 'https://e.example/t.png' }, video: { url: 'https://e.example/v.mp4', width: 400, height: 200 } }] });
-  assert.ok(gifv.includes('<video') && gifv.includes('loop') && !gifv.includes('border-l-4') && !/autoplay/i.test(gifv));
+  assert.ok(gifv.includes('Play video') && gifv.includes('src="https://e.example/t.png"') && !gifv.includes('border-l-4') && !gifv.includes('<video'));
   const video = render({ embeds: [{ type: 'video', url: 'https://yt.example/v', title: 'V', thumbnail: { url: 'https://yt.example/t.jpg', width: 1280, height: 720 } }] });
   assert.ok(video.includes('aria-label="Play"') && video.includes('width:400px;aspect-ratio:400 / 225') && !video.includes('<iframe'));
   const article = render({ embeds: [{ type: 'article', title: 'A', thumbnail: { url: 'https://e.example/t.png', width: 1200, height: 600 } }] });

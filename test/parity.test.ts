@@ -32,8 +32,10 @@ function print(n: Node): string {
 }
 export const canonical = (html: string) => print(parseFragment(html) as Node);
 
-// Each fixture as given, and once more with the other theme, the mobile width, a selection ring and select handlers.
-const variants = { plain: {}, styled: { theme: 'light', mobile: true, bare: true, selected: [0], onSelectBlock: () => {} } } as const;
+// Each fixture as given, and once more with the other theme, the mobile width, a selection ring, select handlers,
+// Twemoji and a highlighter.
+const highlight = (code: string, lang: string) => `<span class="hl-${lang}">${esc(code)}</span>`;
+const variants = { plain: {}, styled: { theme: 'light', mobile: true, bare: true, selected: [0], onSelectBlock: () => {}, twemoji: true, highlight } } as const;
 
 for (const { name, props: base } of fixtures) {
   for (const [variant, extra] of Object.entries(variants)) {

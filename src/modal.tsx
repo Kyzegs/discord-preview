@@ -1,8 +1,8 @@
 import { type ReactNode, useState } from 'react';
-import { Glyph, live, SelectMenu } from './components.tsx';
+import { SelectMenu } from './components.tsx';
 import { arr, bool, int, obj, str } from './guard.ts';
 import { Markdown } from './markdown.tsx';
-import type { Look } from './shared.tsx';
+import { BUILD, Icon, type Look } from './shared.tsx';
 import type { PreviewCheckbox, PreviewCheckboxGroup, PreviewFileUpload, PreviewLabel, PreviewModal, PreviewRadioGroup, PreviewTextInput } from './types.ts';
 
 const MAX_TOP_LEVEL = 5; // Discord's limit of top-level components in a modal
@@ -23,7 +23,7 @@ export function Modal({ m, look }: { m: PreviewModal; look: Look }): ReactNode {
             {str(m.title, 45)}
           </h2>
           <button type="button" aria-label="Close" className="shrink-0 opacity-80 hover:opacity-100" style={{ color: P.muted }}>
-            <Glyph name="x" size={24} />
+            <Icon name="x" size={24} />
           </button>
         </div>
         <div className="flex max-h-[560px] flex-col gap-5 overflow-y-auto px-4 pb-4">
@@ -93,20 +93,22 @@ function TextInput({ c, label, look }: { c: PreviewTextInput; label: string; loo
   const { P } = look;
   const max = clamp(int(c.max_length), 1, 4000);
   const [typed, setTyped] = useState<string | null>(null);
-  const value = typed ?? str(c.value, max ?? 4000);
+  const initial = str(c.value, max ?? 4000);
+  const value = typed ?? initial;
   const field = {
-    value,
     placeholder: str(c.placeholder, 100) || undefined,
     maxLength: max ?? 4000,
-    readOnly: !live(look),
+    readOnly: !look.interactive,
     'aria-label': label || undefined,
     style: { background: P.selectBg, borderColor: P.selectBorder, color: P.text },
   };
   const box = 'w-full rounded-lg border px-2.5 text-base outline-none';
-  if (int(c.style) !== 2) return <input type="text" {...field} className={`${box} h-10`} onChange={(e) => setTyped(e.currentTarget.value.slice(0, max ?? 4000))} />;
+  if (int(c.style) !== 2) return <input type="text" value={value} {...field} className={`${box} h-10`} onChange={(e) => setTyped(e.currentTarget.value.slice(0, max ?? 4000))} />;
   return (
     <div className="relative">
-      <textarea rows={4} {...field} className={`${box} block resize-none pt-2.5 ${max ? 'pb-6' : 'pb-2.5'}`} onChange={(e) => setTyped(e.currentTarget.value.slice(0, max ?? 4000))} />
+      {/* Uncontrolled, its first value written as the textarea's text either way. Preact replaces that text node when it
+          sets defaultValue over server HTML, so it gets the text as a child; React wants defaultValue (children warn). */}
+      <textarea rows={4} {...(BUILD.preact ? { children: initial } : { defaultValue: initial })} {...field} className={`${box} block resize-none pt-2.5 ${max ? 'pb-6' : 'pb-2.5'}`} onChange={(e) => setTyped(e.currentTarget.value.slice(0, max ?? 4000))} />
       {max && (
         <span className="absolute right-3 bottom-2 text-xs" style={{ color: P.muted }}>
           {max - value.length}
@@ -122,7 +124,7 @@ function FileUpload({ c, look }: { c: PreviewFileUpload; look: Look }) {
   const most = clamp(int(c.max_values), 1, 10) ?? 1;
   return (
     <div className="flex flex-col items-center gap-1.5 rounded-lg border-2 border-dashed px-4 py-6 text-center text-sm" style={{ borderColor: P.sep, color: P.muted, background: P.selectBg }}>
-      <Glyph name="upload" size={24} />
+      <Icon name="upload" size={24} />
       <span>
         Drag and drop or <span className="text-[#00A8FC]">browse</span> to upload
       </span>
@@ -135,7 +137,7 @@ function FileUpload({ c, look }: { c: PreviewFileUpload; look: Look }) {
 function Tick({ on, round, look }: { on: boolean; round: boolean; look: Look }) {
   return (
     <span className={`mt-px grid size-5 shrink-0 place-items-center border-2 text-white ${round ? 'rounded-full' : 'rounded-md'}`} style={{ borderColor: on ? BRAND : look.P.muted, background: on && !round ? BRAND : undefined }}>
-      {on && (round ? <span className="size-2.5 rounded-full" style={{ background: BRAND }} /> : <Glyph name="check" size={14} stroke={3} />)}
+      {on && (round ? <span className="size-2.5 rounded-full" style={{ background: BRAND }} /> : <Icon name="check" size={14} stroke={3} />)}
     </span>
   );
 }
@@ -149,7 +151,7 @@ function Choices({ c, look }: { c: PreviewRadioGroup | PreviewCheckboxGroup; loo
   const max = multi ? (clamp(int(c.max_values), 1, 10) ?? options.length) : 1;
   const chosen = picked ?? options.flatMap((o, i) => (o.on ? [i] : [])).slice(0, max);
   const toggle = (i: number) => {
-    if (!live(look)) return;
+    if (!look.interactive) return;
     setPicked(!multi ? [i] : chosen.includes(i) ? chosen.filter((x) => x !== i) : chosen.length < max ? [...chosen, i] : chosen);
   };
   return (
@@ -179,7 +181,7 @@ function Checkbox({ c, title, note, look }: { c: PreviewCheckbox; title: string;
   const [picked, setPicked] = useState<boolean | null>(null);
   const on = picked ?? bool(c.default);
   return (
-    <button type="button" role="checkbox" aria-checked={on} onClick={() => live(look) && setPicked(!on)} className="flex items-start gap-3 text-left">
+    <button type="button" role="checkbox" aria-checked={on} onClick={() => look.interactive && setPicked(!on)} className="flex items-start gap-3 text-left">
       <Tick on={on} round={false} look={look} />
       <span className="flex min-w-0 flex-1 flex-col">
         <span className="text-base leading-5 font-semibold break-words" style={{ color: P.head }}>

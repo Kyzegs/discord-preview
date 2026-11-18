@@ -1,0 +1,17 @@
+{
+  "twemoji": true,
+  "payload": {
+    "author": { "id": "80351110224678912", "username": "nelly", "global_name": "Nelly" },
+    "content": "Party time 🎉 with 👨‍👩‍👧 and **🇳🇱 bold**",
+    "reactions": [{ "count": 3, "emoji": { "name": "👍🏽" } }, { "count": 1, "me": true, "emoji": { "name": "❤️" } }],
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          { "type": 2, "style": 1, "label": "Launch", "emoji": { "name": "🚀" }, "custom_id": "launch" },
+          { "type": 3, "custom_id": "pick", "placeholder": "Pick a snack", "options": [{ "label": "Pizza", "value": "pizza", "emoji": { "name": "🍕" }, "default": true }] }
+        ]
+      }
+    ]
+  }
+}

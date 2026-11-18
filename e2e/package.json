@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@kyzegs/discord-preview": "workspace:*"
+    "discord-preview": "workspace:*"
   },
   "devDependencies": {
     "@astrojs/react": "^7.1.9",

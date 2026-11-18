@@ -1,17 +1,9 @@
 import { arr, bool, int, num, obj, str } from './guard.ts';
 import { inline } from './markdown.tsx';
-import { Emo, type Look } from './shared.tsx';
+import { Emo, Icon, type Look, plural } from './shared.tsx';
 import type { PreviewPoll } from './types.ts';
 
-const plural = (n: number, unit: string) => `${n} ${unit}${n === 1 ? '' : 's'}`;
 const BLURPLE = '#5865F2';
-
-// Lucide's check (https://lucide.dev, ISC License)
-const Check = ({ size }: { size: number }) => (
-  <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
-    <path d="M20 6 9 17l-5-5" />
-  </svg>
-);
 
 export function PollCard({ poll: raw, look }: { poll: PreviewPoll | null | undefined; look: Look }) {
   const { P } = look;
@@ -23,7 +15,7 @@ export function PollCard({ poll: raw, look }: { poll: PreviewPoll | null | undef
   const counts = new Map<number, { n: number; me: boolean }>();
   for (const c of arr(results?.answer_counts, 10)) {
     const id = int(c?.id);
-    if (id !== undefined) counts.set(id, { n: Math.max(0, int(c?.count) ?? 0), me: bool(c?.me_voted) });
+    if (id !== undefined) counts.set(id, { n: Math.min(Math.max(0, int(c?.count) ?? 0), 1e9), me: bool(c?.me_voted) }); // capped, so the total and every share stay finite
   }
   const votes = answers.map((a, i) => counts.get(int(a?.answer_id) ?? i + 1) ?? { n: 0, me: false });
   const total = votes.reduce((s, v) => s + v.n, 0);
@@ -67,14 +59,14 @@ export function PollCard({ poll: raw, look }: { poll: PreviewPoll | null | undef
           >
             {results && <span aria-hidden className="absolute inset-y-0 left-0" style={{ width: `${pct}%`, background: 'rgba(88,101,242,0.3)' }} />}
             <span className="relative flex min-w-0 flex-1 items-center gap-2">
-              <Emo e={media?.emoji} />
+              <Emo e={media?.emoji} look={look} />
               <span className="min-w-0 flex-1 break-words">{inline(str(media?.text, 55), look)}</span>
             </span>
             {results ? (
               <span className="relative flex shrink-0 items-center gap-1.5 text-xs" style={{ color: P.muted }}>
                 {win && (
                   <span style={{ color: BLURPLE }}>
-                    <Check size={14} />
+                    <Icon name="check" size={14} stroke={3} />
                   </span>
                 )}
                 <span>{pct}%</span>
@@ -87,7 +79,7 @@ export function PollCard({ poll: raw, look }: { poll: PreviewPoll | null | undef
                 className={`relative grid size-4 shrink-0 place-items-center border-2 ${multi ? 'rounded' : 'rounded-full'}`}
                 style={{ borderColor: v.me ? BLURPLE : P.muted, background: v.me ? BLURPLE : undefined, color: '#FFFFFF' }}
               >
-                {v.me && <Check size={10} />}
+                {v.me && <Icon name="check" size={10} stroke={3} />}
               </span>
             )}
           </div>
@@ -95,7 +87,7 @@ export function PollCard({ poll: raw, look }: { poll: PreviewPoll | null | undef
       })}
       <div className="flex items-center gap-1 text-xs" style={{ color: P.muted }}>
         <span className="flex-1">
-          {plural(total, 'vote')} · {left}
+          {`${plural(total, 'vote')} · ${left}`}
         </span>
         {results && !closed && (
           <>

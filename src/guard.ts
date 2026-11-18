@@ -38,8 +38,9 @@ const parse = (v: unknown, base?: string) => {
   }
 };
 const web = (u: URL | undefined) => u?.protocol === 'http:' || u?.protocol === 'https:';
+export const URL_MAX = 2048; // the longest link or media URL taken; a data:image/ preview (localMedia only) may be longer
 // written as http(s)://, so the value means the same to every parser that reads it next
-const absolute = (v: unknown) => typeof v === 'string' && /^https?:\/\//i.test(v) && web(parse(v));
+const absolute = (v: unknown) => typeof v === 'string' && v.length <= URL_MAX && /^https?:\/\//i.test(v) && web(parse(v));
 
 // Only an absolute http(s) URL: a relative one would point at the host page's own site.
 export function safeHref(v: unknown): string | undefined {
@@ -52,5 +53,6 @@ export function safeSrc(v: unknown, local = false): string | undefined {
   if (absolute(v)) return v as string;
   if (!local) return undefined;
   const u = parse(v, 'https://relative.invalid');
-  return web(u) || u?.protocol === 'blob:' || u?.href.startsWith('data:image/') ? (v as string) : undefined;
+  if (u?.href.startsWith('data:image/')) return v as string; // the image itself, so no URL limit: the field read caps it
+  return (web(u) || u?.protocol === 'blob:') && (v as string).length <= URL_MAX ? (v as string) : undefined;
 }

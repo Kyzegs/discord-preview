@@ -1,6 +1,6 @@
-import '@kyzegs/discord-preview/element';
-import '@kyzegs/discord-preview/style.css';
-import type { PressDetail, PreviewProps } from '@kyzegs/discord-preview/element';
+import 'discord-preview/element';
+import 'discord-preview/style.css';
+import type { PressDetail, PreviewProps } from 'discord-preview/element';
 import { fixtureParam, names, propsFor, replyFor } from '../shared/protocol.ts';
 
 const q = new URLSearchParams(location.search);

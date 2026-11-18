@@ -39,6 +39,8 @@ export interface PreviewMessageInteraction {
 export interface PreviewMedia {
   url?: string;
   content_type?: string | null;
+  width?: number | null;
+  height?: number | null;
 }
 
 // ---- Components
@@ -351,6 +353,12 @@ export interface Resolve {
   guildId?: string; // the @everyone role id, left out of role menus
 }
 
+// Highlights a fenced code block that names a language: the returned string is inserted as HTML, so it must escape `code`.
+export type Highlight = (code: string, lang: string) => string | undefined;
+
+// Rewrites or refuses a media URL (already checked); its result is checked again, and nothing drops that media.
+export type MediaUrl = (url: string) => string | undefined;
+
 export type Pressed = PreviewButton | { type: 3 | 5 | 6 | 7 | 8; custom_id?: string; picked: string; value: string };
 
 export interface PreviewProps {
@@ -367,6 +375,9 @@ export interface PreviewProps {
   timeZone?: string;
   now?: number; // ms; base for "Today at" and relative timestamps; default Date.now()
   localMedia?: boolean; // also show relative, blob: and data:image/ images, for builders previewing their own files; default false
+  twemoji?: boolean; // unicode emoji as Twemoji images from jsDelivr; default false
+  highlight?: Highlight; // the site's own highlighter (never the payload's); its output is trusted HTML
+  mediaUrl?: MediaUrl; // the site's own proxy or allow-list for every image, video, audio, sticker, emoji and avatar URL
   onPress?: (c: Pressed) => string | void; // a returned string is shown as the ephemeral reply
   onSelectBlock?: (path: Path) => void;
 }

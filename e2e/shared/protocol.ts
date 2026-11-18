@@ -1,5 +1,5 @@
 // The page protocol every fixture app follows (see preview.spec.ts). Vite-only: it globs the repo's fixtures.
-import type { Path, Pressed, PreviewProps } from '@kyzegs/discord-preview/react';
+import type { Path, Pressed, PreviewProps } from 'discord-preview/react';
 
 const files = import.meta.glob<PreviewProps>('../../fixtures/**/*.json', { eager: true, import: 'default' });
 // same fixed defaults as test/fixtures.ts

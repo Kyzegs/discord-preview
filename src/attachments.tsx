@@ -1,12 +1,10 @@
 import { type CSSProperties, useState } from 'react';
 import { arr, int, num, obj, safeHref, snowflake, str } from './guard.ts';
-import { type AreaProps, Icon, IMG, type Look, mediaSrc, Spoiler } from './shared.tsx';
+import { type AreaProps, BLUE, fileSize, Icon, IMG, LINK, type Look, mediaSrc, Spoiler } from './shared.tsx';
 import type { PreviewAttachment } from './types.ts';
 
 const IS_VOICE_MESSAGE = 1 << 13; // message flag
 const IS_SPOILER = 1 << 3; // attachment flag
-export const LINK = { target: '_blank', rel: 'noopener noreferrer nofollow ugc' } as const;
-export const BLUE = '#00A8FC';
 
 // ---- Sizes
 
@@ -19,15 +17,6 @@ export function fit(w: unknown, h: unknown, maxW: number, maxH: number): CSSProp
   const dw = Math.max(1, Math.round(W * s));
   const dh = Math.max(1, Math.round(H * s));
   return { width: `${dw}px`, aspectRatio: `${dw} / ${dh}` };
-}
-
-export function fileSize(v: unknown): string {
-  let n = num(v);
-  if (n === undefined || n < 0) return '';
-  const units = ['bytes', 'KB', 'MB', 'GB', 'TB'];
-  let i = 0;
-  while (n >= 1024 && i < units.length - 1) (n /= 1024), i++;
-  return i ? `${n.toFixed(2)} ${units[i]}` : `${Math.round(n)} bytes`;
 }
 
 export function duration(v: unknown): string {
@@ -58,12 +47,41 @@ export function waveform(v: unknown, bars = 40): number[] {
 
 // ---- Media
 
-// A <video> in Discord's box, never playing until asked.
+// The round play button in front of a video, audio file or voice message. The browser's own player only replaces it
+// once pressed: its controls load and animate on their own, so drawn up front they would shift and differ per render.
+function PlayButton({ label, disabled, onPlay, className = '' }: { label: string; disabled?: boolean; onPlay: () => void; className?: string }) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      disabled={disabled}
+      onClick={(e) => {
+        e.stopPropagation();
+        onPlay();
+      }}
+      className={`grid shrink-0 place-items-center rounded-full bg-[#5865F2] text-white ${className}`}
+    >
+      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M7 4v16l13-8z" />
+      </svg>
+    </button>
+  );
+}
+
+// A video in Discord's box: its poster (or black) with a play button, then the browser's player once pressed.
 export function Video({ url, poster, width, height, maxW = 550, maxH = 350, loop = false, look }: { url: unknown; poster?: unknown; width?: unknown; height?: unknown; maxW?: number; maxH?: number; loop?: boolean; look: Look }) {
+  const [playing, setPlaying] = useState(false);
   const src = mediaSrc(url, look);
+  const still = mediaSrc(poster, look);
   const style = fit(width, height, maxW, maxH) ?? { width: `${Math.min(400, maxW)}px`, aspectRatio: '16 / 9' };
   if (!src) return <div aria-hidden className="max-w-full rounded-lg" style={{ ...style, background: look.P.embed }} />;
-  return <video {...IMG} controls preload="none" loop={loop} src={src} poster={mediaSrc(poster, look)} className="block max-w-full rounded-lg bg-black" style={style} />;
+  if (playing) return <video controls autoPlay loop={loop} src={src} poster={still} className="block max-w-full rounded-lg bg-black" style={style} />;
+  return (
+    <div className="relative grid max-w-full place-items-center overflow-hidden rounded-lg bg-black" style={style}>
+      {still && <img {...IMG} src={still} alt="" className="absolute inset-0 size-full object-cover" />}
+      <PlayButton label="Play video" onPlay={() => setPlaying(true)} className="relative size-12" />
+    </div>
+  );
 }
 
 export interface MosaicItem {
@@ -183,12 +201,25 @@ function FileCard({ a, look }: { a: PreviewAttachment; look: Look }) {
   );
 }
 
+// An audio file: its name and size, then a play button, a track and its length until pressed, then the browser's player.
 function AudioCard({ a, look }: { a: PreviewAttachment; look: Look }) {
+  const [playing, setPlaying] = useState(false);
   const src = mediaSrc(a.url, look);
   return (
     <div className="flex w-[432px] max-w-full flex-col gap-3 rounded-lg border p-4" style={card(look)}>
       <FileHead a={a} look={look} />
-      {src && <audio {...IMG} controls preload="none" src={src} className="w-full" />}
+      {src &&
+        (playing ? (
+          <audio controls autoPlay src={src} className="w-full" />
+        ) : (
+          <div className="flex h-8 items-center gap-3">
+            <PlayButton label="Play audio" onPlay={() => setPlaying(true)} className="size-8" />
+            <span aria-hidden className="h-1 min-w-0 flex-1 rounded-full" style={{ background: look.P.sep }} />
+            <span className="shrink-0 text-xs tabular-nums" style={{ color: look.P.muted }}>
+              {duration(a.duration_secs)}
+            </span>
+          </div>
+        ))}
     </div>
   );
 }
@@ -198,23 +229,10 @@ function Voice({ a, look }: { a: PreviewAttachment; look: Look }) {
   const { P } = look;
   const [open, setOpen] = useState(false);
   const src = mediaSrc(a.url, look);
-  if (open && src) return <audio {...IMG} controls preload="none" src={src} className="w-[400px] max-w-full" />;
+  if (open && src) return <audio controls autoPlay src={src} className="w-[400px] max-w-full" />;
   return (
     <div className="flex h-14 w-[400px] max-w-full items-center gap-3 rounded-lg border px-3" style={card(look)}>
-      <button
-        type="button"
-        aria-label="Play voice message"
-        disabled={!src}
-        onClick={(e) => {
-          e.stopPropagation();
-          setOpen(true);
-        }}
-        className="grid size-8 shrink-0 place-items-center rounded-full bg-[#5865F2] text-white"
-      >
-        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M7 4v16l13-8z" />
-        </svg>
-      </button>
+      <PlayButton label="Play voice message" disabled={!src} onPlay={() => setOpen(true)} className="size-8" />
       <div aria-hidden className="flex h-5 min-w-0 flex-1 items-center gap-[2px] overflow-hidden">
         {waveform(a.waveform).map((v, i) => (
           <span key={i} className="w-[3px] shrink-0 rounded-full" style={{ height: `${Math.round(3 + v * 17)}px`, background: P.muted }} />
@@ -295,7 +313,8 @@ export function Stickers({ m, look }: AreaProps) {
                 {s.name || 'Sticker'}
               </div>
             );
-          const src = s.format === 4 ? `https://media.discordapp.net/stickers/${s.id}.gif` : `https://cdn.discordapp.com/stickers/${s.id}.png`;
+          const src = mediaSrc(s.format === 4 ? `https://media.discordapp.net/stickers/${s.id}.gif` : `https://cdn.discordapp.com/stickers/${s.id}.png`, look);
+          if (!src) return null;
           return <img key={i} {...IMG} src={src} alt={s.name || 'Sticker'} className="size-40 object-contain text-xs" />;
         })}
       </div>

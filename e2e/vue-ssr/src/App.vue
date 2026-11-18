@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { DiscordPreview } from '@kyzegs/discord-preview/vue';
-import type { PreviewProps } from '@kyzegs/discord-preview/vue';
+import { DiscordPreview } from 'discord-preview/vue';
+import type { PreviewProps } from 'discord-preview/vue';
 import { ref } from 'vue';
 import { replyFor } from '../../shared/protocol.ts';
 
