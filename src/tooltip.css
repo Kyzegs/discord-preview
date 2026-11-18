@@ -1,7 +1,7 @@
 /* Discord's tooltip, above a timestamp on hover or keyboard focus. Shut, it is the visually hidden text a screen reader
    still reads, so it never takes room or widens the page. Sizes measured in Discord's web client; its colours were not. */
 .dtip { position: relative; }
-.dtip-t { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; pointer-events: none; }
+.dtip-t { display: block; position: absolute; inset: auto; margin: 0; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; pointer-events: none; }
 .dtip:is(:hover, :focus-visible) > .dtip-t {
   width: max-content; max-width: 200px; height: auto; overflow: visible; clip-path: none; z-index: 20; white-space: normal;
   bottom: calc(100% + 12.7px); left: 50%; translate: -50% 0;
@@ -14,3 +14,7 @@
   content: ""; position: absolute; top: 100%; left: 50%; translate: -50% 0;
   border-style: solid; border-width: 10px 8px 0; border-color: #111214 transparent transparent;
 }
+/* With script, Tip shows the tooltip as a popover in the top layer and sets its top and left from the timestamp's box,
+   so nothing clips it. Without script (a static page) it stays absolute, and the preview stops clipping while it is out. */
+.dtip > .dtip-t:popover-open { position: fixed; bottom: auto; translate: -50% -100%; }
+.discord-preview:has(.dtip:is(:hover, :focus-visible) > .dtip-t:not(:popover-open)) { overflow: visible; position: relative; z-index: 1; }

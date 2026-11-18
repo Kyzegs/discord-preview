@@ -1,0 +1,30 @@
+{
+  "payload": {
+    "author": { "id": "1200000000000000001", "username": "helper", "bot": true },
+    "timestamp": "2026-01-01T11:00:00.000Z",
+    "flags": 32768,
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 5793266,
+        "components": [
+          { "type": 10, "content": "Roles open <t:1767268800:R>" },
+          { "type": 1, "components": [{ "type": 6, "custom_id": "roles", "placeholder": "Pick your roles", "max_values": 3, "default_values": [{ "id": "1400000000000000002", "type": "role" }] }] },
+          { "type": 10, "content": "-# After the select" }
+        ]
+      }
+    ]
+  },
+  "resolve": {
+    "guildId": "1400000000000000000",
+    "roles": {
+      "1400000000000000001": { "name": "Member", "position": 1 },
+      "1400000000000000002": { "name": "Moderator", "position": 7, "color": 3447003 },
+      "1400000000000000003": { "name": "Artist", "position": 6, "color": 15277667 },
+      "1400000000000000004": { "name": "Gamer", "position": 5, "color": 3066993 },
+      "1400000000000000005": { "name": "Reader", "position": 4, "color": 15844367 },
+      "1400000000000000006": { "name": "Musician", "position": 3, "color": 10181046 },
+      "1400000000000000007": { "name": "Coder", "position": 2, "color": 1146986 }
+    }
+  }
+}

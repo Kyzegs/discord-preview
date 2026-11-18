@@ -277,6 +277,9 @@ export function DiscordSelect({
 // The open list's height: 56px an option, 282px at most, plus its 8px gap from the select.
 const listHeight = (n: number) => Math.min(282, n * 56 + 2) + 8;
 
+// An open list's undo: what opening it added (the top layer, the scroll and resize listeners), keyed by the list.
+const OPENED = new WeakMap<Element, () => void>();
+
 // The dropdown itself: one chosen option shown with its mark, several as chips, and a check after each chosen option.
 // `locked` (a preview that isn't interactive) keeps it shut, without the disabled look.
 function Dropdown({
@@ -306,6 +309,10 @@ function Dropdown({
   const [open, setOpen] = useState<'' | 'down' | 'up'>('');
   const first = chosen[0];
   const P = look?.P ?? PALETTES.dark;
+  const shut = (list: Element | null) => {
+    if (list) OPENED.get(list)?.();
+    setOpen('');
+  };
   return (
     <div
       className="dsel"
@@ -313,11 +320,11 @@ function Dropdown({
       data-up={open === 'up' || undefined}
       style={style}
       // focus leaving the select (a click elsewhere, Tab past it) shuts it; preact/compat maps onBlur to focusout
-      onBlur={(e) => open && !e.currentTarget.contains(e.relatedTarget as Node | null) && setOpen('')}
+      onBlur={(e) => open && !e.currentTarget.contains(e.relatedTarget as Node | null) && shut(e.currentTarget.querySelector('.dsel-l'))}
       onKeyDown={(e) => {
         if (e.key !== 'Escape' || !open) return;
         e.stopPropagation();
-        setOpen('');
+        shut(e.currentTarget.querySelector('.dsel-l'));
         e.currentTarget.querySelector<HTMLElement>('.dsel-b')?.focus();
       }}
     >
@@ -331,11 +338,27 @@ function Dropdown({
         className="dsel-b disabled:cursor-not-allowed disabled:opacity-50"
         onClick={(e) => {
           if (locked) return;
-          if (open) return setOpen('');
+          const list = e.currentTarget.nextElementSibling as HTMLElement;
+          if (open) return shut(list);
           // the list isn't laid out while shut, so its height comes from the option count
           const box = e.currentTarget.getBoundingClientRect();
           const below = window.innerHeight - box.bottom;
-          setOpen(below < listHeight(options.length) && box.top > below ? 'up' : 'down');
+          const up = below < listHeight(options.length) && box.top > below;
+          // The list goes in the top layer, fixed to the select's box (select.css lifts it above when up), so no box
+          // around it clips it or draws over it. A scroll anywhere but in the list, or a resize, would leave it behind,
+          // so either shuts it.
+          Object.assign(list.style, { top: `${up ? box.top - 8 : box.bottom + 8}px`, left: `${box.left}px`, width: `${box.width}px` });
+          const stop = new AbortController();
+          const away = (ev: Event) => ev.target !== list && shut(list);
+          window.addEventListener('scroll', away, { capture: true, signal: stop.signal });
+          window.addEventListener('resize', away, { signal: stop.signal });
+          OPENED.set(list, () => {
+            OPENED.delete(list);
+            stop.abort();
+            list.hidePopover?.(); // absent in old browsers (and happy-dom), where the list is simply fixed
+          });
+          list.showPopover?.();
+          setOpen(up ? 'up' : 'down');
         }}
       >
         {!first ? (
@@ -357,7 +380,7 @@ function Dropdown({
         )}
         <Icon name="chevronDown" size={18} />
       </button>
-      <div className="dsel-l" role="listbox" aria-label={label} aria-multiselectable={multi || undefined} style={{ background: P.popout, borderColor: P.popoutLine }}>
+      <div className="dsel-l" popover="manual" role="listbox" aria-label={label} aria-multiselectable={multi || undefined} style={{ background: P.popout, borderColor: P.popoutLine }}>
         {options.map((o, i) => {
           const on = chosen.some((x) => x.value === o.value);
           return (
@@ -368,8 +391,8 @@ function Dropdown({
               aria-selected={on}
               className={typeof o.channelType === 'number' ? 'dsel-o dsel-c' : 'dsel-o'}
               style={{ background: on ? P.picked : undefined, color: on ? P.head : P.muted }}
-              onClick={() => {
-                if (!multi) setOpen('');
+              onClick={(e) => {
+                if (!multi) shut(e.currentTarget.parentElement);
                 onPick(o);
               }}
             >

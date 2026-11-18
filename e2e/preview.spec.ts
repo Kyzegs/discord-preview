@@ -184,6 +184,100 @@ for (const app of live) {
   });
 }
 
+// 3b'. the list and the tooltips escape every box that clips, in the preview (a container, an embed) and in the page:
+// each corner of what is open is the topmost thing at that point (4px in, past the rounded corner)
+const cornersShown = (el: Element) => {
+  const r = el.getBoundingClientRect();
+  return ([[r.left + 4, r.top + 4], [r.right - 4, r.top + 4], [r.left + 4, r.bottom - 4], [r.right - 4, r.bottom - 4]] as const).every(([x, y]) => el.contains(document.elementFromPoint(x, y)));
+};
+const ROLES = 'Pick your roles';
+
+// opens the container's select and checks the list: fully shown, the select's width, 8px below it or above it
+async function openShown(page: Page, side: 'down' | 'up') {
+  const box = page.getByRole('combobox', { name: ROLES });
+  await box.click();
+  await expect(box).toHaveAttribute('aria-expanded', 'true');
+  const list = page.getByRole('listbox', { name: ROLES });
+  const [l, b] = [(await list.boundingBox())!, (await box.boundingBox())!];
+  expect(Math.abs(l.width - b.width)).toBeLessThan(0.5);
+  expect(Math.abs(l.x - b.x)).toBeLessThan(0.5);
+  expect(Math.abs((side === 'down' ? l.y - (b.y + b.height) : b.y - (l.y + l.height)) - 8)).toBeLessThan(0.5);
+  expect(await list.evaluate(cornersShown)).toBe(true);
+  return { box, list, l, b };
+}
+
+for (const app of live) {
+  test.describe(`${app} overlays escape clipping`, () => {
+    test('a select in a container opens over its edge, moving nothing', async ({ page }) => {
+      await show(page, app, 'v2/container-select');
+      const before = await rectAfterFirstSelect(page);
+      const { box, l } = await openShown(page, 'down');
+      const container = (await page.locator('#preview .dsel').locator('xpath=ancestor::div[contains(@class, "rounded-lg")][1]').boundingBox())!;
+      expect(l.y + l.height).toBeGreaterThan(container.y + container.height); // past the container's bottom edge
+      expect(await rectAfterFirstSelect(page)).toBe(before);
+      await page.keyboard.press('Escape');
+      await expect(box).toHaveAttribute('aria-expanded', 'false');
+      expect(await rectAfterFirstSelect(page)).toBe(before);
+      await box.click();
+      await page.getByRole('option', { name: 'Artist' }).click(); // several values: it stays open
+      await expect(box).toHaveAttribute('aria-expanded', 'true');
+      clean(page);
+    });
+
+    test('a select in a container near the bottom of the viewport opens upward over its top edge', async ({ page }) => {
+      await show(page, app, 'v2/container-select');
+      await page.evaluate(() => void (document.querySelector<HTMLElement>('#preview')!.style.marginTop = '560px'));
+      const { l, b } = await openShown(page, 'up');
+      expect(l.y + l.height).toBeLessThanOrEqual(b.y);
+      clean(page);
+    });
+
+    test('a preview in a short host with overflow hidden', async ({ page }) => {
+      await show(page, app, 'v2/container-select');
+      const top = (await page.locator('#preview').boundingBox())!.y;
+      const b = (await page.getByRole('combobox', { name: ROLES }).boundingBox())!;
+      const height = b.y + b.height - top + 4;
+      await page.evaluate((h) => void Object.assign(document.querySelector<HTMLElement>('#preview')!.style, { overflow: 'hidden', height: `${h}px` }), height);
+      const { l } = await openShown(page, 'down');
+      expect(l.height).toBeGreaterThan(height); // taller than the host that would clip it
+      clean(page);
+    });
+
+    test('a scroll closes the list or leaves it attached, but a scroll in the list does neither', async ({ page }) => {
+      await show(page, app, 'v2/container-select');
+      await page.evaluate(() => void (document.body.style.paddingBottom = '2000px'));
+      const { box, list } = await openShown(page, 'down');
+      await list.evaluate((e) => void (e.scrollTop = 40));
+      await page.waitForTimeout(100);
+      await expect(box).toHaveAttribute('aria-expanded', 'true');
+      await page.evaluate(() => window.scrollBy(0, 120));
+      await page.waitForTimeout(100);
+      if ((await box.getAttribute('aria-expanded')) === 'true') {
+        const [l, b] = [(await list.boundingBox())!, (await box.boundingBox())!];
+        expect(Math.abs(l.y - (b.y + b.height + 8))).toBeLessThan(0.5);
+      } else await expect(list).toBeHidden();
+      clean(page);
+    });
+
+    for (const name of ['v2/container-select', 'classic/embed-timestamp']) {
+      test(`a timestamp tooltip in ${name} is fully shown`, async ({ page }) => {
+        await show(page, app, name);
+        const time = page.locator('#preview .dtip').nth(1); // the header time is the first
+        await time.hover();
+        const tip = time.getByRole('tooltip');
+        const [t, s] = [(await tip.boundingBox())!, (await time.boundingBox())!];
+        expect(t.width).toBeGreaterThan(100);
+        expect(t.y + t.height).toBeLessThanOrEqual(s.y);
+        // the tooltip lets the pointer through, so it is hit-tested with that undone for a moment
+        await tip.evaluate((e: HTMLElement) => void (e.style.pointerEvents = 'auto'));
+        expect(await tip.evaluate(cornersShown)).toBe(true);
+        await tip.evaluate((e: HTMLElement) => void (e.style.pointerEvents = ''));
+        clean(page);
+      });
+    }
+  });
+}
+
 // 3c. the header time's tooltip: the full date, above and centred, on hover and keyboard focus, moving nothing (CSS only, so every app)
 for (const app of names) {
   test(`${app} timestamp tooltip`, async ({ page }) => {

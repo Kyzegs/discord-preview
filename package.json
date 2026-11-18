@@ -1,6 +1,6 @@
 {
   "name": "discord-preview",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Discord message previews for any framework: legacy messages and Components V2, rendered from a Discord API payload",
   "type": "module",
   "license": "MIT",

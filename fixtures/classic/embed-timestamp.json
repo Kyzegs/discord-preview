@@ -1,0 +1,12 @@
+{
+  "payload": {
+    "author": { "id": "1200000000000000001", "username": "helper", "bot": true },
+    "timestamp": "2026-01-01T11:00:00.000Z",
+    "embeds": [
+      {
+        "description": "Starts <t:1767268800:f>",
+        "color": 5793266
+      }
+    ]
+  }
+}

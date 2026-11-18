@@ -227,13 +227,28 @@ export function headerTime(ms: number, look: Look) {
 // The long form Discord's tooltip shows over a timestamp: weekday, date and time.
 export const fullDate = (ms: number, look: Pick<Look, 'locale' | 'timeZone'>) => dateText(ms, FORMATS.F!, look);
 
-// A timestamp with Discord's tooltip of its full date on hover and keyboard focus, drawn by CSS (tooltip.css).
+// Puts a timestamp's tooltip in the top layer, centred 12.7px above it, while it is hovered or keyboard focused, so no
+// box around it clips it; tooltip.css draws it, and on a page without script shows it in place.
+function tipShow(e: { currentTarget: HTMLElement; type: string }) {
+  const t = e.currentTarget;
+  const tip = t.querySelector<HTMLElement>(':scope > .dtip-t');
+  if (!tip?.showPopover) return;
+  const open = tip.matches(':popover-open');
+  // focus events may come as focusin and focusout (preact/compat); blurred, the timestamp no longer matches :focus-visible
+  if (!(e.type === 'mouseenter' || (e.type !== 'mouseleave' && t.matches(':hover')) || t.matches(':focus-visible'))) return open && tip.hidePopover();
+  if (open) return;
+  const box = t.getBoundingClientRect();
+  Object.assign(tip.style, { top: `${box.top - 12.7}px`, left: `${box.left + box.width / 2}px` });
+  tip.showPopover();
+}
+
+// A timestamp with Discord's tooltip of its full date on hover and keyboard focus (tooltip.css, tipShow).
 export function Tip({ tip, className, style, children }: { tip: string; className?: string; style?: CSSProperties; children: ReactNode }) {
   return (
-    <span tabIndex={0} className={`dtip ${className ?? ''}`} style={style}>
+    <span tabIndex={0} className={`dtip ${className ?? ''}`} style={style} onMouseEnter={tipShow} onMouseLeave={tipShow} onFocus={tipShow} onBlur={tipShow}>
       {children}
       {tip && (
-        <span role="tooltip" className="dtip-t">
+        <span role="tooltip" className="dtip-t" popover="manual">
           {tip}
         </span>
       )}

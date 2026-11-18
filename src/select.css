@@ -6,12 +6,11 @@
 .dsel-b > .dsel-p { color: var(--dsel-muted, #a4a5ab); font-weight: 400; }
 .dsel-b svg { flex: none; transition: rotate 0.4s var(--spring, cubic-bezier(0.25, 1, 0.5, 1)); }
 .dsel[data-open="true"] .dsel-b svg { rotate: 180deg; }
-/* the open list floats over what follows, 8px below the select or above it (data-up), as wide as it */
-.dsel-l { display: none; position: absolute; z-index: 10; top: calc(100% + 8px); left: 0; right: 0; flex-direction: column; max-height: 282px; overflow-y: auto; scrollbar-gutter: stable; border: 1px solid; border-radius: 8px; padding: 0; }
+/* the open list is a popover in the top layer, over everything and clipped by nothing, fixed 8px below the select or
+   above it (data-up) and as wide as it: the select's script sets its top, left and width when it opens */
+.dsel-l { display: none; position: fixed; z-index: 10; inset: auto; margin: 0; color: inherit; flex-direction: column; max-height: 282px; overflow-y: auto; scrollbar-gutter: stable; scrollbar-width: thin; scrollbar-color: rgb(0 0 0 / 0.4) transparent; border: 1px solid; border-radius: 8px; padding: 0; }
 .dsel[data-open="true"] .dsel-l { display: flex; }
-.dsel[data-up] .dsel-l { top: auto; bottom: calc(100% + 8px); }
-/* the preview stops clipping while a list or a tooltip is out, and sits above the page around it */
-.discord-preview:has(.dsel[data-open="true"], .dtip:hover, .dtip:focus-visible) { overflow: visible; position: relative; z-index: 1; }
+.dsel[data-up] .dsel-l { translate: 0 -100%; }
 .dsel-o { display: flex; flex: none; align-items: center; gap: 8px; width: 100%; min-height: 56px; padding: 8px; text-align: left; font-size: 14px; line-height: 18px; }
 .dsel-o:hover { background: rgb(128 128 128 / 0.16); }
 .dsel-o .e { display: grid; place-items: center; width: 22px; flex: none; font-size: 18px; }

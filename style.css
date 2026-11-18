@@ -784,6 +784,10 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   cursor: pointer;
 }
 
+.resize:is(.discord-preview, .discord-preview *) {
+  resize: both;
+}
+
 .resize-none:is(.discord-preview, .discord-preview *) {
   resize: none;
 }
@@ -1570,17 +1574,19 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 
 .dsel-l:is(.discord-preview, .discord-preview *) {
   z-index: 10;
+  color: inherit;
   scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: #0006 transparent;
   border: 1px solid;
   border-radius: 8px;
   flex-direction: column;
   max-height: 282px;
+  margin: 0;
   padding: 0;
   display: none;
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  right: 0;
+  position: fixed;
+  inset: auto;
   overflow-y: auto;
 }
 
@@ -1589,14 +1595,7 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 }
 
 .dsel[data-up] .dsel-l:is(.discord-preview, .discord-preview *) {
-  top: auto;
-  bottom: calc(100% + 8px);
-}
-
-.discord-preview:has(.dsel[data-open="true"], .dtip:hover, .dtip:focus-visible):is(.discord-preview, .discord-preview *) {
-  z-index: 1;
-  position: relative;
-  overflow: visible;
+  translate: 0 -100%;
 }
 
 .dsel-o:is(.discord-preview, .discord-preview *) {
@@ -1663,7 +1662,10 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   pointer-events: none;
   width: 1px;
   height: 1px;
+  margin: 0;
+  display: block;
   position: absolute;
+  inset: auto;
   overflow: hidden;
 }
 
@@ -1700,6 +1702,18 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   top: 100%;
   left: 50%;
   translate: -50%;
+}
+
+.dtip > .dtip-t:popover-open:is(.discord-preview, .discord-preview *) {
+  position: fixed;
+  bottom: auto;
+  translate: -50% -100%;
+}
+
+.discord-preview:has(.dtip:is(:hover, :focus-visible) > .dtip-t:not(:popover-open)):is(.discord-preview, .discord-preview *) {
+  z-index: 1;
+  position: relative;
+  overflow: visible;
 }
 
 @property --tw-border-style {
