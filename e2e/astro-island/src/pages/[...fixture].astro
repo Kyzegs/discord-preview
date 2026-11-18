@@ -1,0 +1,22 @@
+---
+import { names, propsFor } from '../../../shared/protocol.ts';
+import Preview from '../Preview.tsx';
+
+export const getStaticPaths = () => names.map((fixture) => ({ params: { fixture } }));
+const initial = propsFor(Astro.params.fixture!);
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>discord-preview: astro-island</title>
+    <style>
+      body { margin: 0; background: #111; }
+      .wrap { width: 800px; }
+    </style>
+  </head>
+  <body>
+    <div id="preview" class="wrap"><Preview client:load initial={initial} /></div>
+  </body>
+</html>

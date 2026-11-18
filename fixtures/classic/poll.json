@@ -1,0 +1,15 @@
+{
+  "payload": {
+    "author": { "id": "80351110224678912", "username": "nelly", "global_name": "Nelly" },
+    "poll": {
+      "question": { "text": "Which **day** suits you?" },
+      "answers": [
+        { "poll_media": { "text": "Friday", "emoji": { "name": "🎉" } } },
+        { "poll_media": { "text": "Saturday", "emoji": { "id": "1000000000000000003", "name": "sat" } } },
+        { "poll_media": { "text": "Sunday" } }
+      ],
+      "duration": 48,
+      "allow_multiselect": true
+    }
+  }
+}

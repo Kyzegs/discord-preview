@@ -1,0 +1,11 @@
+{
+  "payload": {
+    "author": { "id": "80351110224678912", "username": "nelly", "global_name": "Nelly" },
+    "content": "Silent, read aloud, and its link preview is hidden: https://example.com",
+    "flags": 4100,
+    "tts": true,
+    "embeds": [{ "title": "Hidden by SUPPRESS_EMBEDS" }]
+  },
+  "channelName": "announcements",
+  "interactive": false
+}

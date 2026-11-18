@@ -1,0 +1,6 @@
+{
+  "payload": {
+    "author": { "id": "80351110224678912", "username": "nelly", "global_name": "Nelly" },
+    "content": "# Heading one\n## Heading two\n### Heading three\n-# Subtext\n**bold** *italic* _also italic_ ***both*** __underline__ ~~strike~~ `code` ||spoiler||\n\\*escaped\\* snake_case_word\n> a quote\n- a bullet\n* another bullet\n3. three\n1. four\n```js\nconst x = 1;\n```\nA [masked link](https://example.com/page) and a bare one: https://example.com/bare\n>>> everything after\nis quoted"
+  }
+}

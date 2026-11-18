@@ -1,0 +1,11 @@
+{
+  "localMedia": true,
+  "payload": {
+    "author": { "id": "1200000000000000001", "username": "helper", "bot": true },
+    "flags": 32768,
+    "components": [
+      { "type": 9, "components": [{ "type": 10, "content": "A local file, before upload" }], "accessory": { "type": 11, "media": { "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" } } },
+      { "type": 12, "items": [{ "media": { "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" } }] }
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "payload": {
+    "author": { "id": "1200000000000000001", "username": "helper", "bot": true },
+    "flags": 36864,
+    "timestamp": "2025-11-20T07:15:00.000Z",
+    "components": [
+      { "type": 10, "content": "# Server guide" },
+      {
+        "type": 17,
+        "accent_color": 3447003,
+        "components": [
+          {
+            "type": 9,
+            "components": [{ "type": 10, "content": "**Roles**\nPick what you want to see." }],
+            "accessory": { "type": 2, "style": 2, "label": "Open", "custom_id": "open", "emoji": { "name": "📂" } }
+          },
+          { "type": 14, "spacing": 2 },
+          { "type": 12, "items": [{ "media": { "url": "https://cdn.discordapp.com/embed/avatars/0.png" } }, { "media": { "url": "https://cdn.discordapp.com/embed/avatars/4.png" } }] },
+          { "type": 13, "file": { "url": "attachment://rules.pdf" } },
+          {
+            "type": 1,
+            "components": [
+              { "type": 2, "style": 1, "label": "Accept", "custom_id": "accept" },
+              { "type": 2, "style": 5, "label": "Website", "url": "https://example.com" }
+            ]
+          },
+          { "type": 1, "components": [{ "type": 3, "custom_id": "topics", "options": [{ "label": "Gaming", "value": "gaming" }, { "label": "Art", "value": "art" }] }] }
+        ]
+      },
+      { "type": 1, "components": [{ "type": 2, "style": 4, "label": "Leave", "custom_id": "leave" }] }
+    ]
+  },
+  "selected": [1, 0],
+  "mobile": true
+}

@@ -1,0 +1,19 @@
+{
+  "payload": {
+    "author": { "id": "80351110224678912", "username": "nelly", "avatar": "https://cdn.discordapp.com/embed/avatars/3.png" },
+    "flags": 32768,
+    "mentions": [{ "id": "1500000000000000002", "username": "from_mentions", "global_name": "Mentioned" }],
+    "components": [
+      { "type": 10, "content": "Users: <@80351110224678912> <@!1500000000000000002> <@1500000000000000099>" },
+      { "type": 10, "content": "Roles: <@&1400000000000000002> <@&1400000000000000099>" },
+      { "type": 10, "content": "Channels: <#1100000000000000001> <#1100000000000000099>" },
+      { "type": 10, "content": "Emoji: <:wave:1000000000000000004> <a:dance:1000000000000000005>" },
+      { "type": 10, "content": "Times: <t:1767268800> <t:1767268800:t> <t:1767268800:T> <t:1767268800:d> <t:1767268800:D> <t:1767268800:F> <t:1767268800:s> <t:1767268800:S> <t:1767265200:R> <t:99999999999999999:f>" }
+    ]
+  },
+  "resolve": {
+    "users": { "80351110224678912": { "name": "Nelly", "color": 15844367 } },
+    "roles": { "1400000000000000002": { "name": "Moderator" } },
+    "channels": { "1100000000000000001": { "name": "general" } }
+  }
+}

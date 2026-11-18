@@ -1,0 +1,11 @@
+{
+  "payload": {
+    "author": { "id": "80351110224678912", "username": "nelly" },
+    "timestamp": "2026-01-01T10:00:00.000Z",
+    "sticker_items": [
+      { "id": "749054660769218631", "name": "Wumpus wave", "format_type": 1 },
+      { "id": "1000000000000000009", "name": "Party", "format_type": 4 }
+    ]
+  },
+  "bare": true
+}

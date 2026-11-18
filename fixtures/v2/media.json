@@ -1,0 +1,22 @@
+{
+  "payload": {
+    "author": { "id": "1200000000000000001", "username": "helper", "bot": true },
+    "flags": 32768,
+    "attachments": [{ "id": "1", "filename": "photo.png", "url": "https://cdn.discordapp.com/embed/avatars/5.png" }],
+    "components": [
+      { "type": 12, "items": [{ "media": { "url": "attachment://photo.png" }, "description": "An attached photo" }] },
+      {
+        "type": 12,
+        "items": [
+          { "media": { "url": "https://cdn.discordapp.com/embed/avatars/1.png" } },
+          { "media": { "url": "https://cdn.discordapp.com/embed/avatars/2.png" }, "spoiler": true },
+          { "media": { "url": "attachment://missing.png" } }
+        ]
+      },
+      { "type": 14 },
+      { "type": 13, "file": { "url": "attachment://report.pdf" } },
+      { "type": 14, "divider": false, "spacing": 2 },
+      { "type": 13, "file": { "url": "attachment://secret.txt" }, "spoiler": true }
+    ]
+  }
+}

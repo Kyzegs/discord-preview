@@ -1,0 +1,26 @@
+{
+  "payload": {
+    "author": { "id": "1200000000000000001", "username": "helper", "bot": true },
+    "flags": 32768,
+    "components": [
+      {
+        "type": 9,
+        "components": [
+          { "type": 10, "content": "### Profile" },
+          { "type": 10, "content": "Level 12 · 3,400 XP" }
+        ],
+        "accessory": { "type": 11, "media": { "url": "https://cdn.discordapp.com/embed/avatars/2.png" }, "description": "Avatar" }
+      },
+      {
+        "type": 9,
+        "components": [{ "type": 10, "content": "Spoilered thumbnail" }],
+        "accessory": { "type": 11, "media": { "url": "https://cdn.discordapp.com/embed/avatars/3.png" }, "spoiler": true }
+      },
+      {
+        "type": 9,
+        "components": [{ "type": 10, "content": "Claim your daily reward" }],
+        "accessory": { "type": 2, "style": 3, "label": "Claim", "custom_id": "claim" }
+      }
+    ]
+  }
+}

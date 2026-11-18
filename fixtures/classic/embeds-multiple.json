@@ -1,0 +1,13 @@
+{
+  "theme": "light",
+  "payload": {
+    "author": { "id": "1200000000000000001", "username": "helper", "bot": true },
+    "timestamp": "2026-01-01T11:59:00.000Z",
+    "embeds": [
+      { "title": "First", "description": "No colour set" },
+      { "title": "Second", "description": "Red", "color": 15548997 },
+      { "description": "Only a description and a footer", "color": 0, "footer": { "text": "footer" }, "timestamp": "now" }
+    ]
+  },
+  "selected": [1, 1]
+}

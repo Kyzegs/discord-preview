@@ -1,0 +1,9 @@
+@import 'tailwindcss';
+
+* { box-sizing: content-box }
+a { color: red; text-decoration: underline }
+img { display: inline; max-width: none; border: 2px solid red }
+button { padding: 20px; background: yellow; font-size: 30px; border: 3px solid black }
+h1, h2, h3, p, ul, ol, pre { margin: 2em 0 }
+div { line-height: 3 }
+code, pre { background: lime; font-size: 30px }

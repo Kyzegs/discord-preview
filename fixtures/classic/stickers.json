@@ -1,0 +1,8 @@
+{
+  "payload": {
+    "author": { "id": "80351110224678912", "username": "nelly" },
+    "content": "Sent stickers by id",
+    "sticker_ids": ["749054660769218631", "754108890559283200"]
+  },
+  "mobile": true
+}

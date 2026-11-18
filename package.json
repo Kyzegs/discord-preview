@@ -1,0 +1,96 @@
+{
+  "name": "@kyzegs/discord-preview",
+  "version": "0.0.0",
+  "description": "Discord message previews for any framework: legacy messages and Components V2, rendered from a Discord API payload",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kyzegs/discord-preview.git"
+  },
+  "packageManager": "pnpm@10.5.2",
+  "engines": {
+    "node": ">=24"
+  },
+  "files": [
+    "dist",
+    "style.css"
+  ],
+  "sideEffects": [
+    "*.css",
+    "./dist/element.js"
+  ],
+  "exports": {
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "default": "./dist/react.js"
+    },
+    "./element": {
+      "types": "./dist/element.d.ts",
+      "default": "./dist/element.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "default": "./dist/server.js"
+    },
+    "./vue": {
+      "types": "./dist/vue.d.ts",
+      "default": "./dist/vue.js"
+    },
+    "./style.css": "./style.css",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "css": "node --import tsx scripts/css.ts",
+    "build": "node -e \"fs.rmSync('dist',{recursive:true,force:true})\" && pnpm css && tsdown",
+    "pretest": "pnpm build",
+    "test": "node --import tsx --test \"src/**/*.test.ts\" \"test/**/*.test.ts\"",
+    "typecheck": "tsc -p .",
+    "prepack": "pnpm build",
+    "check:pack": "pnpm pack --out package.tgz && publint run package.tgz --strict && attw package.tgz --profile esm-only --exclude-entrypoints ./style.css",
+    "pree2e": "pnpm build",
+    "e2e": "playwright test"
+  },
+  "pnpm": {
+    "overrides": {
+      "rolldown": "1.3.2"
+    }
+  },
+  "peerDependencies": {
+    "react": "^19",
+    "vue": "^3.5"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "preact": "^11.2.0",
+    "preact-render-to-string": "^6.8.3"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@playwright/test": "^1.65.1",
+    "@tailwindcss/node": "4.3.3",
+    "@tailwindcss/oxide": "4.3.3",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "discord-api-types": "^0.38.59",
+    "happy-dom": "^21.0.4",
+    "lightningcss": "1.32.0",
+    "parse5": "^8.1.1",
+    "publint": "^0.3.25",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tailwindcss": "^4.3.3",
+    "tsdown": "^0.23.7",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vue": "^3.5.45"
+  }
+}

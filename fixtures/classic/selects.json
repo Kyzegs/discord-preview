@@ -1,0 +1,40 @@
+{
+  "payload": {
+    "author": { "id": "1200000000000000001", "username": "helper", "bot": true },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "colour",
+            "placeholder": "Pick a colour",
+            "options": [
+              { "label": "Red", "value": "red", "description": "Warm", "emoji": { "name": "🟥" } },
+              { "label": "Blue", "value": "blue", "default": true, "emoji": { "id": "1000000000000000002", "name": "blue" } }
+            ]
+          }
+        ]
+      },
+      { "type": 1, "components": [{ "type": 5, "custom_id": "user", "placeholder": "Pick a member", "default_values": [{ "id": "80351110224678912", "type": "user" }] }] },
+      { "type": 1, "components": [{ "type": 6, "custom_id": "role" }] },
+      { "type": 1, "components": [{ "type": 7, "custom_id": "mentionable", "placeholder": "Anyone" }] },
+      { "type": 1, "components": [{ "type": 8, "custom_id": "channel", "channel_types": [0, 5], "disabled": true }] }
+    ]
+  },
+  "resolve": {
+    "guildId": "1400000000000000000",
+    "users": { "80351110224678912": { "name": "Nelly" } },
+    "roles": {
+      "1400000000000000000": { "name": "everyone", "position": 0 },
+      "1400000000000000001": { "name": "Member", "position": 1 },
+      "1400000000000000002": { "name": "Moderator", "position": 5, "color": 3447003 }
+    },
+    "channels": {
+      "1100000000000000001": { "name": "general", "type": 0 },
+      "1100000000000000002": { "name": "news", "type": 5 },
+      "1100000000000000003": { "name": "Text channels", "type": 4 },
+      "1100000000000000004": { "name": "Voice", "type": 2 }
+    }
+  }
+}

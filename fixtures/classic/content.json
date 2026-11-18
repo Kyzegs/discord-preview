@@ -1,0 +1,9 @@
+{
+  "payload": {
+    "channel_id": "1100000000000000001",
+    "author": { "id": "80351110224678912", "username": "nelly", "global_name": "Nelly", "avatar": "8342729096ea3675442027381ff50dfe" },
+    "timestamp": "2026-01-01T09:30:00.000Z",
+    "content": "Hello everyone! Welcome to the server.\nRead the rules before you post."
+  },
+  "resolve": { "channels": { "1100000000000000001": { "name": "welcome" } } }
+}

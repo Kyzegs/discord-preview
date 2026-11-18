@@ -1,0 +1,23 @@
+{
+  "payload": {
+    "author": { "id": "1200000000000000001", "username": "helper", "bot": true },
+    "flags": 32768,
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 16761162,
+        "components": [
+          { "type": 10, "content": "## Welcome\nGlad you're here." },
+          { "type": 14, "divider": true, "spacing": 1 },
+          { "type": 10, "content": "-# A small footer" }
+        ]
+      },
+      {
+        "type": 17,
+        "spoiler": true,
+        "components": [{ "type": 10, "content": "The ending is a surprise" }]
+      },
+      { "type": 17, "accent_color": null, "components": [{ "type": 10, "content": "No accent" }] }
+    ]
+  }
+}

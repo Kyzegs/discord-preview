@@ -1,0 +1,26 @@
+{
+  "payload": {
+    "author": { "id": "1200000000000000001", "username": "helper", "avatar": null, "bot": true },
+    "timestamp": "2025-12-30T18:05:00.000Z",
+    "content": "Release notes below",
+    "embeds": [
+      {
+        "title": "Version **2.0** is out",
+        "url": "https://example.com/release",
+        "description": "Everything that changed, with [the full changelog](https://example.com/changelog).\n- Faster start\n- Smaller bundle",
+        "color": 5793266,
+        "timestamp": "2026-01-01T08:00:00.000Z",
+        "author": { "name": "Release bot", "url": "https://example.com", "icon_url": "https://cdn.discordapp.com/embed/avatars/1.png" },
+        "thumbnail": { "url": "https://cdn.discordapp.com/embed/avatars/2.png" },
+        "image": { "url": "https://cdn.discordapp.com/embed/avatars/3.png" },
+        "fields": [
+          { "name": "Downloads", "value": "1,204", "inline": true },
+          { "name": "Stars", "value": "88", "inline": true },
+          { "name": "Size", "value": "12 kB", "inline": true },
+          { "name": "Notes", "value": "A field that takes the *whole* row" }
+        ],
+        "footer": { "text": "Shipped by the team", "icon_url": "https://cdn.discordapp.com/embed/avatars/4.png" }
+      }
+    ]
+  }
+}

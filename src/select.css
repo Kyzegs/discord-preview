@@ -1,0 +1,14 @@
+/* a Discord dropdown */
+.dsel { width: 100%; max-width: 460px; display: flex; flex-direction: column; gap: 4px; }
+.dsel-b { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 44px; padding: 6px 10px 6px 12px; border-radius: 8px; background: var(--dsel-bg, #1e1f22); border: 1px solid var(--dsel-line, #1e1f22); color: var(--dsel-muted, #949ba4); font-size: 14px; text-align: left; }
+.dsel-b > span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dsel-b svg { flex: none; transition: rotate 0.4s var(--spring, cubic-bezier(0.25, 1, 0.5, 1)); }
+.dsel[data-open="true"] .dsel-b svg { rotate: 180deg; }
+.dsel-l { display: none; flex-direction: column; background: var(--dsel-bg, #2b2d31); border: 1px solid var(--dsel-line, #1e1f22); border-radius: 8px; overflow: hidden; padding: 4px 0; }
+.dsel[data-open="true"] .dsel-l { display: flex; }
+.dsel-o { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 8px 12px; color: var(--dsel-text, #dbdee1); text-align: left; }
+.dsel-o:hover { background: rgb(128 128 128 / 0.16); }
+.dsel-o[aria-selected="true"] { background: rgb(88 101 242 / 0.22); }
+.dsel-o .e { font-size: 18px; width: 22px; text-align: center; flex: none; }
+.dsel-t { flex: 1; min-width: 0; display: flex; flex-direction: column; font-size: 14px; }
+.dsel-t small { color: var(--dsel-muted, #949ba4); font-size: 12px; }
