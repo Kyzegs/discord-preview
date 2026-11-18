@@ -1,0 +1,24 @@
+{
+  "payload": {
+    "author": { "id": "1200000000000000001", "username": "helper", "bot": true },
+    "flags": 32768,
+    "attachments": [
+      { "id": "1", "filename": "report.pdf", "size": 1234567, "url": "https://cdn.discordapp.com/attachments/1/2/report.pdf" },
+      { "id": "2", "filename": "notes.txt", "size": 512, "url": "https://cdn.discordapp.com/attachments/1/3/notes.txt" },
+      { "id": "3", "filename": "photo.png", "size": 20480, "url": "https://cdn.discordapp.com/embed/avatars/5.png" }
+    ],
+    "components": [
+      { "type": 13, "file": { "url": "attachment://report.pdf" } },
+      { "type": 13, "file": { "url": "attachment://notes.txt" }, "spoiler": true },
+      { "type": 13, "file": { "url": "attachment://missing.zip" } },
+      {
+        "type": 9,
+        "components": [{ "type": 10, "content": "A section whose thumbnail has a description" }],
+        "accessory": { "type": 11, "media": { "url": "attachment://photo.png" }, "description": "A photo of the team" }
+      },
+      { "type": 12, "items": [{ "media": { "url": "https://cdn.discordapp.com/embed/avatars/2.png" }, "description": "The second default avatar" }] },
+      { "type": 99, "content": "an unknown type renders nothing" },
+      { "type": 1, "components": [{ "type": 2, "style": 1, "label": "Kept", "custom_id": "kept" }, { "type": 42, "label": "Unknown" }] }
+    ]
+  }
+}

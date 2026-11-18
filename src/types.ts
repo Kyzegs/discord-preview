@@ -69,6 +69,7 @@ export interface PreviewStringSelect {
   min_values?: number;
   max_values?: number;
   disabled?: boolean;
+  required?: boolean; // in a modal
   options?: PreviewSelectOption[];
 }
 
@@ -82,6 +83,7 @@ export interface PreviewAutoSelect {
   disabled?: boolean;
   default_values?: { id?: string; type?: string }[];
   channel_types?: number[];
+  required?: boolean; // in a modal
 }
 
 export interface PreviewTextInput {
@@ -149,7 +151,47 @@ export interface PreviewLabel {
   type: 18;
   label?: string;
   description?: string;
-  component?: PreviewTextInput | PreviewStringSelect | PreviewAutoSelect;
+  component?: PreviewTextInput | PreviewStringSelect | PreviewAutoSelect | PreviewFileUpload | PreviewRadioGroup | PreviewCheckboxGroup | PreviewCheckbox;
+}
+
+// ---- Modal inputs, each inside a Label
+
+export interface PreviewFileUpload {
+  type: 19;
+  custom_id?: string;
+  min_values?: number;
+  max_values?: number;
+  required?: boolean;
+  file_types?: string[];
+}
+
+export interface PreviewChoiceOption {
+  value?: string;
+  label?: string;
+  description?: string;
+  default?: boolean;
+}
+
+export interface PreviewRadioGroup {
+  type: 21;
+  custom_id?: string;
+  options?: PreviewChoiceOption[];
+  required?: boolean;
+}
+
+export interface PreviewCheckboxGroup {
+  type: 22;
+  custom_id?: string;
+  options?: PreviewChoiceOption[];
+  min_values?: number;
+  max_values?: number;
+  required?: boolean;
+}
+
+export interface PreviewCheckbox {
+  type: 23;
+  custom_id?: string;
+  default?: boolean;
 }
 
 export type PreviewComponent =
@@ -334,4 +376,7 @@ export interface DiscordOption {
   label: string;
   description?: string;
   emoji?: PreviewEmoji;
+  avatar?: string; // a user's avatar URL
+  color?: string; // a role's colour, as #rrggbb
+  channelType?: number; // a channel's type, for its icon
 }
