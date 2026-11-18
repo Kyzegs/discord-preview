@@ -1,0 +1,24 @@
+{
+  "payload": {
+    "author": {
+      "id": "80351110224678912",
+      "username": "nelly",
+      "global_name": "Nelly",
+      "avatar": "0123456789abcdef0123456789abcdef",
+      "avatar_decoration_data": { "asset": "a_fed43ab12698df65902ba06727e20c0e", "sku_id": "1144058844004233369" },
+      "primary_guild": { "identity_guild_id": "1000000000000000001", "identity_enabled": true, "tag": "KYZO", "badge": "2ba06727e20c0efed43ab12698df6590" }
+    },
+    "member": { "nick": "Nelly the Great", "roles": ["300000000000000001", "300000000000000002", "300000000000000003"] },
+    "timestamp": "2026-01-01T09:37:00.000Z",
+    "edited_timestamp": "2026-01-01T09:40:00.000Z",
+    "content": "A gradient name, a role icon, a server tag and a decoration\nand a second line before the edit mark",
+    "thread": { "id": "1500000000000000001", "type": 11, "name": "Release discussion", "message_count": 12 }
+  },
+  "resolve": {
+    "roles": {
+      "300000000000000001": { "name": "Members", "color": 3447003, "position": 1, "unicode_emoji": "🌟" },
+      "300000000000000002": { "name": "Supporters", "color": 15277667, "position": 4, "colors": { "primary_color": 15277667, "secondary_color": 5793266, "tertiary_color": null } },
+      "300000000000000003": { "name": "Staff", "position": 6, "colors": { "primary_color": 0 }, "icon": "fed43ab12698df65902ba06727e20c0e" }
+    }
+  }
+}

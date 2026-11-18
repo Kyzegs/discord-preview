@@ -1,0 +1,11 @@
+{
+  "payload": {
+    "type": 20,
+    "author": { "id": "1200000000000000001", "username": "helper", "global_name": "Helper", "bot": true },
+    "timestamp": "2026-01-01T09:35:00.000Z",
+    "content": "",
+    "flags": 128,
+    "interaction_metadata": { "id": "1400000000000000002", "type": 3, "user": { "id": "80351110224678912", "username": "nelly" } }
+  },
+  "theme": "light"
+}

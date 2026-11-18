@@ -1,0 +1,9 @@
+{
+  "payload": {
+    "author": { "id": "80351110224678912", "username": "nelly" },
+    "timestamp": "2026-01-01T09:33:00.000Z",
+    "content": "Replying to something Discord did not send",
+    "message_reference": { "type": 0, "message_id": "1300000000000000004" }
+  },
+  "mobile": true
+}

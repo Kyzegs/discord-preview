@@ -1,0 +1,12 @@
+{
+  "payload": {
+    "type": 20,
+    "webhook_id": "1200000000000000001",
+    "author": { "id": "1200000000000000001", "username": "helper", "bot": true, "public_flags": 65536 },
+    "timestamp": "2026-01-01T09:34:00.000Z",
+    "content": "Your settings were saved.",
+    "flags": 64,
+    "interaction_metadata": { "id": "1400000000000000001", "type": 2, "user": { "id": "80351110224678912", "username": "nelly", "global_name": "Nelly" } },
+    "interaction": { "id": "1400000000000000001", "type": 2, "name": "settings save", "user": { "id": "80351110224678912", "username": "nelly" } }
+  }
+}
