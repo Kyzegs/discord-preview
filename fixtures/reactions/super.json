@@ -1,0 +1,53 @@
+{
+  "payload": {
+    "author": {
+      "id": "80351110224678912",
+      "username": "nelly",
+      "global_name": "Nelly"
+    },
+    "content": "Super reactions",
+    "reactions": [
+      {
+        "count": 7,
+        "emoji": {
+          "name": "🔥"
+        },
+        "count_details": {
+          "burst": 3,
+          "normal": 4
+        },
+        "burst_colors": [
+          "#ff5500"
+        ]
+      },
+      {
+        "count": 2,
+        "me_burst": true,
+        "emoji": {
+          "name": "💜"
+        },
+        "count_details": {
+          "burst": 2,
+          "normal": 0
+        },
+        "burst_colors": [
+          "#9b59b6",
+          "#fff"
+        ]
+      },
+      {
+        "count": 1,
+        "emoji": {
+          "name": "😀"
+        },
+        "count_details": {
+          "burst": 1,
+          "normal": 0
+        },
+        "burst_colors": [
+          "red;background:url(x)"
+        ]
+      }
+    ]
+  }
+}

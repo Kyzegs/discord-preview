@@ -1,0 +1,152 @@
+{
+  "payload": {
+    "author": {
+      "id": "80351110224678912",
+      "username": "nelly",
+      "global_name": "Nelly"
+    },
+    "content": "Twenty reactions wrapping",
+    "reactions": [
+      {
+        "count": 1,
+        "me": true,
+        "emoji": {
+          "name": "😀"
+        }
+      },
+      {
+        "count": 2,
+        "me": false,
+        "emoji": {
+          "name": "😃"
+        }
+      },
+      {
+        "count": 3,
+        "me": false,
+        "emoji": {
+          "name": "😄"
+        }
+      },
+      {
+        "count": 4,
+        "me": false,
+        "emoji": {
+          "name": "😁"
+        }
+      },
+      {
+        "count": 5,
+        "me": false,
+        "emoji": {
+          "name": "😆"
+        }
+      },
+      {
+        "count": 6,
+        "me": true,
+        "emoji": {
+          "name": "😅"
+        }
+      },
+      {
+        "count": 7,
+        "me": false,
+        "emoji": {
+          "name": "😂"
+        }
+      },
+      {
+        "count": 8,
+        "me": false,
+        "emoji": {
+          "name": "🤣"
+        }
+      },
+      {
+        "count": 9,
+        "me": false,
+        "emoji": {
+          "name": "😊"
+        }
+      },
+      {
+        "count": 10,
+        "me": false,
+        "emoji": {
+          "name": "😇"
+        }
+      },
+      {
+        "count": 11,
+        "me": true,
+        "emoji": {
+          "name": "🙂"
+        }
+      },
+      {
+        "count": 12,
+        "me": false,
+        "emoji": {
+          "name": "🙃"
+        }
+      },
+      {
+        "count": 13,
+        "me": false,
+        "emoji": {
+          "name": "😉"
+        }
+      },
+      {
+        "count": 14,
+        "me": false,
+        "emoji": {
+          "name": "😌"
+        }
+      },
+      {
+        "count": 15,
+        "me": false,
+        "emoji": {
+          "name": "😍"
+        }
+      },
+      {
+        "count": 16,
+        "me": true,
+        "emoji": {
+          "name": "🥰"
+        }
+      },
+      {
+        "count": 17,
+        "me": false,
+        "emoji": {
+          "name": "😘"
+        }
+      },
+      {
+        "count": 18,
+        "me": false,
+        "emoji": {
+          "name": "😗"
+        }
+      },
+      {
+        "count": 19,
+        "me": false,
+        "emoji": {
+          "name": "😙"
+        }
+      },
+      {
+        "count": 20,
+        "me": false,
+        "emoji": {
+          "name": "😚"
+        }
+      }
+    ]
+  }
+}

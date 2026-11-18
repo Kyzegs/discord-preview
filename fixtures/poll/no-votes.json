@@ -1,0 +1,46 @@
+{
+  "payload": {
+    "author": {
+      "id": "80351110224678912",
+      "username": "nelly",
+      "global_name": "Nelly"
+    },
+    "poll": {
+      "question": {
+        "text": "Which **day** suits you?"
+      },
+      "answers": [
+        {
+          "answer_id": 1,
+          "poll_media": {
+            "text": "Friday",
+            "emoji": {
+              "name": "🎉"
+            }
+          }
+        },
+        {
+          "answer_id": 2,
+          "poll_media": {
+            "text": "Saturday",
+            "emoji": {
+              "id": "1000000000000000003",
+              "name": "sat"
+            }
+          }
+        },
+        {
+          "answer_id": 3,
+          "poll_media": {
+            "text": "Sunday"
+          }
+        }
+      ],
+      "expiry": "2026-01-01T20:00:00Z",
+      "results": {
+        "is_finalized": false,
+        "answer_counts": []
+      }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "payload": {
+    "author": {
+      "id": "80351110224678912",
+      "username": "nelly",
+      "global_name": "Nelly"
+    },
+    "content": "Reactions",
+    "reactions": [
+      {
+        "count": 3,
+        "me": false,
+        "emoji": {
+          "name": "🎉"
+        }
+      },
+      {
+        "count": 12,
+        "me": true,
+        "emoji": {
+          "name": "👍"
+        }
+      },
+      {
+        "count": 1,
+        "emoji": {
+          "id": "1000000000000000003",
+          "name": "sat"
+        }
+      },
+      {
+        "count": 1500,
+        "me": true,
+        "emoji": {
+          "id": "1000000000000000004",
+          "name": "wave",
+          "animated": true
+        }
+      }
+    ]
+  }
+}
