@@ -1,0 +1,24 @@
+{
+  "payload": {
+    "id": "1",
+    "channel_id": "10",
+    "type": 22,
+    "author": {
+      "id": "80351110224678912",
+      "username": "ana",
+      "global_name": "Ana"
+    },
+    "content": "",
+    "timestamp": "2026-01-01T09:30:00.000Z"
+  },
+  "resolve": {
+    "channels": {
+      "10": {
+        "name": "general"
+      },
+      "11": {
+        "name": "rules"
+      }
+    }
+  }
+}

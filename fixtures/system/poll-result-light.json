@@ -1,0 +1,48 @@
+{
+  "payload": {
+    "id": "1",
+    "channel_id": "10",
+    "type": 46,
+    "author": {
+      "id": "80351110224678912",
+      "username": "ana",
+      "global_name": "Ana"
+    },
+    "content": "",
+    "timestamp": "2026-01-01T09:30:00.000Z",
+    "embeds": [
+      {
+        "type": "poll_result",
+        "fields": [
+          {
+            "name": "poll_question_text",
+            "value": "Tea or coffee?"
+          },
+          {
+            "name": "victor_answer_votes",
+            "value": "1"
+          },
+          {
+            "name": "total_votes",
+            "value": "3"
+          },
+          {
+            "name": "victor_answer_text",
+            "value": "Tea"
+          }
+        ]
+      }
+    ]
+  },
+  "resolve": {
+    "channels": {
+      "10": {
+        "name": "general"
+      },
+      "11": {
+        "name": "rules"
+      }
+    }
+  },
+  "theme": "light"
+}
