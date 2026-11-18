@@ -90,8 +90,8 @@ test('highlight: only a fenced block that names a language gets the HTML, inside
   const calls: [string, string][] = [];
   const html = render({ content: fenced }, { highlight: (code, lang) => (calls.push([code, lang]), hl(code, lang)) });
   assert.deepEqual(calls, [['let a = 1 < 2;', 'js']]);
-  assert.ok(html.includes('<code class="bg-transparent"><span class="hl-js">let a = 1 &lt; 2;</span></code>'));
-  assert.ok(html.includes('>plain</pre>'), 'no language: plain');
+  assert.match(html, /<code class="block [^"]*" style="[^"]*"><span class="hl-js">let a = 1 &lt; 2;<\/span><\/code>/);
+  assert.ok(html.includes('>plain</code></pre>'), 'no language: plain');
   assert.ok(html.includes('>inline</code>'), 'inline code: plain');
 });
 

@@ -1,0 +1,81 @@
+{
+  "payload": {
+    "id": "1700000000000000104",
+    "channel_id": "1100000000000000100",
+    "type": 0,
+    "author": {
+      "id": "1500000000000000100",
+      "username": "Reference Bot",
+      "bot": true
+    },
+    "timestamp": "2026-01-01T11:53:00.000Z",
+    "content": "dp-ref 3",
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "label": "Primary",
+            "custom_id": "dp-ref-b-Primary"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Secondary",
+            "custom_id": "dp-ref-b-Secondary"
+          },
+          {
+            "type": 2,
+            "style": 3,
+            "label": "Success",
+            "custom_id": "dp-ref-b-Success"
+          },
+          {
+            "type": 2,
+            "style": 4,
+            "label": "Danger",
+            "custom_id": "dp-ref-b-Danger"
+          },
+          {
+            "type": 2,
+            "style": 1,
+            "label": "Disabled",
+            "custom_id": "dp-ref-b-Disabled",
+            "disabled": true
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 5,
+            "label": "Link",
+            "url": "https://discord.com"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Emoji label",
+            "custom_id": "dp-ref-b-Emojilabel",
+            "emoji": {
+              "id": "1000000000000000100",
+              "name": "tick"
+            }
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "custom_id": "dp-ref-b-emojionly",
+            "emoji": {
+              "name": "😀"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

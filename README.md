@@ -97,7 +97,7 @@ Bundled by Vite or any bundler that handles CSS imports.
 <discord-preview></discord-preview>
 ```
 
-Pressing a button or picking a select option dispatches a `press` event (or calls `onPress` in React) whose `detail` has the pressed `component` and a `reply(text)` that shows the text as the ephemeral reply. With `selectable` set, clicking a block dispatches `selectblock` with its `detail.path`, and passing that path back as `selected` draws the ring on it.
+Pressing a button or picking a select option dispatches a `press` event (or calls `onPress` in React) whose `detail` has the pressed `component` and a `reply(text)` that shows the text as the ephemeral reply: a message from the same author under the original, with the line pointing back at it and "Only you can see this • Dismiss message" at the end. With `selectable` set, clicking a block dispatches `selectblock` with its `detail.path`, and passing that path back as `selected` draws the ring on it.
 
 Set `interactive` to `false` for a preview whose controls don't react: no presses, selects stay shut, and a modal's choices and text fields keep the values the payload gave them.
 
@@ -126,7 +126,9 @@ const mediaUrl = (url: string) => `https://media-proxy.example/?url=${encodeURIC
 
 ## What it renders
 
-- Message chrome: channel bar, avatar and avatar decoration, display name in role colour (gradient and holographic role styles too), role icon, server tag, APP tag with the verified tick, "Today at" times, "Sent silently" and "Read aloud", "(edited)", reply, interaction ("used /command") and forward headers, thread preview, "is thinking...", ephemeral note and reply, dark and light themes, mobile width.
+Sizes, spacing and colours follow measurements of Discord's web client (default density, 16px text) in its Dark and Light themes: `theme` is `'dark'` (the default) or `'light'`. `fixtures/reference/` holds the measured messages, to put the playground next to the real channel, and `e2e/fidelity.spec.ts` checks the measured values in a browser. Discord's own typeface, gg sans, isn't shipped: the preview asks for it first and falls back to Noto Sans, Helvetica Neue, Helvetica and Arial. Set `--dp-font` on `.discord-preview` to use another font.
+
+- Message chrome: channel bar, avatar and avatar decoration, display name in role colour (gradient and holographic role styles too), role icon, server tag, APP tag with the verified tick, "Today at" times, "Sent silently" and "Read aloud", "(edited)", reply, interaction ("used /command") and forward headers, thread preview, "is thinking...", ephemeral messages (tinted, with the bar and the "Only you can see this" line) and the reply to a press, Discord's Dark and Light themes, mobile width.
 - Text: Discord markdown (bold, italic, underline, strikethrough, headings, subtext, quotes and `>>>` quotes, nested lists, spoilers, inline and fenced code), links and masked links, user, role, channel, slash-command and navigation mentions, `@everyone` and `@here`, channel and message links, custom emoji, jumbo emoji, every timestamp style, and the full date in a tooltip over a timestamp and the message time.
 - Embeds: rich embeds (provider, author, title, description, fields, thumbnail, image, footer, timestamp, colour), image, GIF, video and article embeds, and multi-image embed galleries.
 - Attachments: images in Discord's mosaic of 1 to 10 with ALT badges, video, audio, voice messages with their waveform, other files with their size, spoilers, and stickers.

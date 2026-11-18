@@ -59,7 +59,7 @@ test('highlight: prototype names as languages reach the function as plain string
   const seen: string[] = [];
   const html = render({ content: ['constructor', '__proto__', 'toString'].map((l) => `\`\`\`${l}\ncode ${l}\n\`\`\``).join('\n') }, { highlight: (code, lang) => (seen.push(lang), `<i>${esc(code)}</i>`) });
   assert.deepEqual(seen, ['constructor', '__proto__', 'toString']);
-  assert.equal(count(html, /<code class="bg-transparent"><i>/g), 3);
+  assert.equal(count(html, /<code class="block [^>]*><i>/g), 3);
 });
 
 test('highlight: never for an empty block, and for at most 10 blocks a render', () => {

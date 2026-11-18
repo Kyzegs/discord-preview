@@ -1,0 +1,14 @@
+{
+  "payload": {
+    "id": "1700000000000000110",
+    "channel_id": "1100000000000000100",
+    "type": 0,
+    "author": {
+      "id": "1500000000000000100",
+      "username": "Reference Bot",
+      "bot": true
+    },
+    "timestamp": "2026-01-01T11:59:00.000Z",
+    "content": "dp-ref 9\n1. first\n2. second\n  1. nested number\n3. third\n\n- bullet after blank"
+  }
+}

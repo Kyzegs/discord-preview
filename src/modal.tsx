@@ -29,7 +29,7 @@ export function Modal({ m, look }: { m: PreviewModal; look: Look }): ReactNode {
         <div className="flex max-h-[560px] flex-col gap-5 overflow-y-auto px-4 pb-4">
           {arr(m.components, MAX_TOP_LEVEL).map((raw, i) => {
             const c = obj(raw);
-            if (c?.type === 10) return <Markdown key={i} text={c.content} look={look} />;
+            if (c?.type === 10) return <Markdown key={i} text={c.content} look={{ ...look, text: 'container' }} />;
             if (c?.type === 18) return <Field key={i} label={c.label} description={c.description} child={c.component} look={look} />;
             // the legacy form: an action row holding one text input that carries its own label
             const input = c?.type === 1 ? obj(arr(c.components, 1)[0]) : undefined;
@@ -100,7 +100,7 @@ function TextInput({ c, label, look }: { c: PreviewTextInput; label: string; loo
     maxLength: max ?? 4000,
     readOnly: !look.interactive,
     'aria-label': label || undefined,
-    style: { background: P.selectBg, borderColor: P.selectBorder, color: P.text },
+    style: { background: P.selectBg, borderColor: P.selectLine, color: P.text },
   };
   const box = 'w-full rounded-lg border px-2.5 text-base outline-none';
   if (int(c.style) !== 2) return <input type="text" value={value} {...field} className={`${box} h-10`} onChange={(e) => setTyped(e.currentTarget.value.slice(0, max ?? 4000))} />;
@@ -126,7 +126,7 @@ function FileUpload({ c, look }: { c: PreviewFileUpload; look: Look }) {
     <div className="flex flex-col items-center gap-1.5 rounded-lg border-2 border-dashed px-4 py-6 text-center text-sm" style={{ borderColor: P.sep, color: P.muted, background: P.selectBg }}>
       <Icon name="upload" size={24} />
       <span>
-        Drag and drop or <span className="text-[#00A8FC]">browse</span> to upload
+        Drag and drop or <span style={{ color: P.link }}>browse</span> to upload
       </span>
       <span className="text-xs">{most > 1 ? `Up to ${most} files` : '1 file'}</span>
     </div>

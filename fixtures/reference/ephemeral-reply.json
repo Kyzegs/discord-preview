@@ -1,0 +1,87 @@
+{
+  "payload": {
+    "id": "1700000000000000109",
+    "channel_id": "1100000000000000100",
+    "type": 19,
+    "author": {
+      "id": "1500000000000000100",
+      "username": "Reference Bot",
+      "bot": true
+    },
+    "timestamp": "2026-01-01T11:58:00.000Z",
+    "flags": 64,
+    "content": "dp-ref ephemeral text with **bold** and a [link](https://discord.com)",
+    "message_reference": {
+      "type": 0,
+      "message_id": "1700000000000000108",
+      "channel_id": "1100000000000000100"
+    },
+    "referenced_message": {
+      "id": "1700000000000000108",
+      "channel_id": "1100000000000000100",
+      "type": 0,
+      "author": {
+        "id": "1500000000000000100",
+        "username": "Reference Bot",
+        "bot": true
+      },
+      "timestamp": "2026-01-01T11:57:00.000Z",
+      "content": "dp-ref 7",
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 1,
+              "label": "Ephemeral test",
+              "custom_id": "dp-ref-ephemeral"
+            }
+          ]
+        }
+      ]
+    },
+    "embeds": [
+      {
+        "type": "rich",
+        "title": "Small embed",
+        "description": "Embed in an ephemeral reply",
+        "color": 5793266
+      }
+    ],
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "label": "Eph button",
+            "custom_id": "dp-ref-eph-b"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "dp-ref-eph-s",
+            "placeholder": "Ephemeral select",
+            "options": [
+              {
+                "label": "A",
+                "value": "a",
+                "description": "First"
+              },
+              {
+                "label": "B",
+                "value": "b"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

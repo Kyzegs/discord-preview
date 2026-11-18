@@ -2,7 +2,7 @@ import { type CSSProperties, type ReactNode, useState } from 'react';
 import { Mosaic } from './attachments.tsx';
 import { arr, bool, int, LOOKUP, num, obj, own, safeHref, safeSrc, str } from './guard.ts';
 import { Markdown } from './markdown.tsx';
-import { DEFAULT_AVATAR, Emo, fileSize, hex, Icon, type IconName, IMG, type Look, mediaSrc, Spoiler, Thumb } from './shared.tsx';
+import { DEFAULT_AVATAR, Emo, fileSize, hex, Icon, type IconName, IMG, type Look, mediaSrc, PALETTES, Spoiler, Thumb } from './shared.tsx';
 import type { DiscordOption, Path, PreviewActionRow, PreviewAutoSelect, PreviewButton, PreviewComponent, PreviewStringSelect } from './types.ts';
 
 type Maybe<T> = T | null | undefined;
@@ -40,17 +40,22 @@ export function Block({ c: raw, path, look, nested = false }: { c: Maybe<Preview
   switch (c.type) {
     case 10:
       return wrap(<Markdown text={c.content} look={look} />);
-    case 17:
+    case 17: {
       if (nested) return null;
+      // it shrinks to its content; the accent is a 4px bar inside the left edge, clipped by the corners
+      const accent = hex(c.accent_color);
+      const inner: Look = { ...look, text: 'container' };
       return (
-        <div {...sel(path)} className={`flex max-w-[520px] flex-col gap-3 rounded-lg px-4 py-3.5 ${sel(path).className ?? ''}`} style={{ background: P.container, borderLeft: hex(c.accent_color) ? `4px solid ${hex(c.accent_color)}` : undefined, ...ring(path) }}>
+        <div {...sel(path)} className={`relative flex w-fit max-w-[min(520px,100%)] flex-col gap-2 overflow-hidden rounded-lg border p-4 ${sel(path).className ?? ''}`} style={{ background: P.embed, borderColor: P.embedLine, ...ring(path) }}>
+          {accent && <span aria-hidden className="absolute inset-y-0 left-0 w-1" style={{ background: accent }} />}
           <Spoiler on={bool(c.spoiler)}>
             {arr(c.components, MAX_V2).map((x, i) => (
-              <Block key={i} c={x} path={[...path, i]} look={look} nested />
+              <Block key={i} c={x} path={[...path, i]} look={inner} nested />
             ))}
           </Spoiler>
         </div>
       );
+    }
     case 9: {
       const acc = obj(c.accessory);
       return wrap(
@@ -69,14 +74,15 @@ export function Block({ c: raw, path, look, nested = false }: { c: Maybe<Preview
       );
     }
     case 14:
-      return wrap(<div className={c.spacing === 2 ? 'py-3' : 'py-1'}>{c.divider !== false && <div className="h-px" style={{ background: P.sep }} />}</div>);
+      // small spacing is the stack's own 8px gap on each side; large adds 8px more (not measured)
+      return wrap(<div className={c.spacing === 2 ? 'py-2' : undefined}>{c.divider !== false && <div className="border-b" style={{ borderColor: P.divider }} />}</div>);
     case 12: {
-      // the same mosaic as a message's attachments
+      // the same mosaic as a message's attachments; in a container its cells are 128px squares
       const items = arr(c.items, 10).flatMap((it) => {
         const media = obj(it?.media);
         return it ? [{ url: media?.url, alt: it.description, spoiler: bool(it.spoiler), width: media?.width, height: media?.height }] : [];
       });
-      return wrap(<Mosaic items={items} look={look} />);
+      return wrap(<Mosaic items={items} look={look} cell={nested ? 128 : undefined} />);
     }
     case 13: {
       const url = str(obj(c.file)?.url, 2048);
@@ -86,9 +92,13 @@ export function Block({ c: raw, path, look, nested = false }: { c: Maybe<Preview
       return wrap(
         <Spoiler on={bool(c.spoiler)}>
           <div className="flex max-w-[432px] items-center gap-3 rounded-lg border p-4" style={{ background: P.embed, borderColor: P.sep }}>
-            <Icon name="file" size={30} className="text-[#00A8FC]" />
+            <span className="flex" style={{ color: P.link }}>
+              <Icon name="file" size={30} />
+            </span>
             <div className="min-w-0 flex-1">
-              <div className="truncate text-base leading-5 text-[#00A8FC]">{str(att?.filename, 1024) || str(c.name, 1024) || name || 'file'}</div>
+              <div className="truncate text-base leading-5" style={{ color: P.link }}>
+                {str(att?.filename, 1024) || str(c.name, 1024) || name || 'file'}
+              </div>
               {size !== undefined && size >= 0 && (
                 <div className="text-xs" style={{ color: P.muted }}>
                   {fileSize(size)}
@@ -111,26 +121,29 @@ const channelIcon = (t: number): IconName => (t === 2 || t === 13 ? 'voice' : t 
 
 // ---- Buttons
 
-// The client's colours for primary, success, danger and premium; secondary and link take the palette's grey.
-const BUTTON_BG: Record<number, string> = { 1: '#5865F2', 3: '#248046', 4: '#DA373C', 6: '#5865F2' };
+// The colours of primary (and its hover), success, danger and premium, the same in every theme; secondary and link
+// take the palette's.
+const SOLID: Record<number, string> = { 1: 'bg-[#5865f2] enabled:hover:bg-[#4452bb]', 3: 'bg-[#008545]', 4: 'bg-[#d22d39]', 6: 'bg-[#5865f2]' };
 
 export function Btn({ b, look }: { b: PreviewButton; look: Look }) {
+  const { P } = look;
   const style = int(b.style) ?? 0;
   const sku = style === 6 ? own(look.resolve.skus, b.sku_id) : undefined;
   const label = style === 6 ? (sku ? [str(sku.name, 100), str(sku.price, 100)].filter(Boolean).join(' · ') : 'Item name and price') : str(b.label, 80);
+  const solid = SOLID[style];
   return (
     <button
       type="button"
       // the host gets the link only when it is a safe one, so a handler that opens it can't run javascript:
       onClick={() => look.press(b.url === undefined ? b : { ...b, url: safeHref(b.url) })}
       disabled={bool(b.disabled)}
-      className="inline-flex h-8 max-w-full min-w-[60px] shrink-0 items-center justify-center gap-1.5 rounded-lg px-4 text-sm leading-4 font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
-      style={{ background: BUTTON_BG[style] ?? look.P.secondary }}
+      className={`inline-flex h-8 max-w-full min-w-[60px] shrink-0 items-center justify-center gap-1 rounded-lg border px-[11px] py-[3px] text-[14px] leading-[18px] font-medium [transition:background-color_.17s,color_.17s] disabled:cursor-not-allowed disabled:opacity-50 ${solid ? `border-[rgb(255_255_255/0.08)] text-white ${solid}` : ''}`}
+      style={solid ? undefined : { background: P.secondary, borderColor: P.secondaryLine, color: P.secondaryText }}
     >
-      <Emo e={b.emoji} look={look} />
+      <Emo e={b.emoji} look={look} className="size-[1.375em]" />
       {style === 6 && <Icon name="bag" size={14} />}
       {label && <span className="truncate">{label}</span>}
-      {style === 5 && <Icon name="external" size={13} />}
+      {style === 5 && <Icon name="external" size={16} className="ml-1" />}
     </button>
   );
 }
@@ -211,7 +224,7 @@ export function SelectMenu({ c, look, modal = false }: { c: PreviewStringSelect 
         // a modal's select reports nothing until submit, which a preview never does
         if (!modal) look.press({ type: kind, custom_id: str(c.custom_id) || undefined, picked: o.label, value: o.value });
       }}
-      style={{ '--dsel-bg': look.P.selectBg, '--dsel-line': look.P.selectBorder, '--dsel-muted': look.P.muted, '--dsel-text': look.P.text } as CSSProperties}
+      style={{ '--dsel-bg': look.P.selectBg, '--dsel-line': look.P.selectLine, '--dsel-muted': look.P.placeholder, '--dsel-text': look.P.text } as CSSProperties}
     />
   );
 }
@@ -229,13 +242,13 @@ export function Row({ row, look }: { row: PreviewActionRow; look: Look }) {
   );
 }
 
-// What goes before an option: a user's avatar, a role's dot, a channel's icon, or the option's emoji.
-function Mark({ o, look }: { o: DiscordOption; look?: Look }) {
+// What goes before an option: a user's avatar, a role's dot, a channel's icon, or the option's emoji (`emoji` sizes it).
+function Mark({ o, look, emoji, icon = 18 }: { o: DiscordOption; look?: Look; emoji: string; icon?: number }) {
   const avatar = safeSrc(o.avatar, true);
-  if (avatar) return <img {...IMG} src={avatar} alt="" className="inline-block size-5 rounded-full align-middle" />;
-  if (typeof o.color === 'string' && /^#[0-9a-f]{6}$/i.test(o.color)) return <span className="inline-block size-3 rounded-full align-middle" style={{ background: o.color }} />;
-  if (typeof o.channelType === 'number') return <Icon name={channelIcon(o.channelType)} size={18} className="inline-block align-middle" />;
-  return o.emoji ? <Emo e={o.emoji} look={look} /> : null;
+  if (avatar) return <img {...IMG} src={avatar} alt="" className="size-5 shrink-0 rounded-full" />;
+  if (typeof o.color === 'string' && /^#[0-9a-f]{6}$/i.test(o.color)) return <span className="size-3 shrink-0 rounded-full" style={{ background: o.color }} />;
+  if (typeof o.channelType === 'number') return <Icon name={channelIcon(o.channelType)} size={icon} />;
+  return o.emoji ? <Emo e={o.emoji} look={look} className={emoji} /> : null;
 }
 const marked = (o: DiscordOption) => Boolean(o.emoji || o.avatar || o.color || typeof o.channelType === 'number');
 
@@ -261,7 +274,10 @@ export function DiscordSelect({
   return <Dropdown label={label} placeholder={placeholder} options={options} chosen={found ? [found] : []} multi={false} onPick={onPick} disabled={disabled} style={style} />;
 }
 
-// The dropdown itself: one chosen option shown with its mark, several as chips, and a tick box per option when several may be chosen.
+// The open list's height: 56px an option, 282px at most, plus its 8px gap from the select.
+const listHeight = (n: number) => Math.min(282, n * 56 + 2) + 8;
+
+// The dropdown itself: one chosen option shown with its mark, several as chips, and a check after each chosen option.
 // `locked` (a preview that isn't interactive) keeps it shut, without the disabled look.
 function Dropdown({
   label,
@@ -289,6 +305,7 @@ function Dropdown({
   // '' shut, else the side the list opens on, chosen when it opens
   const [open, setOpen] = useState<'' | 'down' | 'up'>('');
   const first = chosen[0];
+  const P = look?.P ?? PALETTES.dark;
   return (
     <div
       className="dsel"
@@ -315,38 +332,32 @@ function Dropdown({
         onClick={(e) => {
           if (locked) return;
           if (open) return setOpen('');
-          // shortcut: the list's height is estimated (it isn't laid out while shut), at about 48px an option
+          // the list isn't laid out while shut, so its height comes from the option count
           const box = e.currentTarget.getBoundingClientRect();
           const below = window.innerHeight - box.bottom;
-          setOpen(below < options.length * 48 + 12 && box.top > below ? 'up' : 'down');
+          setOpen(below < listHeight(options.length) && box.top > below ? 'up' : 'down');
         }}
       >
         {!first ? (
-          <span>{placeholder}</span>
+          <span className="dsel-p">{placeholder}</span>
         ) : multi ? (
-          <span>
-            <span className="flex flex-wrap gap-1">
-              {chosen.map((o, i) => (
-                <span key={i} className="inline-flex max-w-full items-center gap-1 rounded-md bg-[rgb(128_128_128/0.24)] px-1.5 py-0.5" style={{ color: 'var(--dsel-text)' }}>
-                  {marked(o) && <Mark o={o} look={look} />}
-                  <span className="truncate">{o.label}</span>
-                </span>
-              ))}
-            </span>
+          <span className="flex flex-wrap gap-1">
+            {chosen.map((o, i) => (
+              <span key={i} className="inline-flex h-8 max-w-full items-center gap-2 rounded-[3px] px-2 py-1.5" style={{ background: P.chip, color: P.head }}>
+                {marked(o) && <Mark o={o} look={look} emoji="size-4" />}
+                <span className="truncate">{o.label}</span>
+              </span>
+            ))}
           </span>
         ) : (
-          <span style={{ color: 'var(--dsel-text)' }}>
-            {marked(first) && (
-              <span className="mr-2 inline-block align-middle">
-                <Mark o={first} look={look} />
-              </span>
-            )}
-            {first.label}
+          <span className="flex items-center gap-2">
+            {marked(first) && <Mark o={first} look={look} emoji="size-[22px]" />}
+            <span className="truncate">{first.label}</span>
           </span>
         )}
-        <Icon name="chevronDown" size={16} />
+        <Icon name="chevronDown" size={18} />
       </button>
-      <div className="dsel-l" role="listbox" aria-label={label} aria-multiselectable={multi || undefined}>
+      <div className="dsel-l" role="listbox" aria-label={label} aria-multiselectable={multi || undefined} style={{ background: P.popout, borderColor: P.popoutLine }}>
         {options.map((o, i) => {
           const on = chosen.some((x) => x.value === o.value);
           return (
@@ -355,7 +366,8 @@ function Dropdown({
               type="button"
               role="option"
               aria-selected={on}
-              className="dsel-o"
+              className={typeof o.channelType === 'number' ? 'dsel-o dsel-c' : 'dsel-o'}
+              style={{ background: on ? P.picked : undefined, color: on ? P.head : P.muted }}
               onClick={() => {
                 if (!multi) setOpen('');
                 onPick(o);
@@ -363,14 +375,14 @@ function Dropdown({
             >
               {marked(o) && (
                 <span className="e">
-                  <Mark o={o} look={look} />
+                  <Mark o={o} look={look} emoji="size-[22px]" icon={24} />
                 </span>
               )}
               <span className="dsel-t">
                 {o.label}
-                {o.description && <small>{o.description}</small>}
+                {o.description && <small style={{ color: P.muted }}>{o.description}</small>}
               </span>
-              {multi && <span className={`grid size-5 shrink-0 place-items-center rounded-md border-2 ${on ? 'border-[#5865F2] bg-[#5865F2] text-white' : 'border-current'}`}>{on && <Icon name="check" size={14} stroke={3} />}</span>}
+              {on && <Icon name="check" size={20} className="text-[#5865f2]" />}
             </button>
           );
         })}

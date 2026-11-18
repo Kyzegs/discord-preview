@@ -1,0 +1,186 @@
+{
+  "payload": {
+    "id": "1700000000000000105",
+    "channel_id": "1100000000000000100",
+    "type": 0,
+    "author": {
+      "id": "1500000000000000100",
+      "username": "Reference Bot",
+      "bot": true
+    },
+    "timestamp": "2026-01-01T11:54:00.000Z",
+    "content": "dp-ref 4",
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "dp-ref-s1",
+            "placeholder": "Pick one",
+            "options": [
+              {
+                "label": "Option 1",
+                "value": "o1",
+                "description": "Description for option 1",
+                "emoji": {
+                  "name": "😀"
+                },
+                "default": false
+              },
+              {
+                "label": "Option 2",
+                "value": "o2",
+                "description": "Description for option 2",
+                "emoji": {
+                  "id": "1000000000000000100",
+                  "name": "tick"
+                },
+                "default": true
+              },
+              {
+                "label": "Option 3",
+                "value": "o3",
+                "description": "Description for option 3",
+                "emoji": {
+                  "name": "😀"
+                },
+                "default": false
+              },
+              {
+                "label": "Option 4",
+                "value": "o4",
+                "description": "Description for option 4",
+                "emoji": {
+                  "id": "1000000000000000100",
+                  "name": "tick"
+                },
+                "default": false
+              },
+              {
+                "label": "Option 5",
+                "value": "o5",
+                "description": "Description for option 5",
+                "emoji": {
+                  "name": "😀"
+                },
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "dp-ref-s2",
+            "placeholder": "Pick up to three",
+            "min_values": 1,
+            "max_values": 3,
+            "options": [
+              {
+                "label": "Option 1",
+                "value": "o1",
+                "description": "Description for option 1",
+                "emoji": {
+                  "name": "😀"
+                },
+                "default": true
+              },
+              {
+                "label": "Option 2",
+                "value": "o2",
+                "description": "Description for option 2",
+                "emoji": {
+                  "id": "1000000000000000100",
+                  "name": "tick"
+                },
+                "default": false
+              },
+              {
+                "label": "Option 3",
+                "value": "o3",
+                "description": "Description for option 3",
+                "emoji": {
+                  "name": "😀"
+                },
+                "default": true
+              },
+              {
+                "label": "Option 4",
+                "value": "o4",
+                "description": "Description for option 4",
+                "emoji": {
+                  "id": "1000000000000000100",
+                  "name": "tick"
+                },
+                "default": false
+              },
+              {
+                "label": "Option 5",
+                "value": "o5",
+                "description": "Description for option 5",
+                "emoji": {
+                  "name": "😀"
+                },
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 5,
+            "custom_id": "dp-ref-s3",
+            "placeholder": "Pick a user"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 6,
+            "custom_id": "dp-ref-s4",
+            "placeholder": "Pick a role"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 8,
+            "custom_id": "dp-ref-s5",
+            "placeholder": "Pick a channel"
+          }
+        ]
+      }
+    ]
+  },
+  "resolve": {
+    "users": {
+      "1500000000000000100": {
+        "name": "Reference Bot"
+      }
+    },
+    "roles": {
+      "1400000000000000100": {
+        "name": "Role",
+        "color": 1752220,
+        "position": 1
+      }
+    },
+    "channels": {
+      "1100000000000000100": {
+        "name": "reference",
+        "type": 0
+      }
+    }
+  }
+}

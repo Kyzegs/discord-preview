@@ -252,16 +252,19 @@ export function SystemMessage({ m, look }: AreaProps) {
   }
 
   return (
-    <div className="flex gap-3.5 @max-[320px]:gap-2.5" data-system-type={t}>
-      <div className="mt-0.5 flex w-10 shrink-0 justify-center @max-[320px]:w-8" style={{ color: kind[1] === MUTED ? P.muted : kind[1] }}>
+    // the icon sits in the avatar's place, in the message's left gutter
+    <div data-system-type={t}>
+      <div className="absolute left-4 mt-0.5 flex w-10 justify-center @max-[320px]:left-3 @max-[320px]:w-8" style={{ color: kind[1] === MUTED ? P.muted : kind[1] }}>
         <svg aria-hidden="true" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
           <path d={ICON_PATHS[kind[0]]} />
         </svg>
       </div>
-      <div className="min-w-0 flex-1 break-words">
+      <div className="min-w-0 break-words">
         <span style={{ color: P.muted }}>
           {line}
-          <span className="ml-1 text-xs">{headerTime(ts, look)}</span>
+          <span className="ml-1 text-[12px]" style={{ color: P.time }}>
+            {headerTime(ts, look)}
+          </span>
         </span>
         {card}
       </div>

@@ -1,6 +1,6 @@
 import { type CSSProperties, Fragment, type ReactNode, useState } from 'react';
 import { arr, LOOKUP, own, safeHref, snowflake, str, TEXT } from './guard.ts';
-import { displayName, EMOJI, emojiUrl, hex, ICONS, IMG, LINK, type Look, mediaSrc, type Palette, timestampText, Tip, twemojiUrl } from './shared.tsx';
+import { displayName, EMOJI, emojiUrl, hex, ICONS, IMG, LINK, type Look, mediaSrc, type Palette, TEXT_SIZES, timestampText, Tip, twemojiUrl } from './shared.tsx';
 
 // A safe markdown subset: React nodes only, never HTML strings (the one exception is the host's highlighter, in CodeBlock).
 
@@ -33,7 +33,7 @@ export const INLINE = new RegExp(
   'gu',
 );
 
-const LINK_CLASS = 'text-[#00A8FC] hover:underline';
+const LINK_CLASS = 'font-normal no-underline hover:underline';
 
 // A masked link whose label names a site (a scheme, or a domain anywhere in it, once markdown marks are taken out) is
 // shown as text: the label could name another site than the one it opens. Fixed-length pieces only, so linear.
@@ -52,7 +52,7 @@ function userName(id: string, look: Look) {
   return displayName(u ?? { id }, u?.member, look, '');
 }
 
-const EMOJI_IMG = 'inline size-[1.375em] object-contain align-[-0.3em]';
+const EMOJI_IMG = 'inline size-[1.375em] object-contain align-bottom';
 
 // Plain text, with each unicode emoji as a Twemoji image when asked for (as text again when the host's hook drops it).
 function plain(text: string, key: string, look: Look): ReactNode {
@@ -76,7 +76,7 @@ function InlineSpoiler({ P, children }: { P: Palette; children: ReactNode }) {
   const [shown, setShown] = useState(false);
   if (shown)
     return (
-      <span className="rounded-[3px]" style={{ background: 'rgba(128,128,128,0.2)' }}>
+      <span className="rounded-[4px]" style={{ background: 'rgba(128,128,128,0.2)' }}>
         {children}
       </span>
     );
@@ -89,7 +89,7 @@ function InlineSpoiler({ P, children }: { P: Palette; children: ReactNode }) {
       role="button"
       tabIndex={0}
       aria-label="Spoiler"
-      className="cursor-pointer rounded-[3px]"
+      className="cursor-pointer rounded-[4px]"
       style={{ background: P.spoiler }}
       onClick={show}
       onKeyDown={(e) => {
@@ -105,7 +105,7 @@ function InlineSpoiler({ P, children }: { P: Palette; children: ReactNode }) {
 
 function code(key: number, text: string, P: Palette) {
   return (
-    <code key={key} className="rounded-[3px] px-1 font-mono text-[0.85em]" style={{ background: P.code }}>
+    <code key={key} className="rounded-[4px] border px-[0.2em] font-mono text-[0.85em] leading-[18px]" style={{ background: P.codeBg, borderColor: P.codeLine, color: P.text }}>
       {text}
     </code>
   );
@@ -167,7 +167,15 @@ function tokens(input: unknown, look: Look, links: boolean): ReactNode[] {
         return c && c !== '#000000' ? pill(label, { color: c, background: `${c}1a` }) : pill(label);
       }
       if (part.startsWith('<@')) return pill(`@${userName(part.replace(/\D/g, ''), look) || 'unknown-user'}`);
-      if (part.startsWith('<#')) return pill(`#${str(own(resolve.channels, part.slice(2, -1))?.name, 100) || 'unknown'}`);
+      if (part.startsWith('<#'))
+        return pill(
+          <>
+            <svg aria-label="Channel" role="img" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" className="mr-0.5 inline align-[-0.15em]">
+              <path d={ICONS.hash} />
+            </svg>
+            {str(own(resolve.channels, part.slice(2, -1))?.name, 100) || 'unknown'}
+          </>,
+        );
       if (part.startsWith('</')) return pill(`/${part.slice(2, part.lastIndexOf(':'))}`);
       if (part.startsWith('<id:')) return pill(NAV[part.slice(4, -1)]);
       const emoji = /^<(a?):(\w+):(\d+)>$/.exec(part);
@@ -182,7 +190,7 @@ function tokens(input: unknown, look: Look, links: boolean): ReactNode[] {
         const label = timestampText(Number(ts), style, look);
         if (!label) return part; // too far out to be a date: Discord shows it as plain text too
         return (
-          <Tip key={i} tip={timestampText(Number(ts), 'F', look)} className="rounded-[3px] px-1" style={{ background: P.code }}>
+          <Tip key={i} tip={timestampText(Number(ts), 'F', look)} className="rounded-[3px] px-0.5" style={{ background: P.stamp }}>
             {label}
           </Tip>
         );
@@ -192,7 +200,7 @@ function tokens(input: unknown, look: Look, links: boolean): ReactNode[] {
         const href = safeHref(m?.[2]);
         if (!links || !href || urlish(m?.[1] ?? '')) return part;
         return (
-          <a key={i} className={LINK_CLASS} href={href} title={href} {...LINK}>
+          <a key={i} className={LINK_CLASS} style={{ color: P.link }} href={href} title={href} {...LINK}>
             {inline(m?.[1], look, false)}
           </a>
         );
@@ -216,7 +224,7 @@ function tokens(input: unknown, look: Look, links: boolean): ReactNode[] {
           </a>
         );
       return (
-        <a key={i} className={`break-all ${LINK_CLASS}`} href={href} {...LINK}>
+        <a key={i} className={`break-all ${LINK_CLASS}`} style={{ color: P.link }} href={href} {...LINK}>
           {url}
         </a>
       );
@@ -245,7 +253,7 @@ function list(items: Item[], at: number, level: number, look: Look): [ReactNode,
       i = next;
     }
     lis.push(
-      <li key={i}>
+      <li key={i} className="mb-1">
         {inline(it.text, look)}
         {kids}
       </li>,
@@ -253,7 +261,7 @@ function list(items: Item[], at: number, level: number, look: Look): [ReactNode,
   } while (i < items.length && items[i]!.level === level && !items[i]!.ol === !first.ol);
   if (!first.ol)
     return [
-      <ul key={at} className={`ml-4 ${BULLETS[Math.min(level, 2)]}`}>
+      <ul key={at} className={`mt-1 ml-4 list-outside ${BULLETS[Math.min(level, 2)]}`}>
         {lis}
       </ul>,
       i,
@@ -261,7 +269,7 @@ function list(items: Item[], at: number, level: number, look: Look): [ReactNode,
   // Discord numbers a list on from its first item, whatever the others say, and widens the gutter for long numbers.
   const digits = String(first.ol + lis.length - 1).length;
   return [
-    <ol key={at} start={first.ol} className="list-decimal" style={{ marginLeft: `calc(0.4em + ${digits}ch)` }}>
+    <ol key={at} start={first.ol} className="mt-1 list-outside list-decimal" style={{ marginLeft: `calc(0.4em + ${digits}ch)` }}>
       {lis}
     </ol>,
     i,
@@ -314,17 +322,25 @@ function highlighted(code: string, lang: string | undefined, look: Look): string
 function CodeBlock({ code, lang, look }: { code: string; lang?: string; look: Look }) {
   const { P } = look;
   const html = highlighted(code, lang, look);
+  const box = 'block overflow-x-auto rounded-[4px] border p-[7px] font-mono text-[14px] leading-[18px] whitespace-pre-wrap';
+  const style = { background: P.codeBg, borderColor: P.codeLine, color: P.codeText };
   return (
-    <pre className="my-1 overflow-x-auto rounded-[4px] border p-2 font-mono text-[0.85em] whitespace-pre-wrap" style={{ background: P.code, borderColor: P.border }}>
-      {typeof html === 'string' ? <code className="bg-transparent" dangerouslySetInnerHTML={{ __html: html }} /> : code}
+    <pre className="mt-1.5 bg-transparent">
+      {typeof html === 'string' ? (
+        <code className={box} style={style} dangerouslySetInnerHTML={{ __html: html }} />
+      ) : (
+        <code className={box} style={style}>
+          {code}
+        </code>
+      )}
     </pre>
   );
 }
 
 // `jumbo` draws the emoji at Discord's large size: only for a message's own content that passes jumbo().
 export function Markdown({ text, look, jumbo = false }: { text: unknown; look: Look; jumbo?: boolean }) {
-  const { P, classic } = look;
-  const sizes = classic ? { '#': '16px', '##': '16px', '###': '15px', body: '14px' } : { '#': '24px', '##': '20px', '###': '17px', body: '15px' };
+  const { P } = look;
+  const { body, sub } = TEXT_SIZES[look.text];
   // split() puts each block's language (or undefined) at 3k+1 and its code at 3k+2
   const pieces = str(text, TEXT).split(/```(?:([\w+-]*)\n)?([\s\S]*?)\n?```\n?/);
   const raw = pieces.flatMap<Part>((part = '', n) =>
@@ -341,18 +357,19 @@ export function Markdown({ text, look, jumbo = false }: { text: unknown; look: L
     const h = /^(#{1,3}) (.*)$/.exec(line);
     if (h)
       return (
-        <div key={i} className="font-bold" style={{ fontSize: sizes[h[1] as '#'], color: P.head, lineHeight: '1.3' }}>
+        <div key={i} className={`mt-4 mb-2 font-bold first:mt-0 ${HEADINGS[h[1]!.length - 1]}`} style={{ color: P.head }}>
           {inline(h[2] ?? '', look)}
         </div>
       );
     if (line.startsWith('-# '))
       return (
-        <div key={i} className="text-xs" style={{ color: P.muted }}>
+        <div key={i} style={{ color: P.muted, fontSize: `${sub[0]}px`, lineHeight: `${sub[1]}px` }}>
           {inline(line.slice(3), look)}
         </div>
       );
+    // an empty line keeps a whole line's height, as in Discord's text
     return (
-      <div key={i} className="min-h-[0.75em] whitespace-pre-wrap">
+      <div key={i} className="min-h-[1lh] whitespace-break-spaces">
         {inline(line, look)}
       </div>
     );
@@ -367,9 +384,11 @@ export function Markdown({ text, look, jumbo = false }: { text: unknown; look: L
       if (p.quote) {
         while (j < ps.length && ps[j]!.quote) j++;
         out.push(
-          <div key={i} className="flex">
+          <div key={i} className="my-1 flex max-w-[90%]">
             <div className="w-1 shrink-0 rounded-[4px]" style={{ background: P.quote }} />
-            <blockquote className="min-w-0 flex-1 pr-2 pl-3">{blocks(ps.slice(i, j).map((q) => ({ ...q, quote: false })))}</blockquote>
+            <blockquote className="min-w-0 flex-1 pr-2 pl-3" style={{ color: P.muted }}>
+              {blocks(ps.slice(i, j).map((q) => ({ ...q, quote: false })))}
+            </blockquote>
           </div>,
         );
       } else if (p.line !== undefined && LIST.test(p.line)) {
@@ -382,9 +401,12 @@ export function Markdown({ text, look, jumbo = false }: { text: unknown; look: L
   };
 
   return (
-    // jumbo: 48px emoji images, and unicode emoji drawn as text at about that size
-    <div className={`break-words ${jumbo ? '[&_img]:size-12 [&_img]:align-bottom' : ''}`} style={jumbo ? { fontSize: '40px', lineHeight: '48px' } : { fontSize: sizes.body, lineHeight: '1.375' }}>
+    // jumbo: 48px emoji images on a 52px line, and unicode emoji drawn as text at about that size
+    <div className={`break-words ${jumbo ? '[&_img]:size-12 [&_img]:align-bottom' : ''}`} style={jumbo ? { fontSize: '40px', lineHeight: '52px' } : { fontSize: `${body[0]}px`, lineHeight: `${body[1]}px` }}>
       {blocks(parts)}
     </div>
   );
 }
+
+// h1, h2 and h3: the same sizes in a message, a container and an embed
+const HEADINGS = ['text-[24px] leading-[33px]', 'text-[20px] leading-[27.5px]', 'text-[16px] leading-[22px]'];

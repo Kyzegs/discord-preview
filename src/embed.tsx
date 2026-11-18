@@ -1,7 +1,7 @@
 import { fit, Mosaic, Video } from './attachments.tsx';
 import { arr, bool, obj, safeHref, str } from './guard.ts';
 import { inline, Markdown } from './markdown.tsx';
-import { BLUE, dateText, hex, IMG, LINK, type Look, mediaSrc, Thumb } from './shared.tsx';
+import { dateText, hex, IMG, LINK, type Look, mediaSrc, Thumb } from './shared.tsx';
 import type { Path, PreviewEmbed } from './types.ts';
 
 type Media = { url?: string; width?: number; height?: number } | undefined;
@@ -19,17 +19,17 @@ function Big({ m, look, maxW = 400, maxH = 300 }: { m: Media; look: Look; maxW?:
   const sized = fit(m?.width, m?.height, maxW, maxH);
   const box = sized ?? { width: `${maxW}px`, aspectRatio: `${maxW} / ${maxH}` };
   const src = mediaSrc(m?.url, look);
-  if (!sized && src) return <img {...IMG} src={src} alt="" className="block max-w-full rounded-lg object-contain" style={box} />;
-  if (!src) return <div aria-hidden className="max-w-full rounded-lg" style={{ ...box, background: look.P.bg }} />;
-  return <img {...IMG} src={src} alt="" className="block max-w-full rounded-lg object-cover" style={box} />;
+  if (!sized && src) return <img {...IMG} src={src} alt="" className="block max-w-full rounded-[4px] object-contain" style={box} />;
+  if (!src) return <div aria-hidden className="max-w-full rounded-[4px]" style={{ ...box, background: look.P.bg }} />;
+  return <img {...IMG} src={src} alt="" className="block max-w-full rounded-[4px] object-cover" style={box} />;
 }
 
 // The small image at the top right, at most 80 by 80.
 function SideThumb({ m, look }: { m: Media; look: Look }) {
   const box = fit(m?.width, m?.height, 80, 80);
   const src = mediaSrc(m?.url, look);
-  if (!box || !src) return <Thumb url={m?.url} look={look} />;
-  return <img {...IMG} src={src} alt="" className="shrink-0 self-start rounded-lg object-contain" style={box} />;
+  if (!box || !src) return <Thumb url={m?.url} look={look} className="mt-2 ml-4 size-20 self-start rounded-[4px] @max-[320px]:size-12" />;
+  return <img {...IMG} src={src} alt="" className="mt-2 ml-4 shrink-0 self-start rounded-[4px] object-contain" style={box} />;
 }
 
 // A video embed's thumbnail with a play button over it, linking to the video (no player is embedded).
@@ -103,10 +103,17 @@ export function Embed({ e: raw, path, look }: { e: PreviewEmbed | null | undefin
   // Video and article embeds show their thumbnail large, below the text; the others keep it small at the side.
   const bigThumb = (playable || type === 'article') && str(thumb?.url) !== '';
   const title = str(e.title, 256);
+  const small: Look = { ...look, text: 'embed' };
+  const footerText = str(footer?.text, 2048);
+  // It shrinks to its content (a gallery fills it), at most 516px inside its borders: 1px, and 4px of colour at the left.
   return (
-    <div {...s} className={`max-w-[520px] rounded-lg border-l-4 px-4 py-3 ${s.className ?? ''}`} style={{ background: P.embed, borderLeftColor: hex(e.color) ?? P.sep, ...ring(path) }}>
-      <div className="flex gap-3">
-        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+    <div
+      {...s}
+      className={`${images.length > 1 ? 'w-full' : 'w-fit'} max-w-[521px] rounded-[4px] border border-l-4 pt-[2px] pr-4 pb-4 pl-3 ${s.className ?? ''}`}
+      style={{ background: P.embed, borderColor: P.embedLine, borderLeftColor: hex(e.color) ?? P.sep, ...ring(path) }}
+    >
+      <div className="flex">
+        <div className="min-w-0 flex-1 [&>*]:mt-2">
           {str(provider?.name) && (
             <div className="text-xs" style={{ color: P.muted }}>
               {providerHref ? (
@@ -119,8 +126,8 @@ export function Embed({ e: raw, path, look }: { e: PreviewEmbed | null | undefin
             </div>
           )}
           {str(author?.name) && (
-            <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: P.head }}>
-              {authorIcon && <img {...IMG} src={authorIcon} alt="" className="size-6 rounded-full" />}
+            <div className="flex min-h-6 items-center gap-2 text-[14px] leading-[22px] font-semibold" style={{ color: P.head }}>
+              {authorIcon && <img {...IMG} src={authorIcon} alt="" className="size-6 shrink-0 rounded-full" />}
               {authorHref ? (
                 <a {...LINK} href={authorHref} className="hover:underline">
                   {str(author?.name, 256)}
@@ -131,7 +138,7 @@ export function Embed({ e: raw, path, look }: { e: PreviewEmbed | null | undefin
             </div>
           )}
           {title && (
-            <div className="font-bold" style={{ color: href ? BLUE : P.head }}>
+            <div className="text-[16px] leading-[22px] font-semibold" style={{ color: href ? P.link : P.head }}>
               {href ? (
                 <a {...LINK} href={href} className="hover:underline">
                   {inline(title, look, false)}
@@ -141,15 +148,15 @@ export function Embed({ e: raw, path, look }: { e: PreviewEmbed | null | undefin
               )}
             </div>
           )}
-          {str(e.description) && <Markdown text={str(e.description, 4096)} look={look} />}
+          {str(e.description) && <Markdown text={str(e.description, 4096)} look={small} />}
           {fields.length > 0 && (
-            <div className="grid grid-cols-3 gap-2 max-xs:grid-cols-1">
+            <div className="grid grid-cols-12 gap-2 max-xs:grid-cols-1">
               {fields.map((f, j) => (
-                <div key={j} className={bool(f?.inline) ? 'min-w-0' : 'col-span-3 max-xs:col-span-1'}>
-                  <div className="text-sm font-semibold" style={{ color: P.head }}>
+                <div key={j} className={bool(f?.inline) ? 'col-span-4 min-w-0 max-xs:col-span-1' : 'col-span-12 max-xs:col-span-1'}>
+                  <div className="mb-0.5 text-[14px] leading-[18px] font-semibold" style={{ color: P.head }}>
                     {inline(str(f?.name, 256), look)}
                   </div>
-                  <Markdown text={str(f?.value, 1024)} look={look} />
+                  <Markdown text={str(f?.value, 1024)} look={small} />
                 </div>
               ))}
             </div>
@@ -158,30 +165,32 @@ export function Embed({ e: raw, path, look }: { e: PreviewEmbed | null | undefin
         {!bigThumb && str(thumb?.url) && <SideThumb m={thumb} look={look} />}
       </div>
       {images.length > 1 ? (
-        <div className="mt-3">
+        <div className="mt-4">
           <Mosaic items={images} look={look} />
         </div>
       ) : (
         images[0] && (
-          <div className="mt-3">
+          <div className="mt-4">
             <Big m={images[0]} look={look} />
           </div>
         )
       )}
       {bigThumb ? (
-        <div className="mt-3">{playable ? <Play m={thumb} href={href} look={look} /> : <Big m={thumb} look={look} />}</div>
+        <div className="mt-4">{playable ? <Play m={thumb} href={href} look={look} /> : <Big m={thumb} look={look} />}</div>
       ) : (
         playable &&
         mediaSrc(video?.url, look) && (
-          <div className="mt-3">
+          <div className="mt-4">
             <Video url={video?.url} width={video?.width} height={video?.height} maxW={400} maxH={300} look={look} />
           </div>
         )
       )}
-      {(str(footer?.text) || time) && (
-        <div className="mt-2 flex items-center gap-2 text-xs" style={{ color: P.muted }}>
-          {footerIcon && <img {...IMG} src={footerIcon} alt="" className="size-5 rounded-full" />}
-          {[str(footer?.text, 2048), time].filter(Boolean).join(' · ')}
+      {(footerText || time) && (
+        <div className="mt-2 flex items-center text-[12px] leading-4 font-medium" style={{ color: P.text }}>
+          {footerIcon && <img {...IMG} src={footerIcon} alt="" className="mr-2 size-5 shrink-0 rounded-full" />}
+          {footerText}
+          {footerText && time && <span className="mx-1">•</span>}
+          {time}
         </div>
       )}
     </div>

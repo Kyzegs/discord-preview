@@ -8,7 +8,7 @@ import { Avatar, Edited, EphemeralNote, Forwarded, InteractionHeader, MessageHea
 import { Modal } from './modal.tsx';
 import { PollCard } from './poll.tsx';
 import { Reactions } from './reactions.tsx';
-import { type Look, newBudget, PALETTES } from './shared.tsx';
+import { type Look, newBudget, PALETTES, type Theme } from './shared.tsx';
 import { isSystemMessage, SystemMessage } from './system.tsx';
 import type { Path, Pressed, PreviewComponent, PreviewEmbed, PreviewMessage, PreviewModal, PreviewProps } from './types.ts';
 
@@ -40,13 +40,11 @@ export function DiscordPreview({
 }: PreviewProps) {
   const [reply, setReply] = useState<string | null>(null);
   const m = budgeted(obj(payload) ?? {});
-  const flags = int(m.flags) ?? 0;
-  const classic = (flags & IS_COMPONENTS_V2) === 0;
-  const P = PALETTES[theme === 'light' ? 'light' : 'dark'];
+  const P = typeof theme === 'string' && Object.hasOwn(PALETTES, theme) ? PALETTES[theme as Theme] : PALETTES.dark;
   const picked = Array.isArray(selected) ? selected.join('.') : null;
   const look: Look = {
     P,
-    classic,
+    text: 'message',
     m,
     resolve: obj(resolve) ?? {},
     now: num(now) ?? Date.now(), // the only clock read, so server and client render the same
@@ -67,9 +65,10 @@ export function DiscordPreview({
     ring: (p: Path): CSSProperties => (picked !== null && p.join('.') === picked ? { boxShadow: '0 0 0 2px var(--dp-ring)', borderRadius: '6px' } : {}),
     sel: (p: Path) => (onSelectBlock ? { onClick: (e) => (e.stopPropagation(), onSelectBlock(p)), className: 'cursor-pointer' } : {}),
   };
-  const { sel, ring } = look;
   const md = budgetedModal(obj(modal));
   const channel = str(channelName, 100) || str(own(look.resolve.channels, m.channel_id)?.name, 100) || 'general';
+  // The reply to a press: an ephemeral message from the same author, answering this one. Nothing in it selects.
+  const answer: PreviewMessage | null = reply ? { author: m.author, member: m.member, webhook_id: m.webhook_id, type: 19, flags: EPHEMERAL, message_reference: {}, referenced_message: m, content: str(reply, 4000) } : null;
 
   return (
     <div className="discord-preview @container w-full overflow-hidden rounded-xl border" style={{ background: P.bg, borderColor: P.border, color: P.text, maxWidth: mobile ? '360px' : undefined }} aria-label="Message preview">
@@ -85,66 +84,82 @@ export function DiscordPreview({
               {channel}
             </div>
           )}
-          <div className="px-4 pt-4 pb-5 @max-[320px]:px-3">
-            <ReplyHeader m={m} look={look} />
-            <InteractionHeader m={m} look={look} />
-            {isSystemMessage(m) ? (
-              <SystemMessage m={m} look={look} />
-            ) : (
-              <div className="flex gap-3.5 @max-[320px]:gap-2.5">
-                <Avatar m={m} look={look} />
-                <div className="min-w-0 flex-1">
-                  <MessageHeader m={m} look={look} />
-                  <Forwarded m={m} look={look} />
-                  {flags & LOADING ? (
-                    <Thinking m={m} look={look} />
-                  ) : classic ? (
-                    <div className="mt-1 flex flex-col gap-2">
-                      {str(m.content) && (
-                        // "(edited)" follows the last line of text, so that line and the markdown around it flow inline
-                        <div {...sel([0])} className={`${sel([0]).className ?? ''} ${str(m.edited_timestamp) ? '[&>div]:inline [&>div>div:last-child]:inline' : ''}`} style={ring([0])}>
-                          <Markdown text={str(m.content, 4000)} look={look} jumbo={jumbo(str(m.content, 4000))} />
-                          <Edited m={m} look={look} />
-                        </div>
-                      )}
-                      {(flags & SUPPRESS_EMBEDS ? [] : arr(m.embeds, 10)).map((e, i) => (
-                        <Embed key={i} e={e} path={[1, i]} look={look} />
-                      ))}
-                      <Attachments m={m} look={look} />
-                      <Stickers m={m} look={look} />
-                      {obj(m.poll) && (
-                        <div {...sel([3])} style={ring([3])}>
-                          <PollCard poll={m.poll} look={look} />
-                        </div>
-                      )}
-                      {arr(m.components, 5).map((r, i) =>
-                        r?.type === 1 ? (
-                          <div key={i} {...sel([2, i])} style={ring([2, i])}>
-                            <Row row={r} look={look} />
-                          </div>
-                        ) : null,
-                      )}
-                    </div>
-                  ) : (
-                    <div className="mt-1.5 flex flex-col gap-3">
-                      {limitV2(arr(m.components, 40)).map((c, i) => (
-                        <Block key={i} c={c} path={[i]} look={look} />
-                      ))}
-                    </div>
-                  )}
-                  <Reactions m={m} look={look} />
-                  <ThreadPreview m={m} look={look} />
-                  {(flags & EPHEMERAL) !== 0 && <EphemeralNote look={look} className="mt-1" />}
-                </div>
-              </div>
-            )}
+          <div className="pb-4">
+            <Message m={m} look={look} />
+            {answer && <Message m={answer} look={{ ...look, m: answer, sel: () => ({}), ring: () => ({}) }} onDismiss={() => setReply(null)} />}
           </div>
-          {reply && (
-            <div className="pr-4 pb-[18px] pl-[70px] text-[15px]">
-              <EphemeralNote look={look} onDismiss={() => setReply(null)} className="mb-1" />
-              {reply}
+        </>
+      )}
+    </div>
+  );
+}
+
+// One message as Discord lays it out: 72px of gutter on the left (the avatar sits in it), 24px on the right, 17px above
+// it as the first of a group, its text at 16px on 22px lines. Ephemeral ones are tinted, with a 2px bar at the left
+// and the "Only you can see this" line last.
+function Message({ m, look, onDismiss }: { m: PreviewMessage; look: Look; onDismiss?: () => void }) {
+  const { sel, ring } = look;
+  const flags = int(m.flags) ?? 0;
+  const ephemeral = (flags & EPHEMERAL) !== 0;
+  const rows = arr(m.components, 5).map((r, i) =>
+    r?.type === 1 ? (
+      <div key={i} {...sel([2, i])} style={ring([2, i])}>
+        <Row row={r} look={look} />
+      </div>
+    ) : null,
+  );
+  return (
+    <div
+      className={`relative mt-[17px] py-[2px] pr-6 pl-[72px] text-[16px] leading-[22px] @max-[320px]:pr-3 @max-[320px]:pl-14 ${ephemeral ? 'bg-[rgb(78_98_235/0.05)] hover:bg-[rgb(88_98_245/0.1)]' : ''}`}
+    >
+      {ephemeral && <span aria-hidden className="absolute inset-y-0 left-0 w-[2px] bg-[#5865f2]" />}
+      {/* an ephemeral message answers an interaction, which never pings: no "@" before the name */}
+      <ReplyHeader m={m} look={look} at={!ephemeral} />
+      <InteractionHeader m={m} look={look} />
+      {isSystemMessage(m) ? (
+        <SystemMessage m={m} look={look} />
+      ) : (
+        <>
+          <MessageHeader m={m} look={look}>
+            <Avatar m={m} look={look} />
+          </MessageHeader>
+          <Forwarded m={m} look={look} />
+          {flags & LOADING ? (
+            <Thinking m={m} look={look} />
+          ) : (flags & IS_COMPONENTS_V2) === 0 ? (
+            <>
+              {str(m.content) && (
+                // "(edited)" follows the last line of text, so that line and the markdown around it flow inline
+                <div {...sel([0])} className={`${sel([0]).className ?? ''} ${str(m.edited_timestamp) ? '[&>div]:inline [&>div>div:last-child]:inline' : ''}`} style={ring([0])}>
+                  <Markdown text={str(m.content, 4000)} look={look} jumbo={jumbo(str(m.content, 4000))} />
+                  <Edited m={m} look={look} />
+                </div>
+              )}
+              {/* embeds, files, poll and components: 4px apart, 2px under the text; rows of components 6px apart */}
+              <div className="flex flex-col gap-1 pt-[2px] empty:hidden">
+                {(flags & SUPPRESS_EMBEDS ? [] : arr(m.embeds, 10)).map((e, i) => (
+                  <Embed key={i} e={e} path={[1, i]} look={look} />
+                ))}
+                <Attachments m={m} look={look} />
+                <Stickers m={m} look={look} />
+                {obj(m.poll) && (
+                  <div {...sel([3])} style={ring([3])}>
+                    <PollCard poll={m.poll} look={look} />
+                  </div>
+                )}
+                {rows.some(Boolean) && <div className="flex flex-col gap-[6px]">{rows}</div>}
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col gap-2 pt-[2px]">
+              {limitV2(arr(m.components, 40)).map((c, i) => (
+                <Block key={i} c={c} path={[i]} look={look} />
+              ))}
             </div>
           )}
+          <Reactions m={m} look={look} />
+          <ThreadPreview m={m} look={look} />
+          {ephemeral && <EphemeralNote look={look} onDismiss={onDismiss} />}
         </>
       )}
     </div>

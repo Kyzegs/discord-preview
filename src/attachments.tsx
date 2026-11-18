@@ -1,6 +1,6 @@
 import { type CSSProperties, useState } from 'react';
 import { arr, int, num, obj, safeHref, snowflake, str } from './guard.ts';
-import { type AreaProps, BLUE, fileSize, Icon, IMG, LINK, type Look, mediaSrc, Spoiler } from './shared.tsx';
+import { type AreaProps, fileSize, Icon, IMG, LINK, type Look, mediaSrc, Spoiler } from './shared.tsx';
 import type { PreviewAttachment } from './types.ts';
 
 const IS_VOICE_MESSAGE = 1 << 13; // message flag
@@ -99,7 +99,7 @@ function Pic({ item, look, single, box }: { item: MosaicItem; look: Look; single
   return (
     <div className={single ? 'relative' : 'relative size-full'}>
       {src ? (
-        <img {...IMG} src={src} alt={alt} className={`block object-cover ${single ? 'max-w-full' : 'size-full'}`} style={single ? (box ?? { maxWidth: '550px', maxHeight: '350px' }) : undefined} />
+        <img {...IMG} src={src} alt={alt} className={`block object-cover ${single ? (box ? 'max-w-full' : 'max-h-[350px] max-w-[min(550px,100%)]') : 'size-full'}`} style={single ? box : undefined} />
       ) : (
         <div aria-hidden className={single ? 'max-w-full' : 'size-full'} style={{ ...(single ? (box ?? { width: '400px', aspectRatio: '16 / 9' }) : {}), background: look.P.embed }} />
       )}
@@ -112,8 +112,10 @@ function Pic({ item, look, single, box }: { item: MosaicItem; look: Look; single
 const CELL = 'relative min-w-0 overflow-hidden *:h-full [&>div>div]:h-full';
 
 // Discord's image mosaic for 1 to 10 images: one at its own size, three as one tall and two stacked, four as a 2x2
-// grid, and otherwise rows of three with the remainder (one or two) on top.
-export function Mosaic({ items: raw, look }: { items: readonly MosaicItem[]; look: Look }) {
+// grid, and otherwise rows of three with the remainder (one or two) on top. Without `cell` a grid fills the width (at
+// most 550px); with it, the grid is that many px a column (two columns up to four images, else three), so a box that
+// shrinks to its content gets a width that doesn't wait for the images.
+export function Mosaic({ items: raw, look, cell }: { items: readonly MosaicItem[]; look: Look; cell?: number }) {
   const items = raw.slice(0, 10);
   const n = items.length;
   if (!n) return null;
@@ -130,15 +132,19 @@ export function Mosaic({ items: raw, look }: { items: readonly MosaicItem[]; loo
   const three = n === 3;
   const rows = n === 4 ? [2, 2] : [...(n % 3 ? [n % 3] : []), ...Array<number>(Math.floor(n / 3)).fill(3)];
   const sizes = rows.flatMap((size) => Array<number>(size).fill(size));
-  const cell = (i: number) => {
+  const span = (i: number) => {
     if (three) return i === 0 ? 'row-span-2' : '';
     const size = sizes[i];
     return size === 1 ? 'col-span-6 aspect-[16/9]' : size === 3 ? 'col-span-2 aspect-square' : n === 4 ? 'col-span-3 aspect-[3/2]' : 'col-span-3 aspect-square';
   };
+  const cols = n <= 4 ? 2 : 3;
   return (
-    <div className={`grid w-full max-w-[550px] gap-1 overflow-hidden rounded-lg ${three ? 'aspect-[3/2] grid-cols-2 grid-rows-2' : 'grid-cols-6'}`}>
+    <div
+      className={`grid gap-1 overflow-hidden rounded-lg ${cell ? 'max-w-full' : 'w-full max-w-[550px]'} ${three ? 'aspect-[3/2] grid-cols-2 grid-rows-2' : 'grid-cols-6'}`}
+      style={cell ? { width: `${cols * cell + (cols - 1) * 4}px` } : undefined}
+    >
       {items.map((item, i) => (
-        <div key={i} className={`${CELL} ${cell(i)}`}>
+        <div key={i} className={`${CELL} rounded-[2px] ${span(i)}`}>
           <Spoiler on={item.spoiler}>
             <Pic item={item} look={look} />
           </Spoiler>
@@ -170,7 +176,7 @@ function FileHead({ a, look }: { a: PreviewAttachment; look: Look }) {
       <FileIcon color={P.muted} />
       <div className="min-w-0 flex-1">
         {href ? (
-          <a {...LINK} href={href} className="block truncate text-base hover:underline" style={{ color: BLUE }}>
+          <a {...LINK} href={href} className="block truncate text-base hover:underline" style={{ color: P.link }}>
             {name}
           </a>
         ) : (
@@ -191,7 +197,7 @@ function FileHead({ a, look }: { a: PreviewAttachment; look: Look }) {
   );
 }
 
-const card = (look: Look): CSSProperties => ({ background: look.P.embed, borderColor: look.P.selectBorder });
+const card = (look: Look): CSSProperties => ({ background: look.P.embed, borderColor: look.P.embedLine });
 
 function FileCard({ a, look }: { a: PreviewAttachment; look: Look }) {
   return (

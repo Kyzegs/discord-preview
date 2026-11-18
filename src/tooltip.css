@@ -1,14 +1,16 @@
 /* Discord's tooltip, above a timestamp on hover or keyboard focus. Shut, it is the visually hidden text a screen reader
-   still reads, so it never takes room or widens the page. */
+   still reads, so it never takes room or widens the page. Sizes measured in Discord's web client; its colours were not. */
 .dtip { position: relative; }
 .dtip-t { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; pointer-events: none; }
 .dtip:is(:hover, :focus-visible) > .dtip-t {
-  width: auto; height: auto; overflow: visible; clip-path: none; z-index: 20;
-  bottom: calc(100% + 8px); left: 50%; translate: -50% 0;
-  padding: 8px 12px; border-radius: 8px; background: #111214; color: #dbdee1; box-shadow: 0 8px 16px rgb(0 0 0 / 0.24);
-  font-size: 14px; line-height: 18px; font-weight: 500; font-style: normal; text-decoration: none;
+  width: max-content; max-width: 200px; height: auto; overflow: visible; clip-path: none; z-index: 20; white-space: normal;
+  bottom: calc(100% + 12.7px); left: 50%; translate: -50% 0;
+  padding: 8px 12px; border-radius: 8px; background: #111214; color: #dbdee1;
+  box-shadow: inset 0 0 0 1px rgb(150 150 160 / 0.2), 0 8px 16px rgb(0 0 0 / 0.24);
+  font-size: 14px; line-height: 18px; font-weight: 500; font-style: normal; text-decoration: none; text-align: left;
 }
+/* the caret, 16 wide and 10 high, its tip about 2.7px above the timestamp */
 .dtip:is(:hover, :focus-visible) > .dtip-t::after {
   content: ""; position: absolute; top: 100%; left: 50%; translate: -50% 0;
-  border: 5px solid transparent; border-top-color: #111214;
+  border-style: solid; border-width: 10px 8px 0; border-color: #111214 transparent transparent;
 }

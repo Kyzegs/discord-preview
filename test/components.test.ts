@@ -45,7 +45,7 @@ test('selects: avatars, role dots, channel icons, defaults and chips', () => {
   assert.ok(html.includes('background:#3498db'), 'role colour dot');
   assert.ok(!html.includes('everyone'), '@everyone left out');
   assert.ok(html.includes('>Nelly<') && html.includes('>news<'), 'defaults shown as chosen');
-  assert.equal(count(html, /rounded-md bg-\[rgb\(128_128_128\/0\.24\)\]/g), 4, 'two string chips, two role chips');
+  assert.equal(count(html, /h-8 max-w-full items-center gap-2 rounded-\[3px\]/g), 4, 'two string chips, two role chips');
   assert.ok(html.includes('aria-multiselectable="true"'));
   // more defaults than max_values: only max_values shown
   const capped = v2([{ type: 1, components: [{ type: 3, options: [{ label: 'A', value: 'a', default: true }, { label: 'B', value: 'b', default: true }] }] }]);

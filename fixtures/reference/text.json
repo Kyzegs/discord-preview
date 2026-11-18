@@ -1,0 +1,74 @@
+{
+  "payload": {
+    "id": "1700000000000000101",
+    "channel_id": "1100000000000000100",
+    "type": 0,
+    "author": {
+      "id": "1500000000000000100",
+      "username": "Reference Bot",
+      "bot": true
+    },
+    "timestamp": "2026-01-01T11:50:00.000Z",
+    "content": "dp-ref 1a\n**bold** *italic* __underline__ ~~strike~~ `inline code` ||spoiler||\n```js\nconst a = 1; // code\n```\n> block quote\n# Heading 1\n## Heading 2\n### Heading 3\n-# subtext\n- bullet one\n  - nested bullet\n- bullet two\n1. first\n2. second\n[masked link](https://discord.com) https://discord.com\nuser <@1500000000000000100> role <@&1400000000000000100> channel <#1100000000000000100> @everyone <:tick:1000000000000000100> 😀 and plain end",
+    "mentions": [
+      {
+        "id": "1500000000000000100",
+        "username": "Reference Bot",
+        "bot": true
+      }
+    ],
+    "mention_roles": [
+      "1400000000000000100"
+    ],
+    "reactions": [
+      {
+        "emoji": {
+          "id": null,
+          "name": "👍"
+        },
+        "count": 1,
+        "count_details": {
+          "normal": 1,
+          "burst": 0
+        },
+        "me": false,
+        "me_burst": false,
+        "burst_colors": []
+      },
+      {
+        "emoji": {
+          "id": "1000000000000000100",
+          "name": "tick"
+        },
+        "count": 1,
+        "count_details": {
+          "normal": 1,
+          "burst": 0
+        },
+        "me": false,
+        "me_burst": false,
+        "burst_colors": []
+      }
+    ]
+  },
+  "resolve": {
+    "users": {
+      "1500000000000000100": {
+        "name": "Reference Bot"
+      }
+    },
+    "roles": {
+      "1400000000000000100": {
+        "name": "Role",
+        "color": 1752220,
+        "position": 1
+      }
+    },
+    "channels": {
+      "1100000000000000100": {
+        "name": "reference",
+        "type": 0
+      }
+    }
+  }
+}

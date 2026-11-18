@@ -339,6 +339,10 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   top: -10%;
 }
 
+.top-\[2px\]:is(.discord-preview, .discord-preview *) {
+  top: 2px;
+}
+
 .right-3:is(.discord-preview, .discord-preview *) {
   right: calc(var(--spacing) * 3);
 }
@@ -367,12 +371,20 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   left: calc(var(--spacing) * 1.5);
 }
 
+.left-4:is(.discord-preview, .discord-preview *) {
+  left: calc(var(--spacing) * 4);
+}
+
 .left-\[-10\%\]:is(.discord-preview, .discord-preview *) {
   left: -10%;
 }
 
-.left-\[-35px\]:is(.discord-preview, .discord-preview *) {
-  left: -35px;
+.left-\[-37px\]:is(.discord-preview, .discord-preview *) {
+  left: -37px;
+}
+
+.left-\[-56px\]:is(.discord-preview, .discord-preview *) {
+  left: -56px;
 }
 
 .col-span-2:is(.discord-preview, .discord-preview *) {
@@ -383,12 +395,24 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   grid-column: span 3 / span 3;
 }
 
+.col-span-4:is(.discord-preview, .discord-preview *) {
+  grid-column: span 4 / span 4;
+}
+
 .col-span-6:is(.discord-preview, .discord-preview *) {
   grid-column: span 6 / span 6;
 }
 
+.col-span-12:is(.discord-preview, .discord-preview *) {
+  grid-column: span 12 / span 12;
+}
+
 .row-span-2:is(.discord-preview, .discord-preview *) {
   grid-row: span 2 / span 2;
+}
+
+.mx-1:is(.discord-preview, .discord-preview *) {
+  margin-inline: var(--spacing);
 }
 
 .my-1:is(.discord-preview, .discord-preview *) {
@@ -411,16 +435,28 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   margin-top: calc(var(--spacing) * 2);
 }
 
-.mt-3:is(.discord-preview, .discord-preview *) {
-  margin-top: calc(var(--spacing) * 3);
+.mt-4:is(.discord-preview, .discord-preview *) {
+  margin-top: calc(var(--spacing) * 4);
 }
 
 .mt-\[-1px\]:is(.discord-preview, .discord-preview *) {
   margin-top: -1px;
 }
 
+.mt-\[2px\]:is(.discord-preview, .discord-preview *) {
+  margin-top: 2px;
+}
+
+.mt-\[17px\]:is(.discord-preview, .discord-preview *) {
+  margin-top: 17px;
+}
+
 .mt-px:is(.discord-preview, .discord-preview *) {
   margin-top: 1px;
+}
+
+.mr-0\.5:is(.discord-preview, .discord-preview *) {
+  margin-right: calc(var(--spacing) * .5);
 }
 
 .mr-1:is(.discord-preview, .discord-preview *) {
@@ -431,8 +467,16 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   margin-right: calc(var(--spacing) * 2);
 }
 
+.mb-0\.5:is(.discord-preview, .discord-preview *) {
+  margin-bottom: calc(var(--spacing) * .5);
+}
+
 .mb-1:is(.discord-preview, .discord-preview *) {
   margin-bottom: var(--spacing);
+}
+
+.mb-2:is(.discord-preview, .discord-preview *) {
+  margin-bottom: calc(var(--spacing) * 2);
 }
 
 .-ml-1:is(.discord-preview, .discord-preview *) {
@@ -445,10 +489,6 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 
 .ml-4:is(.discord-preview, .discord-preview *) {
   margin-left: calc(var(--spacing) * 4);
-}
-
-.ml-\[54px\]:is(.discord-preview, .discord-preview *) {
-  margin-left: 54px;
 }
 
 .block:is(.discord-preview, .discord-preview *) {
@@ -469,10 +509,6 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 
 .inline:is(.discord-preview, .discord-preview *) {
   display: inline;
-}
-
-.inline-block:is(.discord-preview, .discord-preview *) {
-  display: inline-block;
 }
 
 .inline-flex:is(.discord-preview, .discord-preview *) {
@@ -536,6 +572,11 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   height: calc(var(--spacing) * 12);
 }
 
+.size-20:is(.discord-preview, .discord-preview *) {
+  width: calc(var(--spacing) * 20);
+  height: calc(var(--spacing) * 20);
+}
+
 .size-40:is(.discord-preview, .discord-preview *) {
   width: calc(var(--spacing) * 40);
   height: calc(var(--spacing) * 40);
@@ -551,9 +592,14 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   height: 18px;
 }
 
-.size-\[72px\]:is(.discord-preview, .discord-preview *) {
-  width: 72px;
-  height: 72px;
+.size-\[22px\]:is(.discord-preview, .discord-preview *) {
+  width: 22px;
+  height: 22px;
+}
+
+.size-\[85px\]:is(.discord-preview, .discord-preview *) {
+  width: 85px;
+  height: 85px;
 }
 
 .size-\[120\%\]:is(.discord-preview, .discord-preview *) {
@@ -614,20 +660,32 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   height: 100%;
 }
 
-.h-px:is(.discord-preview, .discord-preview *) {
-  height: 1px;
+.max-h-\[350px\]:is(.discord-preview, .discord-preview *) {
+  max-height: 350px;
 }
 
 .max-h-\[560px\]:is(.discord-preview, .discord-preview *) {
   max-height: 560px;
 }
 
+.min-h-4:is(.discord-preview, .discord-preview *) {
+  min-height: calc(var(--spacing) * 4);
+}
+
+.min-h-6:is(.discord-preview, .discord-preview *) {
+  min-height: calc(var(--spacing) * 6);
+}
+
 .min-h-11:is(.discord-preview, .discord-preview *) {
   min-height: calc(var(--spacing) * 11);
 }
 
-.min-h-\[0\.75em\]:is(.discord-preview, .discord-preview *) {
-  min-height: .75em;
+.min-h-\[1lh\]:is(.discord-preview, .discord-preview *) {
+  min-height: 1lh;
+}
+
+.min-h-\[22px\]:is(.discord-preview, .discord-preview *) {
+  min-height: 22px;
 }
 
 .w-1:is(.discord-preview, .discord-preview *) {
@@ -636,6 +694,10 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 
 .w-10:is(.discord-preview, .discord-preview *) {
   width: calc(var(--spacing) * 10);
+}
+
+.w-\[2px\]:is(.discord-preview, .discord-preview *) {
+  width: 2px;
 }
 
 .w-\[3px\]:is(.discord-preview, .discord-preview *) {
@@ -658,6 +720,10 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   width: 100%;
 }
 
+.max-w-\[90\%\]:is(.discord-preview, .discord-preview *) {
+  max-width: 90%;
+}
+
 .max-w-\[432px\]:is(.discord-preview, .discord-preview *) {
   max-width: 432px;
 }
@@ -666,16 +732,24 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   max-width: 440px;
 }
 
-.max-w-\[480px\]:is(.discord-preview, .discord-preview *) {
-  max-width: 480px;
-}
-
-.max-w-\[520px\]:is(.discord-preview, .discord-preview *) {
-  max-width: 520px;
+.max-w-\[521px\]:is(.discord-preview, .discord-preview *) {
+  max-width: 521px;
 }
 
 .max-w-\[550px\]:is(.discord-preview, .discord-preview *) {
   max-width: 550px;
+}
+
+.max-w-\[min\(480px\,100\%\)\]:is(.discord-preview, .discord-preview *) {
+  max-width: min(480px, 100%);
+}
+
+.max-w-\[min\(520px\,100\%\)\]:is(.discord-preview, .discord-preview *) {
+  max-width: min(520px, 100%);
+}
+
+.max-w-\[min\(550px\,100\%\)\]:is(.discord-preview, .discord-preview *) {
+  max-width: min(550px, 100%);
 }
 
 .max-w-full:is(.discord-preview, .discord-preview *) {
@@ -714,6 +788,10 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   resize: none;
 }
 
+.list-outside:is(.discord-preview, .discord-preview *) {
+  list-style-position: outside;
+}
+
 .list-\[circle\]:is(.discord-preview, .discord-preview *) {
   list-style-type: circle;
 }
@@ -734,12 +812,12 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.grid-cols-3:is(.discord-preview, .discord-preview *) {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 .grid-cols-6:is(.discord-preview, .discord-preview *) {
   grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.grid-cols-12:is(.discord-preview, .discord-preview *) {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
 }
 
 .grid-rows-2:is(.discord-preview, .discord-preview *) {
@@ -794,16 +872,24 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   gap: calc(var(--spacing) * 3);
 }
 
-.gap-3\.5:is(.discord-preview, .discord-preview *) {
-  gap: calc(var(--spacing) * 3.5);
-}
-
 .gap-5:is(.discord-preview, .discord-preview *) {
   gap: calc(var(--spacing) * 5);
 }
 
 .gap-\[2px\]:is(.discord-preview, .discord-preview *) {
   gap: 2px;
+}
+
+.gap-\[6px\]:is(.discord-preview, .discord-preview *) {
+  gap: 6px;
+}
+
+.gap-x-1:is(.discord-preview, .discord-preview *) {
+  column-gap: var(--spacing);
+}
+
+.self-center:is(.discord-preview, .discord-preview *) {
+  align-self: center;
 }
 
 .self-start:is(.discord-preview, .discord-preview *) {
@@ -830,6 +916,10 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 
 .rounded:is(.discord-preview, .discord-preview *) {
   border-radius: .25rem;
+}
+
+.rounded-\[2px\]:is(.discord-preview, .discord-preview *) {
+  border-radius: 2px;
 }
 
 .rounded-\[3px\]:is(.discord-preview, .discord-preview *) {
@@ -895,20 +985,24 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   border-style: dashed;
 }
 
-.border-\[\#5865F2\]:is(.discord-preview, .discord-preview *) {
-  border-color: #5865f2;
+.border-\[rgb\(255_255_255\/0\.08\)\]:is(.discord-preview, .discord-preview *) {
+  border-color: #ffffff14;
 }
 
-.border-current:is(.discord-preview, .discord-preview *) {
-  border-color: currentColor;
-}
-
-.bg-\[\#5865F2\]:is(.discord-preview, .discord-preview *) {
+.bg-\[\#5865F2\]:is(.discord-preview, .discord-preview *), .bg-\[\#5865f2\]:is(.discord-preview, .discord-preview *) {
   background-color: #5865f2;
 }
 
-.bg-\[rgb\(128_128_128\/0\.24\)\]:is(.discord-preview, .discord-preview *) {
-  background-color: #8080803d;
+.bg-\[\#008545\]:is(.discord-preview, .discord-preview *) {
+  background-color: #008545;
+}
+
+.bg-\[\#d22d39\]:is(.discord-preview, .discord-preview *) {
+  background-color: #d22d39;
+}
+
+.bg-\[rgb\(78_98_235\/0\.05\)\]:is(.discord-preview, .discord-preview *) {
+  background-color: #4e62eb0d;
 }
 
 .bg-black:is(.discord-preview, .discord-preview *) {
@@ -964,6 +1058,10 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   padding: calc(var(--spacing) * 4);
 }
 
+.p-\[7px\]:is(.discord-preview, .discord-preview *) {
+  padding: 7px;
+}
+
 .px-0\.5:is(.discord-preview, .discord-preview *) {
   padding-inline: calc(var(--spacing) * .5);
 }
@@ -992,12 +1090,24 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   padding-inline: calc(var(--spacing) * 4);
 }
 
+.px-\[0\.2em\]:is(.discord-preview, .discord-preview *) {
+  padding-inline: .2em;
+}
+
+.px-\[4\.4px\]:is(.discord-preview, .discord-preview *) {
+  padding-inline: 4.4px;
+}
+
+.px-\[11px\]:is(.discord-preview, .discord-preview *) {
+  padding-inline: 11px;
+}
+
 .py-0\.5:is(.discord-preview, .discord-preview *) {
   padding-block: calc(var(--spacing) * .5);
 }
 
-.py-1:is(.discord-preview, .discord-preview *) {
-  padding-block: var(--spacing);
+.py-1\.5:is(.discord-preview, .discord-preview *) {
+  padding-block: calc(var(--spacing) * 1.5);
 }
 
 .py-2:is(.discord-preview, .discord-preview *) {
@@ -1008,24 +1118,24 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   padding-block: calc(var(--spacing) * 2.5);
 }
 
-.py-3:is(.discord-preview, .discord-preview *) {
-  padding-block: calc(var(--spacing) * 3);
-}
-
-.py-3\.5:is(.discord-preview, .discord-preview *) {
-  padding-block: calc(var(--spacing) * 3.5);
-}
-
 .py-6:is(.discord-preview, .discord-preview *) {
   padding-block: calc(var(--spacing) * 6);
+}
+
+.py-\[2px\]:is(.discord-preview, .discord-preview *) {
+  padding-block: 2px;
+}
+
+.py-\[3px\]:is(.discord-preview, .discord-preview *) {
+  padding-block: 3px;
 }
 
 .pt-2\.5:is(.discord-preview, .discord-preview *) {
   padding-top: calc(var(--spacing) * 2.5);
 }
 
-.pt-4:is(.discord-preview, .discord-preview *) {
-  padding-top: calc(var(--spacing) * 4);
+.pt-\[2px\]:is(.discord-preview, .discord-preview *) {
+  padding-top: 2px;
 }
 
 .pr-2:is(.discord-preview, .discord-preview *) {
@@ -1036,6 +1146,10 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   padding-right: calc(var(--spacing) * 4);
 }
 
+.pr-6:is(.discord-preview, .discord-preview *) {
+  padding-right: calc(var(--spacing) * 6);
+}
+
 .pb-2\.5:is(.discord-preview, .discord-preview *) {
   padding-bottom: calc(var(--spacing) * 2.5);
 }
@@ -1044,24 +1158,16 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   padding-bottom: calc(var(--spacing) * 4);
 }
 
-.pb-5:is(.discord-preview, .discord-preview *) {
-  padding-bottom: calc(var(--spacing) * 5);
-}
-
 .pb-6:is(.discord-preview, .discord-preview *) {
   padding-bottom: calc(var(--spacing) * 6);
-}
-
-.pb-\[18px\]:is(.discord-preview, .discord-preview *) {
-  padding-bottom: 18px;
 }
 
 .pl-3:is(.discord-preview, .discord-preview *) {
   padding-left: calc(var(--spacing) * 3);
 }
 
-.pl-\[70px\]:is(.discord-preview, .discord-preview *) {
-  padding-left: 70px;
+.pl-\[72px\]:is(.discord-preview, .discord-preview *) {
+  padding-left: 72px;
 }
 
 .text-center:is(.discord-preview, .discord-preview *) {
@@ -1072,16 +1178,12 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   text-align: left;
 }
 
-.align-\[-0\.3em\]:is(.discord-preview, .discord-preview *) {
-  vertical-align: -.3em;
-}
-
 .align-\[-0\.15em\]:is(.discord-preview, .discord-preview *) {
   vertical-align: -.15em;
 }
 
-.align-middle:is(.discord-preview, .discord-preview *) {
-  vertical-align: middle;
+.align-bottom:is(.discord-preview, .discord-preview *) {
+  vertical-align: bottom;
 }
 
 .font-mono:is(.discord-preview, .discord-preview *) {
@@ -1116,16 +1218,36 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   font-size: 10px;
 }
 
+.text-\[12\.8px\]:is(.discord-preview, .discord-preview *) {
+  font-size: 12.8px;
+}
+
+.text-\[12px\]:is(.discord-preview, .discord-preview *) {
+  font-size: 12px;
+}
+
 .text-\[13px\]:is(.discord-preview, .discord-preview *) {
   font-size: 13px;
+}
+
+.text-\[14px\]:is(.discord-preview, .discord-preview *) {
+  font-size: 14px;
 }
 
 .text-\[15px\]:is(.discord-preview, .discord-preview *) {
   font-size: 15px;
 }
 
+.text-\[16px\]:is(.discord-preview, .discord-preview *) {
+  font-size: 16px;
+}
+
 .text-\[20px\]:is(.discord-preview, .discord-preview *) {
   font-size: 20px;
+}
+
+.text-\[24px\]:is(.discord-preview, .discord-preview *) {
+  font-size: 24px;
 }
 
 .leading-4:is(.discord-preview, .discord-preview *) {
@@ -1143,9 +1265,34 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   line-height: calc(var(--spacing) * 6);
 }
 
+.leading-\[12px\]:is(.discord-preview, .discord-preview *) {
+  --tw-leading: 12px;
+  line-height: 12px;
+}
+
+.leading-\[15px\]:is(.discord-preview, .discord-preview *) {
+  --tw-leading: 15px;
+  line-height: 15px;
+}
+
 .leading-\[18px\]:is(.discord-preview, .discord-preview *) {
   --tw-leading: 18px;
   line-height: 18px;
+}
+
+.leading-\[22px\]:is(.discord-preview, .discord-preview *) {
+  --tw-leading: 22px;
+  line-height: 22px;
+}
+
+.leading-\[27\.5px\]:is(.discord-preview, .discord-preview *) {
+  --tw-leading: 27.5px;
+  line-height: 27.5px;
+}
+
+.leading-\[33px\]:is(.discord-preview, .discord-preview *) {
+  --tw-leading: 33px;
+  line-height: 33px;
 }
 
 .leading-none:is(.discord-preview, .discord-preview *) {
@@ -1186,6 +1333,10 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   word-break: break-all;
 }
 
+.whitespace-break-spaces:is(.discord-preview, .discord-preview *) {
+  white-space: break-spaces;
+}
+
 .whitespace-nowrap:is(.discord-preview, .discord-preview *) {
   white-space: nowrap;
 }
@@ -1194,8 +1345,8 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   white-space: pre-wrap;
 }
 
-.text-\[\#00A8FC\]:is(.discord-preview, .discord-preview *) {
-  color: #00a8fc;
+.text-\[\#5865f2\]:is(.discord-preview, .discord-preview *) {
+  color: #5865f2;
 }
 
 .text-transparent:is(.discord-preview, .discord-preview *) {
@@ -1217,6 +1368,10 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 .tabular-nums:is(.discord-preview, .discord-preview *) {
   --tw-numeric-spacing: tabular-nums;
   font-variant-numeric: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
+}
+
+.no-underline:is(.discord-preview, .discord-preview *) {
+  text-decoration-line: none;
 }
 
 .opacity-70:is(.discord-preview, .discord-preview *) {
@@ -1247,17 +1402,37 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   user-select: none;
 }
 
+.\[transition\:background-color_\.17s\,color_\.17s\]:is(.discord-preview, .discord-preview *) {
+  transition: background-color .17s, color .17s;
+}
+
 :is(.\*\:h-full > *):is(.discord-preview, .discord-preview *) {
   height: 100%;
 }
 
+.first\:mt-0:first-child:is(.discord-preview, .discord-preview *) {
+  margin-top: 0;
+}
+
+.empty\:hidden:empty:is(.discord-preview, .discord-preview *) {
+  display: none;
+}
+
 @media (hover: hover) {
+  .hover\:bg-\[rgb\(88_98_245\/0\.1\)\]:hover:is(.discord-preview, .discord-preview *) {
+    background-color: #5862f51a;
+  }
+
   .hover\:underline:hover:is(.discord-preview, .discord-preview *) {
     text-decoration-line: underline;
   }
 
   .hover\:opacity-100:hover:is(.discord-preview, .discord-preview *) {
     opacity: 1;
+  }
+
+  .enabled\:hover\:bg-\[\#4452bb\]:enabled:hover:is(.discord-preview, .discord-preview *) {
+    background-color: #4452bb;
   }
 }
 
@@ -1280,12 +1455,16 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 }
 
 @container not (width >= 320px) {
-  .\@max-\[320px\]\:left-\[-27px\]:is(.discord-preview, .discord-preview *) {
-    left: -27px;
+  .\@max-\[320px\]\:left-3:is(.discord-preview, .discord-preview *) {
+    left: calc(var(--spacing) * 3);
   }
 
-  .\@max-\[320px\]\:ml-\[42px\]:is(.discord-preview, .discord-preview *) {
-    margin-left: 42px;
+  .\@max-\[320px\]\:left-\[-29px\]:is(.discord-preview, .discord-preview *) {
+    left: -29px;
+  }
+
+  .\@max-\[320px\]\:left-\[-44px\]:is(.discord-preview, .discord-preview *) {
+    left: -44px;
   }
 
   .\@max-\[320px\]\:size-8:is(.discord-preview, .discord-preview *) {
@@ -1302,16 +1481,16 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
     width: calc(var(--spacing) * 8);
   }
 
-  .\@max-\[320px\]\:gap-2\.5:is(.discord-preview, .discord-preview *) {
-    gap: calc(var(--spacing) * 2.5);
-  }
-
   .\@max-\[320px\]\:p-2:is(.discord-preview, .discord-preview *) {
     padding: calc(var(--spacing) * 2);
   }
 
-  .\@max-\[320px\]\:px-3:is(.discord-preview, .discord-preview *) {
-    padding-inline: calc(var(--spacing) * 3);
+  .\@max-\[320px\]\:pr-3:is(.discord-preview, .discord-preview *) {
+    padding-right: calc(var(--spacing) * 3);
+  }
+
+  .\@max-\[320px\]\:pl-14:is(.discord-preview, .discord-preview *) {
+    padding-left: calc(var(--spacing) * 14);
   }
 }
 
@@ -1322,6 +1501,10 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 
 .\[\&_img\]\:align-bottom img:is(.discord-preview, .discord-preview *) {
   vertical-align: bottom;
+}
+
+.\[\&\>\*\]\:mt-2 > :is(.discord-preview, .discord-preview *) {
+  margin-top: calc(var(--spacing) * 2);
 }
 
 .\[\&\>div\]\:inline > div:is(.discord-preview, .discord-preview *) {
@@ -1337,26 +1520,29 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 }
 
 .dsel:is(.discord-preview, .discord-preview *) {
-  flex-direction: column;
-  gap: 4px;
-  width: 100%;
-  max-width: 460px;
-  display: flex;
+  width: 400px;
+  max-width: 100%;
   position: relative;
 }
 
-.dsel-b:is(.discord-preview, .discord-preview *) {
-  background: var(--dsel-bg, #1e1f22);
-  border: 1px solid var(--dsel-line, #1e1f22);
+[role="dialog"] .dsel:is(.discord-preview, .discord-preview *) {
   width: 100%;
-  min-height: 44px;
-  color: var(--dsel-muted, #949ba4);
+}
+
+.dsel-b:is(.discord-preview, .discord-preview *) {
+  background: var(--dsel-bg, #00000014);
+  border: 1px solid var(--dsel-line, #9696a033);
+  width: 100%;
+  min-height: 40px;
+  color: var(--dsel-text, #f3f3f4);
   text-align: left;
   border-radius: 8px;
   align-items: center;
   gap: 8px;
-  padding: 6px 10px 6px 12px;
-  font-size: 14px;
+  padding: 8px 8px 8px 12px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
   display: flex;
 }
 
@@ -1366,6 +1552,11 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   flex: 1;
   min-width: 0;
   overflow: hidden;
+}
+
+.dsel-b > .dsel-p:is(.discord-preview, .discord-preview *) {
+  color: var(--dsel-muted, #a4a5ab);
+  font-weight: 400;
 }
 
 .dsel-b svg:is(.discord-preview, .discord-preview *) {
@@ -1379,17 +1570,18 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 
 .dsel-l:is(.discord-preview, .discord-preview *) {
   z-index: 10;
-  background: var(--dsel-bg, #2b2d31);
-  border: 1px solid var(--dsel-line, #1e1f22);
+  scrollbar-gutter: stable;
+  border: 1px solid;
   border-radius: 8px;
   flex-direction: column;
-  padding: 4px 0;
+  max-height: 282px;
+  padding: 0;
   display: none;
   position: absolute;
-  top: calc(100% + 4px);
+  top: calc(100% + 8px);
   left: 0;
   right: 0;
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 .dsel[data-open="true"] .dsel-l:is(.discord-preview, .discord-preview *) {
@@ -1398,7 +1590,7 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 
 .dsel[data-up] .dsel-l:is(.discord-preview, .discord-preview *) {
   top: auto;
-  bottom: calc(100% + 4px);
+  bottom: calc(100% + 8px);
 }
 
 .discord-preview:has(.dsel[data-open="true"], .dtip:hover, .dtip:focus-visible):is(.discord-preview, .discord-preview *) {
@@ -1408,13 +1600,15 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 }
 
 .dsel-o:is(.discord-preview, .discord-preview *) {
-  width: 100%;
-  min-height: 44px;
-  color: var(--dsel-text, #dbdee1);
   text-align: left;
+  flex: none;
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
+  gap: 8px;
+  width: 100%;
+  min-height: 56px;
+  padding: 8px;
+  font-size: 14px;
+  line-height: 18px;
   display: flex;
 }
 
@@ -1422,28 +1616,41 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   background: #80808029;
 }
 
-.dsel-o[aria-selected="true"]:is(.discord-preview, .discord-preview *) {
-  background: #5865f238;
-}
-
 .dsel-o .e:is(.discord-preview, .discord-preview *) {
-  text-align: center;
   flex: none;
+  place-items: center;
   width: 22px;
   font-size: 18px;
+  display: grid;
 }
 
 .dsel-t:is(.discord-preview, .discord-preview *) {
   flex-direction: column;
   flex: 1;
   min-width: 0;
-  font-size: 14px;
+  font-weight: 600;
   display: flex;
 }
 
 .dsel-t small:is(.discord-preview, .discord-preview *) {
-  color: var(--dsel-muted, #949ba4);
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.dsel-o.dsel-c:is(.discord-preview, .discord-preview *) {
+  min-height: 44px;
+  padding: 12px;
+}
+
+.dsel-c .e:is(.discord-preview, .discord-preview *) {
+  width: 24px;
+}
+
+.dsel-c .dsel-t:is(.discord-preview, .discord-preview *) {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
 }
 
 .dtip:is(.discord-preview, .discord-preview *) {
@@ -1463,10 +1670,13 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 .dtip:is(:hover, :focus-visible) > .dtip-t:is(.discord-preview, .discord-preview *) {
   clip-path: none;
   z-index: 20;
+  white-space: normal;
   color: #dbdee1;
+  text-align: left;
   background: #111214;
   border-radius: 8px;
-  width: auto;
+  width: max-content;
+  max-width: 200px;
   height: auto;
   padding: 8px 12px;
   font-size: 14px;
@@ -1474,17 +1684,18 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   font-weight: 500;
   line-height: 18px;
   text-decoration: none;
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + 12.7px);
   left: 50%;
   overflow: visible;
   translate: -50%;
-  box-shadow: 0 8px 16px #0000003d;
+  box-shadow: inset 0 0 0 1px #9696a033, 0 8px 16px #0000003d;
 }
 
 .dtip:is(:hover, :focus-visible) > .dtip-t:is(.discord-preview, .discord-preview *):after {
   content: "";
-  border: 5px solid #0000;
-  border-top-color: #111214;
+  border: 8px solid #0000;
+  border-top: 10px solid #111214;
+  border-bottom-width: 0;
   position: absolute;
   top: 100%;
   left: 50%;
@@ -1689,4 +1900,8 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 }
 discord-preview {
   display: block;
+}
+/* Below the root, a line height comes from the parent unless the preview sets one, whatever the page says about divs. */
+.discord-preview * {
+  line-height: inherit;
 }

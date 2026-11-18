@@ -37,6 +37,10 @@ const ROOT_RULE = `.${ROOT} {
 discord-preview {
   display: block;
 }
+/* Below the root, a line height comes from the parent unless the preview sets one, whatever the page says about divs. */
+.${ROOT} * {
+  line-height: inherit;
+}
 `;
 
 const root = { type: 'class', name: ROOT } as const;

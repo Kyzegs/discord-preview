@@ -38,7 +38,7 @@ test('markdown: nested lists by indent, with Discord bullet shapes', () => {
   const out = html('- a\n  - b\n    - c\n      - d\n  - e\n- f\n  1. g\n  2. h');
   const shapes = [...out.matchAll(/<(ul|ol)[^>]*class="[^"]*(list-[a-z[\]]+)/g)].map((m) => m[2]);
   assert.deepEqual(shapes, ['list-disc', 'list-[circle]', 'list-[square]', 'list-[square]', 'list-decimal']);
-  assert.match(out, /<li>a<ul[^>]*><li>b<ul[^>]*><li>c<ul[^>]*><li>d<\/li><\/ul><\/li><\/ul><\/li><li>e<\/li><\/ul><\/li><li>f<ol/);
+  assert.match(out, /<li[^>]*>a<ul[^>]*><li[^>]*>b<ul[^>]*><li[^>]*>c<ul[^>]*><li[^>]*>d<\/li><\/ul><\/li><\/ul><\/li><li[^>]*>e<\/li><\/ul><\/li><li[^>]*>f<ol/);
   assert.equal(html(' - one space is not a level\n- x').match(/<ul/g)?.length, 1);
   assert.doesNotThrow(() => html(Array.from({ length: 200 }, (_, i) => `${' '.repeat(i * 2)}- x`).join('\n')));
   assert.equal(html('- a\n1. b\n- c').match(/<(ul|ol)/g)?.length, 3);
@@ -57,7 +57,7 @@ test('markdown: code keeps everything as typed', () => {
   assert.match(html('`**x** <@1> @everyone`'), /<code[^>]*>\*\*x\*\* &lt;@1&gt; @everyone<\/code>/);
   assert.match(html('``a ` b``'), /<code[^>]*>a ` b<\/code>/);
   assert.match(html('`` `x` ``'), /<code[^>]*>`x`<\/code>/);
-  assert.match(html('```one **line**```'), /<pre[^>]*>one \*\*line\*\*<\/pre>/);
+  assert.match(html('```one **line**```'), /<pre[^>]*><code[^>]*>one \*\*line\*\*<\/code><\/pre>/);
 });
 
 test('markdown: inline spoilers hide their text until revealed', () => {
@@ -76,7 +76,7 @@ test('mentions: a role pill takes the role colour', () => {
   const roles = { '1': { name: 'Red', color: 0xff0000 }, '2': { name: 'Plain', color: 0 }, '3': { name: 'Bad', color: 'red;x' as unknown as number } };
   const out = html('<@&1> <@&2> <@&3>', { resolve: { roles } });
   assert.ok(out.includes('style="color:#ff0000;background:#ff00001a"'), out);
-  assert.equal(out.match(/rgba\(88,101,242,0.3\)/g)?.length, 2);
+  assert.equal(out.match(/rgba\(88,100,242,0.24\)/g)?.length, 2);
 });
 
 test('links: <url>, trailing punctuation and Discord channel links', () => {
@@ -105,12 +105,12 @@ test('timestamps follow locale, time zone and now', () => {
     '': 'April 20, 2021 at 4:20 PM',
     t: '4:20 PM',
     T: '4:20:30 PM',
-    d: '04/20/2021',
+    d: '4/20/21',
     D: 'April 20, 2021',
     f: 'April 20, 2021 at 4:20 PM',
     F: 'Tuesday, April 20, 2021 at 4:20 PM',
-    s: '04/20/2021, 4:20 PM',
-    S: '04/20/2021, 4:20:30 PM',
+    s: '4/20/21, 4:20 PM',
+    S: '4/20/21, 4:20:30 PM',
     R: '5 years ago',
   });
   // the tooltip: the full date, in the preview's locale and time zone, instead of a native title
@@ -127,7 +127,7 @@ test('the author line', () => {
   const page = render({ payload: { author, content: 'hi', timestamp: '2026-01-01T09:30:00Z' } });
   assert.ok(page.includes('Ana') && page.includes('src="https://cdn.discordapp.com/avatars/80351110224678912/abc123.png?size=80"') && !page.includes('APP'));
   assert.ok(page.includes('Today at 9:30 AM'));
-  assert.match(page, /tabindex="0" class="dtip text-xs"[^>]*>Today at 9:30 AM<span role="tooltip" class="dtip-t">Thursday, January 1, 2026 at 9:30 AM</, 'the full date as its tooltip');
+  assert.match(page, /tabindex="0" class="dtip [^"]*"[^>]*>Today at 9:30 AM<span role="tooltip" class="dtip-t">Thursday, January 1, 2026 at 9:30 AM</, 'the full date as its tooltip');
   assert.match(render({ payload: { author, content: 'hi', timestamp: '2026-01-01T09:30:00Z' }, timeZone: 'America/New_York' }), /dtip-t">Thursday, January 1, 2026 at 4:30 AM</);
   assert.ok(render({ payload: { author: { ...author, bot: true }, content: 'hi', timestamp: '2025-12-31T09:30:00Z' } }).includes('APP'));
   assert.ok(render({ payload: { content: 'hi', timestamp: '2025-12-31T09:30:00Z' } }).includes('12/31/25, 9:30 AM'));
@@ -138,7 +138,7 @@ test('the author line', () => {
 test('mentions resolve names, or say they are unknown', () => {
   const resolve = { users: { '1': { name: 'One' } }, roles: { '2': { name: 'Mods' } }, channels: { '3': { name: 'rules' } } };
   const out = text('<@1> <@!4> <@5> <@&2> <@&6> <#3> <#7>', { resolve, payload: { flags: 32768, mentions: [{ id: '4', username: 'four' }], components: [{ type: 10, content: '<@1> <@!4> <@5> <@&2> <@&6> <#3> <#7>' }] } });
-  assert.ok(out.includes('@One @four @unknown-user @Mods @unknown-role #rules #unknown'), out);
+  assert.ok(out.includes('@One @four @unknown-user @Mods @unknown-role rules unknown'), out);
 });
 
 test('links: only http(s), opened safely', () => {

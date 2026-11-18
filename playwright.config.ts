@@ -14,7 +14,7 @@ const astro = (app: string, port: number) =>
 
 export default defineConfig({
   testDir: 'e2e',
-  testMatch: 'preview.spec.ts',
+  testMatch: ['preview.spec.ts', 'fidelity.spec.ts'],
   fullyParallel: true, // one spec file of about a thousand tests: spread them over the workers
   workers: 4,
   reporter: [['list']],

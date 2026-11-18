@@ -256,10 +256,10 @@ test('element: twemoji as attribute or property; highlight as a function propert
   assert.ok(el.querySelector('img[alt="👍"]')?.getAttribute('src')?.endsWith('/1f44d.svg'));
   el.setAttribute('highlight', '<b>x</b>');
   await tick();
-  assert.equal(el.querySelector('pre code'), null, 'no highlight attribute');
+  assert.equal(el.querySelector('pre code')?.innerHTML, 'x', 'no highlight attribute');
   el.highlight = '<b>x</b>' as never;
   await tick();
-  assert.equal(el.querySelector('pre code'), null, 'a string is ignored');
+  assert.equal(el.querySelector('pre code')?.innerHTML, 'x', 'a string is ignored');
   el.highlight = (code: string, lang: string) => `<i class="${lang}">${code}</i>`;
   await tick();
   assert.equal(el.querySelector('pre code')?.innerHTML, '<i class="js">x</i>');

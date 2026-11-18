@@ -1,0 +1,65 @@
+{
+  "payload": {
+    "id": "1700000000000000106",
+    "channel_id": "1100000000000000100",
+    "type": 0,
+    "author": {
+      "id": "1500000000000000100",
+      "username": "Reference Bot",
+      "bot": true
+    },
+    "timestamp": "2026-01-01T11:55:00.000Z",
+    "content": "dp-ref 5",
+    "embeds": [
+      {
+        "type": "rich",
+        "author": {
+          "name": "Author name",
+          "icon_url": "https://cdn.discordapp.com/embed/avatars/1.png",
+          "url": "https://discord.com"
+        },
+        "title": "Linked embed title",
+        "url": "https://discord.com",
+        "description": "Description with **bold**, *italic*, `code`, [link](https://discord.com) and ||spoiler||.\n> quote\n- list item",
+        "color": 5793266,
+        "fields": [
+          {
+            "name": "Inline 1",
+            "value": "Value one",
+            "inline": true
+          },
+          {
+            "name": "Inline 2",
+            "value": "Value two",
+            "inline": true
+          },
+          {
+            "name": "Inline 3",
+            "value": "Value three",
+            "inline": true
+          },
+          {
+            "name": "Full width field",
+            "value": "A longer value that takes the whole row with **markdown**.",
+            "inline": false
+          }
+        ],
+        "thumbnail": {
+          "url": "https://cdn.discordapp.com/embed/avatars/2.png",
+          "width": 256,
+          "height": 256
+        },
+        "image": {
+          "url": "https://cdn.discordapp.com/embed/avatars/3.png",
+          "width": 256,
+          "height": 256
+        },
+        "footer": {
+          "text": "Footer text",
+          "icon_url": "https://cdn.discordapp.com/embed/avatars/4.png"
+        },
+        "timestamp": "2026-01-01T12:00:00.000Z"
+      }
+    ]
+  }
+}

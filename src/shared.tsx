@@ -6,53 +6,97 @@ import type { Highlight, MediaUrl, Path, Pressed, PreviewEmoji, PreviewMember, P
 // two libraries need different props for the same markup.
 export const BUILD = { preact: false };
 
-// A Discord-client replica, so it keeps Discord's own colours rather than the host page's theme.
+// A Discord-client replica, so it keeps Discord's own colours rather than the host page's theme. One palette per theme,
+// every key in each: the values were measured in Discord's web client (its Dark and Light themes), except those marked
+// "ours" (the preview's own frame) or "not measured" (kept from earlier estimates). Another theme is another entry here.
 export const PALETTES = {
   dark: {
-    bg: '#313338',
-    border: '#26272B',
-    head: '#F2F3F5',
-    hash: '#80848E',
-    text: '#DBDEE1',
-    muted: '#949BA4',
-    container: '#393A41',
-    embed: '#2B2D31',
-    sep: '#4E5058',
-    mentionBg: 'rgba(88,101,242,0.3)',
-    mention: '#C9CDFB',
-    code: '#2B2D31',
-    spoiler: '#1E1F22',
-    quote: '#4E5058',
-    secondary: '#4E5058',
-    selectBg: '#1E1F22',
-    selectBorder: '#1E1F22',
+    bg: '#323339', // the chat
+    border: '#26272B', // ours: the preview's edge and channel bar
+    hash: '#80848E', // ours
+    head: '#ffffff', // names, headings, embed author and field names, a chosen option, select chips
+    text: '#f3f3f4', // message, embed and container text, select values
+    time: '#9d9ea5', // the time beside the name
+    muted: '#c5c6ca', // subtext, quote text, reaction counts, options not chosen
+    note: '#abacb2', // the ephemeral footer
+    link: '#76aff6',
+    mention: '#cdd7ff',
+    mentionBg: 'rgba(88,100,242,0.24)',
+    stamp: 'rgba(149,149,162,0.16)', // behind a timestamp in text
+    codeBg: 'rgba(89,102,242,0.08)',
+    codeLine: 'rgba(150,150,160,0.2)',
+    codeText: '#ffffff', // a code block's text
+    quote: '#595a63', // the quote bar
+    spoiler: '#7d7e87',
+    embed: '#393a41', // embeds and Components V2 containers
+    embedLine: 'rgba(148,148,156,0.12)',
+    divider: 'rgba(150,150,160,0.2)', // a Components V2 separator
+    secondary: 'rgba(148,148,156,0.12)', // secondary and link buttons, reactions
+    secondaryText: '#ffffff',
+    secondaryLine: 'rgba(153,153,153,0.04)',
+    selectBg: 'rgba(0,0,0,0.08)',
+    selectLine: 'rgba(150,150,160,0.2)',
+    placeholder: '#a4a5ab',
+    chip: '#36373e', // a chosen value in a multi-select
+    popout: '#3c3d45', // an open select's list
+    popoutLine: 'rgba(148,148,156,0.12)',
+    picked: 'rgba(150,150,160,0.2)', // a chosen option in the list
+    tag: '#393A41', // not measured: the server tag chip
+    sep: '#4E5058', // not measured: the reply spine, forward bar, poll and file borders
+    reacted: '#DEE0FC', // not measured: the count on a reaction of your own
   },
   light: {
-    bg: '#FFFFFF',
+    bg: '#fbfbfb',
     border: '#E1E2E4',
-    head: '#060607',
     hash: '#6D6F78',
-    text: '#313338',
-    muted: '#5C5E66',
-    container: '#F2F3F5',
-    embed: '#F2F3F5',
+    head: '#28282d',
+    text: '#2e2e34',
+    time: '#70717a',
+    muted: '#595a63',
+    note: '#6c6d76',
+    link: '#006dd4',
+    mention: '#2e3c88',
+    mentionBg: 'rgba(88,100,242,0.24)',
+    stamp: 'rgba(149,149,162,0.16)',
+    codeBg: 'rgba(77,102,230,0.04)',
+    codeLine: 'rgba(150,150,160,0.4)',
+    codeText: '#36373e',
+    quote: '#c5c6ca',
+    spoiler: '#8f9097',
+    embed: '#ffffff',
+    embedLine: 'rgba(151,151,158,0.28)',
+    divider: 'rgba(150,150,159,0.24)',
+    secondary: 'rgba(148,148,156,0.12)',
+    secondaryText: '#29292e',
+    secondaryLine: 'rgba(150,150,160,0.2)',
+    selectBg: 'rgba(0,0,0,0.02)',
+    selectLine: 'rgba(150,150,160,0.4)',
+    placeholder: '#696a73',
+    chip: '#fbfbfb',
+    popout: '#ffffff',
+    popoutLine: 'rgba(151,151,158,0.28)',
+    picked: 'rgba(150,150,159,0.24)',
+    tag: '#F2F3F5',
     sep: '#D4D7DC',
-    mentionBg: 'rgba(88,101,242,0.15)',
-    mention: '#505CDC',
-    code: '#E3E5E8',
-    spoiler: '#B5BAC1',
-    quote: '#D4D7DC',
-    secondary: '#6D6F78',
-    selectBg: '#EBEBED',
-    selectBorder: '#D4D7DC',
+    reacted: '#5865F2',
   },
 };
 export type Palette = (typeof PALETTES)['dark'];
+export type Theme = keyof typeof PALETTES;
+
+// Text sizes by where the text sits: a message's own text (and top-level text displays), text in a Components V2
+// container, and text in an embed. [font size, line height] in px; headings are the same everywhere.
+export const TEXT_SIZES = {
+  message: { body: [16, 22], sub: [14, 19.25] },
+  container: { body: [14, 19.25], sub: [12, 16.5] },
+  embed: { body: [14, 18], sub: [12, 16.5] }, // shortcut: embed subtext was not measured, so it takes the container's
+} as const;
+export type TextSize = keyof typeof TEXT_SIZES;
 
 // What every area of the preview reads besides its own part of the message.
 export interface Look {
   P: Palette;
-  classic: boolean; // a legacy message: smaller headings than Components V2
+  text: TextSize; // the size of the text being drawn: a message's own, a container's or an embed's
   m: PreviewMessage; // the whole message, for attachment:// links and mention names
   resolve: Resolve;
   now: number;
@@ -91,7 +135,7 @@ export const hex = (n: unknown): string | undefined => {
 export const emojiUrl = (id: string, animated: boolean) => `https://cdn.discordapp.com/emojis/${id}.${animated ? 'gif' : 'png'}`;
 
 export const LINK = { target: '_blank', rel: 'noopener noreferrer nofollow ugc' } as const;
-export const BLUE = '#00A8FC';
+export const BLURPLE = '#5865f2';
 export const DEFAULT_AVATAR = 'https://cdn.discordapp.com/embed/avatars/0.png';
 
 export const plural = (n: number, unit: string) => `${n} ${unit}${n === 1 ? '' : 's'}`;
@@ -129,13 +173,13 @@ export const twemojiUrl = (e: string) =>
 
 // An emoji: a custom one's image, a unicode one as Twemoji (when asked for) or as text. Without `look` (DiscordSelect's
 // own options) its URL has no host hook to pass.
-export const Emo = ({ e, look }: { e?: PreviewEmoji | null; look?: Look }) => {
+export const Emo = ({ e, look, className = 'size-[18px]' }: { e?: PreviewEmoji | null; look?: Look; className?: string }) => {
   const o = obj(e);
   const id = snowflake(o?.id);
   const name = str(o?.name, 32);
   const url = id ? emojiUrl(id, o?.animated === true) : look?.twemoji && isEmoji(name) ? twemojiUrl(name) : undefined;
   const src = url && look ? mediaSrc(url, look) : url;
-  if (src) return <img {...IMG} src={src} alt={name} className="size-[18px]" />;
+  if (src) return <img {...IMG} src={src} alt={name} className={`shrink-0 object-contain ${className}`} />;
   return name ? <span>{name}</span> : null;
 };
 
@@ -153,7 +197,7 @@ export function dateText(ms: number, opts: Intl.DateTimeFormatOptions, look: Pic
   return '';
 }
 
-const NUMERIC_DATE = { day: '2-digit', month: '2-digit', year: 'numeric' } as const;
+const NUMERIC_DATE = { day: 'numeric', month: 'numeric', year: '2-digit' } as const; // 1/1/26 in en-US, as Discord writes it
 const FORMATS: Record<string, Intl.DateTimeFormatOptions> = {
   t: { timeStyle: 'short' },
   T: { timeStyle: 'medium' },
@@ -239,10 +283,11 @@ export function mediaSrc(url: unknown, look: Look): string | undefined {
   }
 }
 
-export function Thumb({ url, alt, look }: { url: unknown; alt?: unknown; look: Look }) {
+// A square thumbnail: a section's (85px, radius 8) unless `className` says otherwise.
+export function Thumb({ url, alt, look, className = 'size-[85px] rounded-lg @max-[320px]:size-12' }: { url: unknown; alt?: unknown; look: Look; className?: string }) {
   const src = mediaSrc(url, look);
-  if (src) return <img {...IMG} src={src} alt={str(alt, 1024)} className="size-[72px] shrink-0 rounded-lg object-cover @max-[320px]:size-12" />;
-  return <span aria-hidden className="size-[72px] shrink-0 rounded-lg @max-[320px]:size-12" style={{ background: look.P.embed }} />;
+  if (src) return <img {...IMG} src={src} alt={str(alt, 1024)} className={`shrink-0 object-cover ${className}`} />;
+  return <span aria-hidden className={`shrink-0 ${className}`} style={{ background: look.P.sep }} />;
 }
 
 export function Spoiler({ on, children }: { on?: boolean; children: ReactNode }) {

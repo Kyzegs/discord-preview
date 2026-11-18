@@ -218,9 +218,9 @@ test('playground', async ({ page }) => {
   expect(srcs.filter((s) => !/^(\/samples\/|data:|https:\/\/cdn\.discordapp\.com\/embed\/avatars\/|https:\/\/cdn\.jsdelivr\.net\/)/.test(s))).toEqual([]);
   await expect(page.getByRole('link', { name: 'classic/selects', exact: true })).toHaveAttribute('href', '?fixture=classic/selects');
   const bg = () => page.locator('.discord-preview').first().evaluate((e) => getComputedStyle(e).backgroundColor);
-  expect(await bg()).toBe('rgb(49, 51, 56)');
+  expect(await bg()).toBe('rgb(50, 51, 57)');
   await page.getByRole('button', { name: 'Light theme' }).click();
-  await expect.poll(bg).toBe('rgb(255, 255, 255)');
+  await expect.poll(bg).toBe('rgb(251, 251, 251)');
   clean(page);
 });
 

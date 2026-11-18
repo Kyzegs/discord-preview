@@ -3,15 +3,15 @@ import { Attachments, Stickers } from './attachments.tsx';
 import { Embed } from './embed.tsx';
 import { arr, bool, int, LOOKUP, obj, own, snowflake, str } from './guard.ts';
 import { inline, Markdown } from './markdown.tsx';
-import { type AreaProps, BLUE, DEFAULT_AVATAR, displayName, fullDate, hex, headerTime, Icon, IMG, type Look, mediaSrc, Tip } from './shared.tsx';
+import { type AreaProps, BLURPLE, DEFAULT_AVATAR, displayName, fullDate, hex, headerTime, Icon, IMG, type Look, mediaSrc, Tip } from './shared.tsx';
 import type { PreviewMember, PreviewMessage, PreviewUser, Resolve } from './types.ts';
 
 const IS_CROSSPOST = 1 << 1;
 const SUPPRESS_EMBEDS = 1 << 2;
 const SUPPRESS_NOTIFICATIONS = 1 << 12;
 const VERIFIED_BOT = 1 << 16;
+const IS_COMPONENTS_V2 = 1 << 15;
 const HASH = /^(a_)?[0-9a-f]{32}$/; // a CDN image hash, the only payload string put into these CDN paths
-const BLURPLE = '#5865f2';
 
 export const hasFlag = (m: PreviewMessage, bit: number) => ((int(m.flags) ?? 0) & bit) !== 0;
 
@@ -80,9 +80,9 @@ function RoleIcon({ member, look }: { member: unknown; look: Look }) {
   const name = str(top.r.name, 100);
   const id = snowflake(top.id);
   const icon = str(top.r.icon);
-  if (id && HASH.test(icon)) return <Pic look={look} url={`https://cdn.discordapp.com/role-icons/${id}/${icon}.png?size=40`} alt={name} title={name} className="size-5 object-contain" />;
+  if (id && HASH.test(icon)) return <Pic look={look} url={`https://cdn.discordapp.com/role-icons/${id}/${icon}.png?size=40`} alt={name} title={name} className="size-5 self-center object-contain" />;
   return (
-    <span className="text-base leading-none" title={name}>
+    <span className="self-center text-base leading-none" title={name}>
       {str(top.r.unicode_emoji, 32)}
     </span>
   );
@@ -96,7 +96,7 @@ function ServerTag({ u, look }: { u: PreviewUser | undefined; look: Look }) {
   const guild = snowflake(g.identity_guild_id);
   const badge = str(g.badge);
   return (
-    <span className="inline-flex h-[18px] items-center gap-1 rounded-[4px] px-1 text-xs leading-none font-semibold" style={{ background: look.P.container, color: look.P.text }}>
+    <span className="inline-flex h-[18px] items-center gap-1 self-center rounded-[4px] px-1 text-xs leading-none font-semibold" style={{ background: look.P.tag, color: look.P.text }}>
       {guild && HASH.test(badge) && <Pic look={look} url={`https://cdn.discordapp.com/guild-tag-badges/${guild}/${badge}.png?size=16`} alt="" className="size-3.5" />}
       {tag}
     </span>
@@ -106,9 +106,10 @@ function ServerTag({ u, look }: { u: PreviewUser | undefined; look: Look }) {
 const isApp = (m: PreviewMessage) => bool(obj(m.author)?.bot) || !!str(m.webhook_id);
 const verified = (u: PreviewUser | undefined) => ((int(u?.public_flags) ?? 0) & VERIFIED_BOT) !== 0;
 
-function AppTag({ check }: { check: boolean }) {
+// 15px high with 12.8px text; in the header it sits 2px below the line's top.
+function AppTag({ check, className = '' }: { check: boolean; className?: string }) {
   return (
-    <span className="inline-flex h-[15px] shrink-0 items-center rounded-[3px] px-1 text-[10px] leading-none font-semibold text-white" style={{ background: BLURPLE }}>
+    <span className={`inline-flex h-[15px] shrink-0 items-center rounded-[4px] ${className} px-[4.4px] text-[12.8px] leading-[15px] font-semibold text-white`} style={{ background: BLURPLE }}>
       {check && (
         // the check from skyra's discord-components verified-tick.tsx (MIT)
         <svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 15.2" className="-ml-1">
@@ -124,7 +125,8 @@ export function Avatar({ m, look }: AreaProps) {
   const a = obj(m.author);
   const asset = str(obj(a?.avatar_decoration_data)?.asset);
   return (
-    <span className="relative size-10 shrink-0 @max-[320px]:size-8">
+    // placed from the header: 56px left of the text and 2px below the header's top, as in Discord
+    <span className="absolute top-[2px] left-[-56px] size-10 @max-[320px]:left-[-44px] @max-[320px]:size-8">
       <Face src={avatarSrc(a, look)} className="size-full rounded-full" />
       {HASH.test(asset) && <Pic look={look} url={`https://cdn.discordapp.com/avatar-decoration-presets/${asset}.png?size=96`} alt="" className="pointer-events-none absolute top-[-10%] left-[-10%] size-[120%] max-w-none" />}
     </span>
@@ -132,26 +134,29 @@ export function Avatar({ m, look }: AreaProps) {
 }
 
 // The line above the message: name, role icon, server tag, APP tag, time, and the "Sent silently" and "Read aloud" notes.
-export function MessageHeader({ m, look }: AreaProps) {
-  const { P, classic } = look;
+// 22px high, every part on a 22px line 4px apart; the avatar hangs off it (`relative`).
+export function MessageHeader({ m, look, children }: AreaProps & { children?: ReactNode }) {
+  const { P } = look;
   const a = obj(m.author);
   const sent = Date.parse(str(m.timestamp, 64));
+  const small = 'text-[12px] font-medium leading-[22px]';
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      <Name u={a} member={m.member} look={look} className="font-semibold" />
+    <div className="relative flex min-h-[22px] flex-wrap items-start gap-x-1 leading-[22px]">
+      {children}
+      <Name u={a} member={m.member} look={look} className="text-[16px] leading-[22px] font-medium" />
       <RoleIcon member={m.member} look={look} />
       <ServerTag u={a} look={look} />
-      {isApp(m) && <AppTag check={verified(a)} />}
-      <Tip tip={fullDate(Number.isNaN(sent) ? look.now : sent, look)} className="text-xs" style={{ color: P.muted }}>
+      {isApp(m) && <AppTag check={verified(a)} className="mt-[2px] self-start" />}
+      <Tip tip={fullDate(Number.isNaN(sent) ? look.now : sent, look)} className={small} style={{ color: P.time }}>
         {headerTime(Number.isNaN(sent) ? look.now : sent, look)}
       </Tip>
       {hasFlag(m, SUPPRESS_NOTIFICATIONS) && (
-        <span className="text-xs" style={{ color: P.muted }}>
+        <span className={small} style={{ color: P.time }}>
           · Sent silently
         </span>
       )}
-      {classic && bool(m.tts) && (
-        <span className="text-xs" style={{ color: P.muted }}>
+      {!hasFlag(m, IS_COMPONENTS_V2) && bool(m.tts) && (
+        <span className={small} style={{ color: P.time }}>
           · Read aloud
         </span>
       )}
@@ -159,12 +164,12 @@ export function MessageHeader({ m, look }: AreaProps) {
   );
 }
 
-// ---- Above the message: one line, joined to the avatar by the curved spine (measurements from skyra's discord-reply.css)
+// ---- Above the message: one 18px line at 14px, 4px over the header, joined to the avatar by a 33x12 curved spine
 
 function Above({ look, children }: { look: Look; children: ReactNode }) {
   return (
-    <div className="relative mb-1 ml-[54px] flex min-w-0 items-center gap-1 text-sm leading-[18px] whitespace-nowrap @max-[320px]:ml-[42px]" style={{ color: look.P.muted }}>
-      <span aria-hidden className="absolute top-1/2 right-full bottom-[-2px] left-[-35px] mt-[-1px] mr-1 rounded-tl-md border-t-2 border-l-2 @max-[320px]:left-[-27px]" style={{ borderColor: look.P.sep }} />
+    <div className="relative mb-1 flex h-[18px] min-w-0 items-center gap-1 text-[14px] leading-[18px] whitespace-nowrap" style={{ color: look.P.text }}>
+      <span aria-hidden className="absolute top-1/2 right-full bottom-[-2px] left-[-37px] mt-[-1px] mr-1 rounded-tl-md border-t-2 border-l-2 @max-[320px]:left-[-29px]" style={{ borderColor: look.P.sep }} />
       {children}
     </div>
   );
@@ -172,8 +177,9 @@ function Above({ look, children }: { look: Look; children: ReactNode }) {
 
 const Mini = ({ u, look }: { u: PreviewUser | undefined; look: Look }) => <Face src={avatarSrc(u, look)} className="size-4 shrink-0 rounded-full" />;
 
-// The replied-to message, as one line: never more than a snippet of it.
-export function ReplyHeader({ m, look }: AreaProps) {
+// The replied-to message, as one line: never more than a snippet of it. `at` puts "@" before the name, as a reply
+// that pings does; an interaction's reply has none.
+export function ReplyHeader({ m, look, at = true }: AreaProps & { at?: boolean }) {
   const ref = obj(m.message_reference);
   const type = int(m.type) ?? 0;
   if (hasFlag(m, IS_CROSSPOST) || (int(ref?.type) ?? 0) !== 0 || !((ref && type === 0) || type === 19)) return null;
@@ -182,7 +188,9 @@ export function ReplyHeader({ m, look }: AreaProps) {
       <span className="grid size-4 shrink-0 place-items-center rounded-full" style={{ background: look.P.embed }}>
         <Icon name="reply" size={10} />
       </span>
-      <span className="italic">{text}</span>
+      <span className="italic" style={{ color: look.P.muted }}>
+        {text}
+      </span>
     </Above>
   );
   if (m.referenced_message === null) return note('Original message was deleted');
@@ -194,16 +202,20 @@ export function ReplyHeader({ m, look }: AreaProps) {
     <Above look={look}>
       <Mini u={a} look={look} />
       {isApp(r) && <AppTag check={verified(a)} />}
-      <Name u={a} member={r.member} look={look} prefix="@" className="shrink-0 font-medium" />
+      <Name u={a} member={r.member} look={look} prefix={at ? '@' : ''} className="shrink-0 font-medium" />
       {content ? (
         <span className="min-w-0 truncate">{inline(content, { ...look, m: r })}</span>
       ) : arr(r.attachments).length || arr(r.embeds).length ? (
         <>
-          <span className="italic">Click to see attachment</span>
+          <span className="italic" style={{ color: look.P.muted }}>
+            Click to see attachment
+          </span>
           <Icon name="image" size={18} />
         </>
       ) : (
-        <span className="italic">Click to see original message</span>
+        <span className="italic" style={{ color: look.P.muted }}>
+          Click to see original message
+        </span>
       )}
     </Above>
   );
@@ -222,7 +234,7 @@ export function InteractionHeader({ m, look }: AreaProps) {
       <Name u={u} look={look} className="shrink-0 font-medium" />
       <span className="shrink-0">{name ? 'used' : 'used a command'}</span>
       {name && (
-        <span className="min-w-0 truncate font-medium" style={{ color: BLUE }}>
+        <span className="min-w-0 truncate font-medium" style={{ color: look.P.link }}>
           {`/${name}`}
         </span>
       )}
@@ -236,7 +248,7 @@ export function Forwarded({ m, look }: AreaProps) {
   const snap = obj(obj(arr(m.message_snapshots, 1)[0])?.message);
   if (int(ref?.type) !== 1 || !snap) return null;
   const { P } = look;
-  const inner: Look = { ...look, m: snap, classic: true, sel: () => ({}), ring: () => ({}) };
+  const inner: Look = { ...look, m: snap, sel: () => ({}), ring: () => ({}) };
   const channel = str(own(look.resolve.channels, ref?.channel_id)?.name, 100);
   const sent = Date.parse(str(snap.timestamp, 64));
   const footer = [channel && `#${channel}`, Number.isNaN(sent) ? '' : headerTime(sent, look)].filter(Boolean).join(' • ');
@@ -283,18 +295,23 @@ export function Thinking({ m, look }: AreaProps) {
   );
 }
 
-// Under an ephemeral message. Without `onDismiss` the dismiss control is only shown.
-export function EphemeralNote({ look, onDismiss, className }: { look: Look; onDismiss?: () => void; className: string }) {
+// The last line of an ephemeral message: an eye, "Only you can see this • Dismiss message", 12px, 4px below what is above.
+// Without `onDismiss` the dismiss control is only shown.
+export function EphemeralNote({ look, onDismiss }: { look: Look; onDismiss?: () => void }) {
+  const { P } = look;
   return (
-    <div className={`flex flex-wrap items-center gap-1.5 text-xs ${className}`} style={{ color: look.P.muted }}>
-      <Icon name="eye" size={14} /> Only you can see this ·
-      {onDismiss ? (
-        <button type="button" className="text-[#00A8FC] hover:underline" onClick={onDismiss}>
-          Dismiss message
-        </button>
-      ) : (
-        <span className="text-[#00A8FC]">Dismiss message</span>
-      )}
+    <div className="mt-1 flex min-h-4 items-center text-[12px] leading-[12px] font-normal" style={{ color: P.note }}>
+      <Icon name="eye" size={16} className="mr-1" />
+      <span>
+        {'Only you can see this • '}
+        {onDismiss ? (
+          <button type="button" className="hover:underline" style={{ color: P.link }} onClick={onDismiss}>
+            Dismiss message
+          </button>
+        ) : (
+          <span style={{ color: P.link }}>Dismiss message</span>
+        )}
+      </span>
     </div>
   );
 }
@@ -307,12 +324,12 @@ export function ThreadPreview({ m, look }: AreaProps) {
   const n = int(t.message_count) ?? 0;
   const count = n > 0 ? `${n > 50 ? '50+' : n} Message${n === 1 ? '' : 's'}` : 'See Thread';
   return (
-    <div className="mt-2 flex w-fit max-w-[480px] min-w-0 flex-col gap-0.5 rounded-lg p-2 text-sm leading-[18px]" style={{ background: P.embed }}>
+    <div className="mt-2 flex w-fit max-w-[min(480px,100%)] min-w-0 flex-col gap-0.5 rounded-lg p-2 text-sm leading-[18px]" style={{ background: P.embed }}>
       <div className="flex min-w-0 items-center gap-2">
         <span className="truncate font-semibold" style={{ color: P.head }}>
           {str(t.name, 100) || 'Thread'}
         </span>
-        <span className="shrink-0 font-semibold" style={{ color: BLUE }}>
+        <span className="shrink-0 font-semibold" style={{ color: P.link }}>
           {`${count} ›`}
         </span>
       </div>
