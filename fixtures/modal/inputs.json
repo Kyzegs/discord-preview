@@ -1,0 +1,32 @@
+{
+  "payload": {},
+  "modal": {
+    "title": "Report a bug",
+    "custom_id": "bug",
+    "components": [
+      { "type": 10, "content": "Tell us **what happened**. We read every report." },
+      { "type": 18, "label": "Title", "description": "One line that sums it up", "component": { "type": 4, "custom_id": "title", "style": 1, "placeholder": "The app crashes when...", "max_length": 100 } },
+      {
+        "type": 18,
+        "label": "Steps to reproduce",
+        "component": { "type": 4, "custom_id": "steps", "style": 2, "value": "1. Open the app\n2. Press the button", "min_length": 10, "max_length": 1000 }
+      },
+      { "type": 18, "label": "Version", "component": { "type": 4, "custom_id": "version", "style": 1, "required": false, "value": "2.4.1" } },
+      {
+        "type": 18,
+        "label": "Area",
+        "description": "Pick every part that is affected",
+        "component": {
+          "type": 3,
+          "custom_id": "area",
+          "max_values": 3,
+          "options": [
+            { "label": "Login", "value": "login", "default": true },
+            { "label": "Payments", "value": "payments", "emoji": { "name": "💳" } },
+            { "label": "Settings", "value": "settings" }
+          ]
+        }
+      }
+    ]
+  }
+}

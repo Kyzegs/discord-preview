@@ -1,0 +1,14 @@
+{
+  "payload": {},
+  "modal": {
+    "title": "Feedback",
+    "custom_id": "feedback",
+    "components": [
+      { "type": 1, "components": [{ "type": 4, "custom_id": "name", "style": 1, "label": "Your name", "placeholder": "Ana" }] },
+      { "type": 1, "components": [{ "type": 4, "custom_id": "comments", "style": 2, "label": "Comments", "required": false, "max_length": 500 }] },
+      { "type": 1, "components": [{ "type": 2, "style": 1, "label": "Not allowed in a modal", "custom_id": "x" }] },
+      { "type": 18, "label": "Channel", "component": { "type": 8, "custom_id": "where", "channel_types": [0] } }
+    ]
+  },
+  "resolve": { "channels": { "1100000000000000001": { "name": "general", "type": 0 } } }
+}

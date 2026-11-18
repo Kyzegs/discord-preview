@@ -1,0 +1,61 @@
+{
+  "payload": {
+    "author": { "id": "1200000000000000001", "username": "helper", "bot": true },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "toppings",
+            "placeholder": "Pick toppings",
+            "min_values": 1,
+            "max_values": 3,
+            "options": [
+              { "label": "Cheese", "value": "cheese", "emoji": { "name": "🧀" }, "default": true },
+              { "label": "Mushroom", "value": "mushroom", "description": "Earthy", "emoji": { "name": "🍄" }, "default": true },
+              { "label": "Olive", "value": "olive" }
+            ]
+          }
+        ]
+      },
+      { "type": 1, "components": [{ "type": 5, "custom_id": "user", "placeholder": "Pick a member", "default_values": [{ "id": "80351110224678912", "type": "user" }] }] },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 6,
+            "custom_id": "roles",
+            "max_values": 5,
+            "default_values": [
+              { "id": "1400000000000000002", "type": "role" },
+              { "id": "1400000000000000001", "type": "role" }
+            ]
+          }
+        ]
+      },
+      { "type": 1, "components": [{ "type": 7, "custom_id": "mentionable", "placeholder": "Anyone", "max_values": 2 }] },
+      { "type": 1, "components": [{ "type": 8, "custom_id": "channel", "default_values": [{ "id": "1100000000000000002", "type": "channel" }] }] },
+      { "type": 1, "components": [{ "type": 8, "custom_id": "channel-off", "placeholder": "Disabled", "channel_types": [0, 2, 5, 15], "disabled": true }] }
+    ]
+  },
+  "resolve": {
+    "guildId": "1400000000000000000",
+    "users": {
+      "80351110224678912": { "name": "Nelly", "avatar": "https://cdn.discordapp.com/embed/avatars/1.png" },
+      "80351110224678913": { "name": "Sam" }
+    },
+    "roles": {
+      "1400000000000000000": { "name": "everyone", "position": 0 },
+      "1400000000000000001": { "name": "Member", "position": 1 },
+      "1400000000000000002": { "name": "Moderator", "position": 5, "color": 3447003 }
+    },
+    "channels": {
+      "1100000000000000001": { "name": "general", "type": 0 },
+      "1100000000000000002": { "name": "news", "type": 5 },
+      "1100000000000000003": { "name": "Text channels", "type": 4 },
+      "1100000000000000004": { "name": "Lounge", "type": 2 },
+      "1100000000000000005": { "name": "help", "type": 15 }
+    }
+  }
+}

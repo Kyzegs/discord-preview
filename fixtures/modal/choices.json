@@ -1,0 +1,42 @@
+{
+  "payload": {},
+  "theme": "light",
+  "modal": {
+    "title": "Event sign-up",
+    "custom_id": "signup",
+    "components": [
+      {
+        "type": 18,
+        "label": "Which day?",
+        "component": {
+          "type": 21,
+          "custom_id": "day",
+          "options": [
+            { "label": "Saturday", "value": "sat", "description": "From 10:00" },
+            { "label": "Sunday", "value": "sun", "default": true }
+          ]
+        }
+      },
+      {
+        "type": 18,
+        "label": "What will you bring?",
+        "description": "Up to two",
+        "component": {
+          "type": 22,
+          "custom_id": "bring",
+          "max_values": 2,
+          "required": false,
+          "options": [
+            { "label": "Snacks", "value": "snacks", "default": true },
+            { "label": "Drinks", "value": "drinks" },
+            { "label": "Games", "value": "games", "description": "Board or card" }
+          ]
+        }
+      },
+      { "type": 18, "label": "Send me a reminder", "description": "A DM the day before", "component": { "type": 23, "custom_id": "remind", "default": true } },
+      { "type": 18, "label": "Proof of ticket", "component": { "type": 19, "custom_id": "ticket", "max_values": 3, "file_types": ["image", ".pdf"] } },
+      { "type": 18, "label": "Your team", "component": { "type": 6, "custom_id": "team", "default_values": [{ "id": "1400000000000000002", "type": "role" }] } }
+    ]
+  },
+  "resolve": { "roles": { "1400000000000000002": { "name": "Moderator", "position": 5, "color": 3447003 } } }
+}
