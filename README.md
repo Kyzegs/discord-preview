@@ -2,9 +2,15 @@
 
 Discord message previews for any framework: legacy messages and Components V2, rendered from a Discord API payload
 
-Status: work in progress, not published yet
-
 This project is not affiliated with, endorsed by or sponsored by Discord Inc.
+
+## Install
+
+```sh
+npm install discord-preview
+```
+
+React 19 and Vue 3.5 are optional peers: install the one you use, or neither for the custom element and the server renderer.
 
 ## Usage
 
