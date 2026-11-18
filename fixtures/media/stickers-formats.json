@@ -1,0 +1,28 @@
+{
+  "payload": {
+    "author": {
+      "id": "80351110224678912",
+      "username": "nelly",
+      "global_name": "Nelly"
+    },
+    "timestamp": "2026-01-01T10:00:00.000Z",
+    "sticker_items": [
+      {
+        "id": "749054660769218631",
+        "name": "Wumpus",
+        "format_type": 2
+      },
+      {
+        "id": "1000000000000000011",
+        "name": "Animated Lottie",
+        "format_type": 3
+      },
+      {
+        "id": "1000000000000000009",
+        "name": "Party",
+        "format_type": 4
+      }
+    ]
+  },
+  "bare": true
+}

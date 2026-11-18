@@ -1,0 +1,50 @@
+{
+  "payload": {
+    "author": {
+      "id": "80351110224678912",
+      "username": "nelly",
+      "global_name": "Nelly"
+    },
+    "timestamp": "2026-01-01T10:00:00.000Z",
+    "content": "https://example.com/article https://example.com/page",
+    "embeds": [
+      {
+        "type": "article",
+        "url": "https://example.com/article",
+        "title": "An article",
+        "description": "Articles show their thumbnail large.",
+        "provider": {
+          "name": "Example Blog"
+        },
+        "thumbnail": {
+          "url": "https://cdn.discordapp.com/embed/avatars/1.png",
+          "width": 1200,
+          "height": 630
+        }
+      },
+      {
+        "type": "link",
+        "url": "https://example.com/page",
+        "title": "A link",
+        "description": "Links keep a small thumbnail at the side.",
+        "provider": {
+          "name": "Example"
+        },
+        "thumbnail": {
+          "url": "https://cdn.discordapp.com/embed/avatars/2.png",
+          "width": 256,
+          "height": 256
+        }
+      },
+      {
+        "type": "poll_result",
+        "fields": [
+          {
+            "name": "poll_question_text",
+            "value": "Ignored here"
+          }
+        ]
+      }
+    ]
+  }
+}

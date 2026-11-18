@@ -1,0 +1,55 @@
+{
+  "payload": {
+    "author": {
+      "id": "80351110224678912",
+      "username": "nelly",
+      "global_name": "Nelly"
+    },
+    "timestamp": "2026-01-01T10:00:00.000Z",
+    "embeds": [
+      {
+        "type": "rich",
+        "url": "https://example.com/gallery",
+        "title": "A gallery",
+        "description": "Four embeds sharing a url: one card, four images.",
+        "image": {
+          "url": "https://cdn.discordapp.com/embed/avatars/0.png",
+          "width": 800,
+          "height": 800
+        }
+      },
+      {
+        "type": "rich",
+        "url": "https://example.com/gallery",
+        "image": {
+          "url": "https://cdn.discordapp.com/embed/avatars/1.png",
+          "width": 800,
+          "height": 800
+        }
+      },
+      {
+        "type": "rich",
+        "url": "https://example.com/gallery",
+        "image": {
+          "url": "https://cdn.discordapp.com/embed/avatars/2.png",
+          "width": 800,
+          "height": 800
+        }
+      },
+      {
+        "type": "rich",
+        "url": "https://example.com/gallery",
+        "image": {
+          "url": "https://cdn.discordapp.com/embed/avatars/3.png",
+          "width": 800,
+          "height": 800
+        }
+      },
+      {
+        "type": "rich",
+        "title": "Not part of it",
+        "description": "A different url"
+      }
+    ]
+  }
+}

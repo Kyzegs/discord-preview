@@ -1,0 +1,38 @@
+{
+  "payload": {
+    "author": {
+      "id": "80351110224678912",
+      "username": "nelly",
+      "global_name": "Nelly"
+    },
+    "timestamp": "2026-01-01T10:00:00.000Z",
+    "content": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "embeds": [
+      {
+        "type": "video",
+        "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "title": "A music video",
+        "description": "The official video.",
+        "color": 16711680,
+        "provider": {
+          "name": "YouTube",
+          "url": "https://www.youtube.com"
+        },
+        "author": {
+          "name": "Some Channel",
+          "url": "https://www.youtube.com/channel/x"
+        },
+        "thumbnail": {
+          "url": "https://cdn.discordapp.com/embed/avatars/0.png",
+          "width": 1280,
+          "height": 720
+        },
+        "video": {
+          "url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          "width": 1280,
+          "height": 720
+        }
+      }
+    ]
+  }
+}
