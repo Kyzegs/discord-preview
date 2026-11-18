@@ -216,15 +216,15 @@ export function SelectMenu({ c, look, modal = false }: { c: PreviewStringSelect 
   );
 }
 
+const isSelect = (c: { type?: unknown } | undefined): c is PreviewStringSelect | PreviewAutoSelect => c?.type === 3 || c?.type === 5 || c?.type === 6 || c?.type === 7 || c?.type === 8;
+
+// A select takes the whole row: Discord refuses a row with a select and anything else, so only the first select is drawn.
 export function Row({ row, look }: { row: PreviewActionRow; look: Look }) {
+  const list = arr(row.components, 5).map((raw) => obj(raw));
+  const select = list.find(isSelect);
   return (
     <div className="flex flex-wrap gap-2">
-      {arr(row.components, 5).map((raw, i) => {
-        const c = obj(raw);
-        if (c?.type === 2) return <Btn key={i} b={c} look={look} />;
-        if (c?.type === 3 || c?.type === 5 || c?.type === 6 || c?.type === 7 || c?.type === 8) return <SelectMenu key={i} c={c} look={look} />;
-        return null;
-      })}
+      {select ? <SelectMenu c={select} look={look} /> : list.map((c, i) => (c?.type === 2 ? <Btn key={i} b={c} look={look} /> : null))}
     </div>
   );
 }
@@ -286,11 +286,41 @@ function Dropdown({
   look?: Look; // the preview's, for emoji (DiscordSelect has none)
   style?: CSSProperties;
 }) {
-  const [open, setOpen] = useState(false);
+  // '' shut, else the side the list opens on, chosen when it opens
+  const [open, setOpen] = useState<'' | 'down' | 'up'>('');
   const first = chosen[0];
   return (
-    <div className="dsel" data-open={open} style={style}>
-      <button type="button" role="combobox" aria-label={label} aria-haspopup="listbox" aria-expanded={open} disabled={disabled} className="dsel-b disabled:cursor-not-allowed disabled:opacity-50" onClick={() => !locked && setOpen(!open)}>
+    <div
+      className="dsel"
+      data-open={open !== ''}
+      data-up={open === 'up' || undefined}
+      style={style}
+      // focus leaving the select (a click elsewhere, Tab past it) shuts it; preact/compat maps onBlur to focusout
+      onBlur={(e) => open && !e.currentTarget.contains(e.relatedTarget as Node | null) && setOpen('')}
+      onKeyDown={(e) => {
+        if (e.key !== 'Escape' || !open) return;
+        e.stopPropagation();
+        setOpen('');
+        e.currentTarget.querySelector<HTMLElement>('.dsel-b')?.focus();
+      }}
+    >
+      <button
+        type="button"
+        role="combobox"
+        aria-label={label}
+        aria-haspopup="listbox"
+        aria-expanded={open !== ''}
+        disabled={disabled}
+        className="dsel-b disabled:cursor-not-allowed disabled:opacity-50"
+        onClick={(e) => {
+          if (locked) return;
+          if (open) return setOpen('');
+          // shortcut: the list's height is estimated (it isn't laid out while shut), at about 48px an option
+          const box = e.currentTarget.getBoundingClientRect();
+          const below = window.innerHeight - box.bottom;
+          setOpen(below < options.length * 48 + 12 && box.top > below ? 'up' : 'down');
+        }}
+      >
         {!first ? (
           <span>{placeholder}</span>
         ) : multi ? (
@@ -327,7 +357,7 @@ function Dropdown({
               aria-selected={on}
               className="dsel-o"
               onClick={() => {
-                if (!multi) setOpen(false);
+                if (!multi) setOpen('');
                 onPick(o);
               }}
             >

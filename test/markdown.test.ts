@@ -100,7 +100,7 @@ test('timestamps follow locale, time zone and now', () => {
   assert.match(html('<t:1618935630:D>'), />April 20, 2021</);
   assert.match(html('<t:1618935630:t>', { timeZone: 'Asia/Tokyo' }), />1:20 AM</);
   assert.match(html('<t:1767265200:R>'), />1 hour ago</);
-  const all = Object.fromEntries(['', 't', 'T', 'd', 'D', 'f', 'F', 's', 'S', 'R'].map((s) => [s, /title="[^"]*">([^<]+)</.exec(html(`<t:1618935630${s && `:${s}`}>`))?.[1]]));
+  const all = Object.fromEntries(['', 't', 'T', 'd', 'D', 'f', 'F', 's', 'S', 'R'].map((s) => [s, /class="dtip rounded[^"]*"[^>]*>([^<]+)</.exec(html(`<t:1618935630${s && `:${s}`}>`))?.[1]]));
   assert.deepEqual(all, {
     '': 'April 20, 2021 at 4:20 PM',
     t: '4:20 PM',
@@ -113,7 +113,11 @@ test('timestamps follow locale, time zone and now', () => {
     S: '04/20/2021, 4:20:30 PM',
     R: '5 years ago',
   });
-  assert.match(html('<t:1618935630:R>'), /title="Tuesday, April 20, 2021 at 4:20 PM"/);
+  // the tooltip: the full date, in the preview's locale and time zone, instead of a native title
+  const tip = (content: string, extra: Partial<PreviewProps> = {}) => /class="dtip rounded[^>]*>[^<]*<span role="tooltip" class="dtip-t">([^<]+)</.exec(html(content, extra))?.[1];
+  assert.equal(tip('<t:1618935630:R>'), 'Tuesday, April 20, 2021 at 4:20 PM');
+  assert.equal(tip('<t:1618935630:t>', { locale: 'de-DE', timeZone: 'Asia/Tokyo' }), 'Mittwoch, 21. April 2021 um 01:20');
+  assert.ok(!html('<t:1618935630:R>').includes('title='));
   assert.ok(text('<t:99999999999999999:f>').includes('&lt;t:99999999999999999:f&gt;'));
   assert.doesNotThrow(() => html('<t:1:f>', { locale: 'not a locale', timeZone: 'Nowhere/Else' }));
 });
@@ -123,6 +127,8 @@ test('the author line', () => {
   const page = render({ payload: { author, content: 'hi', timestamp: '2026-01-01T09:30:00Z' } });
   assert.ok(page.includes('Ana') && page.includes('src="https://cdn.discordapp.com/avatars/80351110224678912/abc123.png?size=80"') && !page.includes('APP'));
   assert.ok(page.includes('Today at 9:30 AM'));
+  assert.match(page, /tabindex="0" class="dtip text-xs"[^>]*>Today at 9:30 AM<span role="tooltip" class="dtip-t">Thursday, January 1, 2026 at 9:30 AM</, 'the full date as its tooltip');
+  assert.match(render({ payload: { author, content: 'hi', timestamp: '2026-01-01T09:30:00Z' }, timeZone: 'America/New_York' }), /dtip-t">Thursday, January 1, 2026 at 4:30 AM</);
   assert.ok(render({ payload: { author: { ...author, bot: true }, content: 'hi', timestamp: '2025-12-31T09:30:00Z' } }).includes('APP'));
   assert.ok(render({ payload: { content: 'hi', timestamp: '2025-12-31T09:30:00Z' } }).includes('12/31/25, 9:30 AM'));
   assert.ok(render({ payload: { author, content: 'hi' }, resolve: { users: { [author.id]: { name: 'Resolved' } } } }).includes('Resolved'));

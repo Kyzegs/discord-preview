@@ -131,6 +131,99 @@ for (const app of live) {
   });
 }
 
+// 3b. a select's list floats: opening it moves nothing, it isn't clipped by the preview, and Escape or a click elsewhere shuts it
+const rectAfterFirstSelect = (page: Page) =>
+  page.evaluate(() => {
+    let n: Element | null = document.querySelector('#preview .dsel');
+    while (n && !n.nextElementSibling) n = n.parentElement;
+    return JSON.stringify(n!.nextElementSibling!.getBoundingClientRect());
+  });
+
+for (const app of live) {
+  test.describe(`${app} select`, () => {
+    test('opening a select moves nothing', async ({ page }) => {
+      await show(page, app, 'classic/selects');
+      const before = [await rectAfterFirstSelect(page), await page.locator('#preview .discord-preview').boundingBox()];
+      const box = page.getByRole('combobox').first();
+      await box.click();
+      await expect(box).toHaveAttribute('aria-expanded', 'true');
+      await expect(page.getByRole('option', { name: 'Red' })).toBeVisible();
+      expect([await rectAfterFirstSelect(page), await page.locator('#preview .discord-preview').boundingBox()]).toEqual(before);
+      clean(page);
+    });
+
+    test('the open list is not clipped, and Escape or a click elsewhere shuts it', async ({ page }) => {
+      await show(page, app, 'classic/selects');
+      const box = page.getByRole('combobox', { name: 'Anyone' });
+      await box.click();
+      const last = page.getByRole('option', { name: '@Member' });
+      const root = (await page.locator('#preview .discord-preview').boundingBox())!;
+      const opt = (await last.boundingBox())!;
+      expect(opt.y + opt.height).toBeGreaterThan(root.y + root.height); // it reaches past the preview's bottom edge...
+      const hit = await page.evaluate(([x, y]) => document.elementFromPoint(x!, y!)?.closest('[role="option"]')?.textContent, [opt.x + opt.width / 2, opt.y + opt.height / 2]);
+      expect(hit).toBe('@Member'); // ...and is drawn there
+      await page.keyboard.press('Escape');
+      await expect(box).toHaveAttribute('aria-expanded', 'false');
+      await expect(box).toBeFocused();
+      await box.click();
+      await expect(box).toHaveAttribute('aria-expanded', 'true');
+      await page.mouse.click(900, 880); // the page, outside the preview
+      await expect(box).toHaveAttribute('aria-expanded', 'false');
+      clean(page);
+    });
+
+    test('a list without room below opens upward', async ({ page }) => {
+      await page.setViewportSize({ width: 1000, height: 420 });
+      await show(page, app, 'classic/selects');
+      const box = page.getByRole('combobox', { name: 'Anyone' });
+      await box.click();
+      const list = (await page.getByRole('listbox', { name: 'Anyone' }).boundingBox())!;
+      expect(list.y + list.height).toBeLessThanOrEqual((await box.boundingBox())!.y);
+      clean(page);
+    });
+  });
+}
+
+// 3c. the header time's tooltip: the full date, above and centred, on hover and keyboard focus, moving nothing (CSS only, so every app)
+for (const app of names) {
+  test(`${app} timestamp tooltip`, async ({ page }) => {
+    await show(page, app, 'classic/selects');
+    const time = page.locator('#preview .dtip').first();
+    const tip = time.getByRole('tooltip');
+    await expect(tip).toHaveText(/^Thursday, January 1, 2026 at 12:00\sPM$/);
+    expect((await tip.boundingBox())!.width).toBeLessThanOrEqual(1); // shut: only for screen readers
+    const before = [await time.boundingBox(), await page.locator('#preview .discord-preview').boundingBox()];
+    await time.hover();
+    const [t, s] = [(await tip.boundingBox())!, (await time.boundingBox())!];
+    expect(t.width).toBeGreaterThan(100);
+    expect(t.y + t.height).toBeLessThanOrEqual(s.y);
+    expect(Math.abs(t.x + t.width / 2 - (s.x + s.width / 2))).toBeLessThan(1);
+    expect([await time.boundingBox(), await page.locator('#preview .discord-preview').boundingBox()]).toEqual(before);
+    await page.mouse.move(900, 880);
+    expect((await tip.boundingBox())!.width).toBeLessThanOrEqual(1);
+    if (app !== 'astro-static') {
+      await time.focus(); // :focus-visible after a programmatic focus that follows no click
+      await expect.poll(async () => (await tip.boundingBox())!.width).toBeGreaterThan(100);
+    }
+    clean(page);
+  });
+}
+
+// 3d. the playground: local pictures for made-up media URLs, a heading and link per fixture, and a theme toggle
+test('playground', async ({ page }) => {
+  await page.goto('http://127.0.0.1:4171/');
+  await page.locator('.discord-preview').first().waitFor();
+  const srcs = await page.evaluate(() => [...document.querySelectorAll<HTMLImageElement>('.discord-preview img')].map((i) => i.getAttribute('src')!));
+  expect(srcs.filter((s) => s.startsWith('/samples/')).length).toBeGreaterThan(10);
+  expect(srcs.filter((s) => !/^(\/samples\/|data:|https:\/\/cdn\.discordapp\.com\/embed\/avatars\/|https:\/\/cdn\.jsdelivr\.net\/)/.test(s))).toEqual([]);
+  await expect(page.getByRole('link', { name: 'classic/selects', exact: true })).toHaveAttribute('href', '?fixture=classic/selects');
+  const bg = () => page.locator('.discord-preview').first().evaluate((e) => getComputedStyle(e).backgroundColor);
+  expect(await bg()).toBe('rgb(49, 51, 56)');
+  await page.getByRole('button', { name: 'Light theme' }).click();
+  await expect.poll(bg).toBe('rgb(255, 255, 255)');
+  clean(page);
+});
+
 // 4. server-rendered apps: markup in the HTML, and nothing moves or is replaced when the client takes over
 for (const app of ['vue-ssr', 'astro-island'] as const) {
   test.describe(`${app} hydration`, () => {
@@ -176,6 +269,23 @@ for (const { name } of fixtures) {
     await other.context().close();
   });
 }
+
+// 6b. the same with a select open and the header time's tooltip out, over the area the list and tooltip reach
+test('hostile host with a select open and a tooltip shown', async ({ page, browser }) => {
+  const opened = async (p: Page, extra: string) => {
+    await show(p, 'html', 'classic/selects', extra);
+    await p.getByRole('combobox', { name: 'Anyone' }).click();
+    await p.locator('#preview .dtip').first().hover();
+    const r = (await p.locator('#preview').boundingBox())!;
+    return p.screenshot({ clip: { x: r.x, y: r.y, width: r.width, height: r.height + 200 }, animations: 'disabled', caret: 'hide' });
+  };
+  const hostile = await opened(page, '&hostile=1');
+  clean(page);
+  const other = await (await browser.newContext()).newPage();
+  await offline(other.context());
+  expect(await diff(page, hostile, await opened(other, ''))).toBeLessThanOrEqual(MAX_RATIO);
+  await other.context().close();
+});
 
 // 7. no time zone given: the server (UTC) and the browser (Los Angeles) disagree, and the browser wins after hydration
 test('vue-ssr shows the browser time zone after hydration', async ({ browser }) => {

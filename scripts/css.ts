@@ -4,7 +4,7 @@ import { compile, optimize } from '@tailwindcss/node';
 import { Scanner } from '@tailwindcss/oxide';
 import { type Selector, transform } from 'lightningcss';
 
-// Builds style.css: the preview's Tailwind classes, Tailwind's reset and select.css, every rule scoped to
+// Builds style.css: the preview's Tailwind classes, Tailwind's reset, select.css and tooltip.css, every rule scoped to
 // .discord-preview (the preview's root) and unlayered, so a page without Tailwind gets the preview as designed
 // and nothing leaks out. `pnpm css` writes it; test/styles.test.ts fails when it's out of date.
 
@@ -16,6 +16,7 @@ const INPUT = `
 @import "tailwindcss/preflight.css";
 @import "tailwindcss/utilities.css";
 @import "./src/select.css";
+@import "./src/tooltip.css";
 @source "./src/*.tsx";
 @source not inline("container");
 @source not inline("ring");

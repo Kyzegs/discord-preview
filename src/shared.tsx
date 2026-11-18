@@ -180,6 +180,23 @@ export function headerTime(ms: number, look: Look) {
   return today && today === day(look.now) ? `Today at ${dateText(ms, { timeStyle: 'short' }, look)}` : dateText(ms, { dateStyle: 'short', timeStyle: 'short' }, look);
 }
 
+// The long form Discord's tooltip shows over a timestamp: weekday, date and time.
+export const fullDate = (ms: number, look: Pick<Look, 'locale' | 'timeZone'>) => dateText(ms, FORMATS.F!, look);
+
+// A timestamp with Discord's tooltip of its full date on hover and keyboard focus, drawn by CSS (tooltip.css).
+export function Tip({ tip, className, style, children }: { tip: string; className?: string; style?: CSSProperties; children: ReactNode }) {
+  return (
+    <span tabIndex={0} className={`dtip ${className ?? ''}`} style={style}>
+      {children}
+      {tip && (
+        <span role="tooltip" className="dtip-t">
+          {tip}
+        </span>
+      )}
+    </span>
+  );
+}
+
 // Discord rounds like moment's fromNow: under 45 seconds, 45 minutes, 22 hours, 26 days and 11 months stay in that unit.
 function relativeTime(diff: number, locale?: string) {
   let fmt: Intl.RelativeTimeFormat;

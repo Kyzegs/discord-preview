@@ -3,7 +3,7 @@ import { Attachments, Stickers } from './attachments.tsx';
 import { Embed } from './embed.tsx';
 import { arr, bool, int, LOOKUP, obj, own, snowflake, str } from './guard.ts';
 import { inline, Markdown } from './markdown.tsx';
-import { type AreaProps, BLUE, DEFAULT_AVATAR, displayName, hex, headerTime, Icon, IMG, type Look, mediaSrc } from './shared.tsx';
+import { type AreaProps, BLUE, DEFAULT_AVATAR, displayName, fullDate, hex, headerTime, Icon, IMG, type Look, mediaSrc, Tip } from './shared.tsx';
 import type { PreviewMember, PreviewMessage, PreviewUser, Resolve } from './types.ts';
 
 const IS_CROSSPOST = 1 << 1;
@@ -142,9 +142,9 @@ export function MessageHeader({ m, look }: AreaProps) {
       <RoleIcon member={m.member} look={look} />
       <ServerTag u={a} look={look} />
       {isApp(m) && <AppTag check={verified(a)} />}
-      <span className="text-xs" style={{ color: P.muted }}>
+      <Tip tip={fullDate(Number.isNaN(sent) ? look.now : sent, look)} className="text-xs" style={{ color: P.muted }}>
         {headerTime(Number.isNaN(sent) ? look.now : sent, look)}
-      </span>
+      </Tip>
       {hasFlag(m, SUPPRESS_NOTIFICATIONS) && (
         <span className="text-xs" style={{ color: P.muted }}>
           · Sent silently

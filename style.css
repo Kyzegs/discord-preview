@@ -1342,6 +1342,7 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   width: 100%;
   max-width: 460px;
   display: flex;
+  position: relative;
 }
 
 .dsel-b:is(.discord-preview, .discord-preview *) {
@@ -1377,17 +1378,33 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 }
 
 .dsel-l:is(.discord-preview, .discord-preview *) {
+  z-index: 10;
   background: var(--dsel-bg, #2b2d31);
   border: 1px solid var(--dsel-line, #1e1f22);
   border-radius: 8px;
   flex-direction: column;
   padding: 4px 0;
   display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
   overflow: hidden;
 }
 
 .dsel[data-open="true"] .dsel-l:is(.discord-preview, .discord-preview *) {
   display: flex;
+}
+
+.dsel[data-up] .dsel-l:is(.discord-preview, .discord-preview *) {
+  top: auto;
+  bottom: calc(100% + 4px);
+}
+
+.discord-preview:has(.dsel[data-open="true"], .dtip:hover, .dtip:focus-visible):is(.discord-preview, .discord-preview *) {
+  z-index: 1;
+  position: relative;
+  overflow: visible;
 }
 
 .dsel-o:is(.discord-preview, .discord-preview *) {
@@ -1427,6 +1444,51 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 .dsel-t small:is(.discord-preview, .discord-preview *) {
   color: var(--dsel-muted, #949ba4);
   font-size: 12px;
+}
+
+.dtip:is(.discord-preview, .discord-preview *) {
+  position: relative;
+}
+
+.dtip-t:is(.discord-preview, .discord-preview *) {
+  clip-path: inset(50%);
+  white-space: nowrap;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+  position: absolute;
+  overflow: hidden;
+}
+
+.dtip:is(:hover, :focus-visible) > .dtip-t:is(.discord-preview, .discord-preview *) {
+  clip-path: none;
+  z-index: 20;
+  color: #dbdee1;
+  background: #111214;
+  border-radius: 8px;
+  width: auto;
+  height: auto;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 18px;
+  text-decoration: none;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  overflow: visible;
+  translate: -50%;
+  box-shadow: 0 8px 16px #0000003d;
+}
+
+.dtip:is(:hover, :focus-visible) > .dtip-t:is(.discord-preview, .discord-preview *):after {
+  content: "";
+  border: 5px solid #0000;
+  border-top-color: #111214;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  translate: -50%;
 }
 
 @property --tw-border-style {

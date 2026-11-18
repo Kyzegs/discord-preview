@@ -109,6 +109,33 @@ test('select: a pick shows in the closed select and is reported', async () => {
   assert.deepEqual(pressed, [{ type: 3, custom_id: 's', picked: 'Two', value: '2' }]);
 });
 
+test('select: Escape and focus leaving it shut the list; focus moving inside it does not', async () => {
+  const el = await mount({ payload: { components: [{ type: 1, components: [{ type: 3, options: [{ label: 'One', value: '1' }] }] }] } });
+  const box = () => el.querySelector('[role="combobox"]') as HTMLElement;
+  const expanded = () => box().getAttribute('aria-expanded');
+  const open = async () => (box().click(), await tick(), assert.equal(expanded(), 'true'));
+  await open();
+  option(el, 'One').dispatchEvent(new win.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }) as unknown as Event);
+  await tick();
+  assert.equal(expanded(), 'false', 'Escape');
+  await open();
+  box().dispatchEvent(new win.FocusEvent('focusout', { bubbles: true, relatedTarget: option(el, 'One') as never }) as unknown as Event);
+  await tick();
+  assert.equal(expanded(), 'true', 'focus moved to an option');
+  box().dispatchEvent(new win.FocusEvent('focusout', { bubbles: true, relatedTarget: document.body as never }) as unknown as Event);
+  await tick();
+  assert.equal(expanded(), 'false', 'focus left');
+});
+
+test('select: a row with a button and a select draws only the first select', () => {
+  const row = [{ type: 1, components: [{ type: 2, style: 1, label: 'Launch', custom_id: 'l' }, { type: 3, placeholder: 'First' }, { type: 3, placeholder: 'Second' }] }];
+  const html = v2(row);
+  assert.ok(html.includes('aria-label="First"') && !html.includes('Second') && !html.includes('Launch'));
+  assert.equal(count(html, /role="combobox"/g), 1);
+  assert.ok(html.includes('data-open="false"') && !html.includes('data-up'), 'shut, with no side chosen');
+  assert.ok(render({ payload: { components: row as PreviewComponent[] } }).includes('aria-label="First"'), 'a legacy row too');
+});
+
 test('modal: radios and checkboxes change when clicked', async () => {
   const el = await mount({ payload: {}, modal: fixtures.find((f) => f.name === 'modal/choices')!.props.modal });
   const saturday = [...el.querySelectorAll('[role="radio"]')][0] as HTMLElement;

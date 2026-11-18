@@ -1,6 +1,6 @@
 import { type CSSProperties, Fragment, type ReactNode, useState } from 'react';
 import { arr, LOOKUP, own, safeHref, snowflake, str, TEXT } from './guard.ts';
-import { displayName, EMOJI, emojiUrl, hex, ICONS, IMG, LINK, type Look, mediaSrc, type Palette, timestampText, twemojiUrl } from './shared.tsx';
+import { displayName, EMOJI, emojiUrl, hex, ICONS, IMG, LINK, type Look, mediaSrc, type Palette, timestampText, Tip, twemojiUrl } from './shared.tsx';
 
 // A safe markdown subset: React nodes only, never HTML strings (the one exception is the host's highlighter, in CodeBlock).
 
@@ -182,9 +182,9 @@ function tokens(input: unknown, look: Look, links: boolean): ReactNode[] {
         const label = timestampText(Number(ts), style, look);
         if (!label) return part; // too far out to be a date: Discord shows it as plain text too
         return (
-          <span key={i} className="rounded-[3px] px-1" style={{ background: P.code }} title={timestampText(Number(ts), 'F', look)}>
+          <Tip key={i} tip={timestampText(Number(ts), 'F', look)} className="rounded-[3px] px-1" style={{ background: P.code }}>
             {label}
-          </span>
+          </Tip>
         );
       }
       if (part.startsWith('[')) {

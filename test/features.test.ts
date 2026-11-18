@@ -52,13 +52,8 @@ const everywhere: PreviewMessage = {
   reactions: [{ count: 2, emoji: { name: '🇳🇱' } }],
   poll: { question: { text: 'Q' }, answers: [{ poll_media: { text: 'A', emoji: { name: '🍕' } } }] },
   components: [
-    {
-      type: 1,
-      components: [
-        { type: 2, style: 1, label: 'Go', emoji: { name: '🚀' }, custom_id: 'go' },
-        { type: 3, custom_id: 's', options: [{ label: 'Party', value: 'p', emoji: { name: '🎉' } }] },
-      ],
-    },
+    { type: 1, components: [{ type: 2, style: 1, label: 'Go', emoji: { name: '🚀' }, custom_id: 'go' }] },
+    { type: 1, components: [{ type: 3, custom_id: 's', options: [{ label: 'Party', value: 'p', emoji: { name: '🎉' } }] }] },
   ],
 };
 
