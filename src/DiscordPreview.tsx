@@ -4,15 +4,17 @@ import { Block, limitV2, Row } from './components.tsx';
 import { Embed } from './embed.tsx';
 import { arr, int, num, obj, own, str } from './guard.ts';
 import { Markdown } from './markdown.tsx';
-import { Avatar, Forwarded, InteractionHeader, MessageHeader, ReplyHeader, ThreadPreview } from './message.tsx';
+import { Avatar, Edited, EphemeralNote, Forwarded, InteractionHeader, MessageHeader, ReplyHeader, ThreadPreview, Thinking } from './message.tsx';
 import { Modal } from './modal.tsx';
 import { PollCard } from './poll.tsx';
 import { Reactions } from './reactions.tsx';
-import { Icon, type Look, PALETTES } from './shared.tsx';
+import { type Look, PALETTES } from './shared.tsx';
 import { isSystemMessage, SystemMessage } from './system.tsx';
 import type { Path, Pressed, PreviewMessage, PreviewProps } from './types.ts';
 
 const SUPPRESS_EMBEDS = 1 << 2;
+const EPHEMERAL = 1 << 6;
+const LOADING = 1 << 7;
 const IS_COMPONENTS_V2 = 1 << 15;
 
 // A replica of a Discord message, rendered from a Discord API payload.
@@ -85,11 +87,15 @@ export function DiscordPreview({
                 <div className="min-w-0 flex-1">
                   <MessageHeader m={m} look={look} />
                   <Forwarded m={m} look={look} />
-                  {classic ? (
+                  {flags & LOADING ? (
+                    <Thinking m={m} look={look} />
+                  ) : classic ? (
                     <div className="mt-1 flex flex-col gap-2">
                       {str(m.content) && (
-                        <div {...sel([0])} style={ring([0])}>
+                        // "(edited)" follows the last line of text, so that line and the markdown around it flow inline
+                        <div {...sel([0])} className={`${sel([0]).className ?? ''} ${str(m.edited_timestamp) ? '[&>div]:inline [&>div>div:last-child]:inline' : ''}`} style={ring([0])}>
                           <Markdown text={str(m.content, 4000)} look={look} />
+                          <Edited m={m} look={look} />
                         </div>
                       )}
                       {(flags & SUPPRESS_EMBEDS ? [] : arr(m.embeds, 10)).map((e, i) => (
@@ -119,18 +125,14 @@ export function DiscordPreview({
                   )}
                   <Reactions m={m} look={look} />
                   <ThreadPreview m={m} look={look} />
+                  {(flags & EPHEMERAL) !== 0 && <EphemeralNote look={look} className="mt-1" />}
                 </div>
               </div>
             )}
           </div>
           {reply && (
             <div className="pr-4 pb-[18px] pl-[70px] text-[15px]">
-              <div className="mb-1 flex flex-wrap items-center gap-1.5 text-xs" style={{ color: P.muted }}>
-                <Icon name="eye" size={14} /> Only you can see this ·
-                <button type="button" className="text-[#00A8FC] hover:underline" onClick={() => setReply(null)}>
-                  Dismiss message
-                </button>
-              </div>
+              <EphemeralNote look={look} onDismiss={() => setReply(null)} className="mb-1" />
               {reply}
             </div>
           )}

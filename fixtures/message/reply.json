@@ -1,0 +1,19 @@
+{
+  "payload": {
+    "type": 19,
+    "author": { "id": "80351110224678912", "username": "nelly", "global_name": "Nelly" },
+    "member": { "nick": "Nell", "roles": ["300000000000000001"] },
+    "timestamp": "2026-01-01T09:30:00.000Z",
+    "content": "Agreed, ship it",
+    "message_reference": { "type": 0, "message_id": "1300000000000000001", "channel_id": "1100000000000000001" },
+    "referenced_message": {
+      "id": "1300000000000000001",
+      "author": { "id": "1200000000000000001", "username": "helper", "bot": true, "public_flags": 65536 },
+      "content": "Version **2.0** is ready for <@80351110224678912>, see https://example.com/release\nand a second line that should never show"
+    }
+  },
+  "resolve": {
+    "users": { "1200000000000000001": { "name": "Release bot", "color": 5793266 } },
+    "roles": { "300000000000000001": { "name": "Mods", "color": 15277667, "position": 3 } }
+  }
+}

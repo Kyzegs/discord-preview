@@ -1,0 +1,17 @@
+{
+  "payload": {
+    "webhook_id": "1600000000000000001",
+    "author": { "id": "1600000000000000001", "username": "Captain Hook" },
+    "member": { "roles": ["300000000000000004", "300000000000000005"] },
+    "timestamp": "2025-12-31T20:00:00.000Z",
+    "content": "A webhook with a holographic role and an emoji role icon",
+    "thread": { "id": "1500000000000000002", "name": "Busy thread", "message_count": 120 }
+  },
+  "resolve": {
+    "roles": {
+      "300000000000000004": { "name": "Holo", "position": 2, "colors": { "primary_color": 11127295, "secondary_color": 16759788, "tertiary_color": 16761760 } },
+      "300000000000000005": { "name": "Fans", "position": 1, "unicode_emoji": "🎉" }
+    }
+  },
+  "theme": "light"
+}

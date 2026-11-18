@@ -16,6 +16,23 @@ export interface PreviewUser {
   global_name?: string | null;
   avatar?: string | null;
   bot?: boolean;
+  public_flags?: number; // 1 << 16 a verified bot
+  avatar_decoration_data?: { asset?: string; sku_id?: string } | null;
+  primary_guild?: { identity_guild_id?: string | null; identity_enabled?: boolean | null; tag?: string | null; badge?: string | null } | null;
+}
+
+// The partial member Discord sends with a guild message.
+export interface PreviewMember {
+  nick?: string | null;
+  roles?: string[];
+}
+
+// The deprecated `interaction`, the only place a command's name still comes from.
+export interface PreviewMessageInteraction {
+  id?: string;
+  type?: number;
+  name?: string;
+  user?: PreviewUser;
 }
 
 export interface PreviewMedia {
@@ -253,6 +270,8 @@ export interface PreviewMessage {
   message_reference?: PreviewMessageReference;
   message_snapshots?: { message?: PreviewMessage }[];
   interaction_metadata?: PreviewInteractionMetadata;
+  interaction?: PreviewMessageInteraction;
+  member?: PreviewMember;
   thread?: PreviewThread;
 }
 
@@ -266,7 +285,17 @@ export interface PreviewModal {
 
 export interface Resolve {
   users?: Record<string, { name: string; avatar?: string; bot?: boolean; color?: number }>;
-  roles?: Record<string, { name: string; color?: number; position?: number }>;
+  roles?: Record<
+    string,
+    {
+      name: string;
+      color?: number;
+      position?: number;
+      colors?: { primary_color?: number; secondary_color?: number | null; tertiary_color?: number | null };
+      icon?: string | null;
+      unicode_emoji?: string | null;
+    }
+  >;
   channels?: Record<string, { name: string; type?: number }>;
   skus?: Record<string, { name: string; price?: string }>;
   guildId?: string; // the @everyone role id, left out of role menus

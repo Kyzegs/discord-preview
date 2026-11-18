@@ -1,0 +1,14 @@
+{
+  "payload": {
+    "author": { "id": "80351110224678912", "username": "nelly", "global_name": "Nelly" },
+    "timestamp": "2026-01-01T09:31:00.000Z",
+    "content": "Nice picture",
+    "message_reference": { "message_id": "1300000000000000002" },
+    "referenced_message": {
+      "author": { "id": "1200000000000000002", "username": "ana", "global_name": "Ana", "avatar": "0123456789abcdef0123456789abcdef" },
+      "content": "",
+      "attachments": [{ "id": "1", "filename": "photo.png", "url": "https://cdn.discordapp.com/embed/avatars/2.png", "content_type": "image/png" }]
+    }
+  },
+  "theme": "light"
+}

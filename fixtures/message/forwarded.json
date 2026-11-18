@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "author": { "id": "80351110224678912", "username": "nelly", "global_name": "Nelly" },
+    "timestamp": "2026-01-01T09:36:00.000Z",
+    "content": "",
+    "message_reference": { "type": 1, "message_id": "1300000000000000005", "channel_id": "1100000000000000002", "guild_id": "1000000000000000001" },
+    "message_snapshots": [
+      {
+        "message": {
+          "type": 0,
+          "content": "Patch notes are **out**: https://example.com/notes",
+          "timestamp": "2025-12-30T18:05:00.000Z",
+          "embeds": [{ "title": "Patch 2.0.1", "description": "Two fixes", "color": 5793266 }],
+          "attachments": [{ "id": "2", "filename": "notes.png", "url": "https://cdn.discordapp.com/embed/avatars/3.png", "content_type": "image/png" }],
+          "sticker_items": [{ "id": "749054660769218631", "name": "Wave", "format_type": 1 }]
+        }
+      }
+    ]
+  },
+  "resolve": { "channels": { "1100000000000000002": { "name": "announcements" } } }
+}
