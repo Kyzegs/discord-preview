@@ -1,0 +1,6 @@
+{
+  "payload": {
+    "author": { "id": "80351110224678912", "username": "nelly", "global_name": "Nelly" },
+    "content": "Nested lists:\n- first level\n  - second level\n    - third level\n      - still a square\n  - back to second\n- first again\n  1. numbered inside\n  2. and on\n\n7. starts at seven\n8. eight\n10. eleven, since Discord counts on\n> one quote\n> spread over lines\n> - with a list\n> ### and a heading\nnot quoted\n> > a nested quote stays text"
+  }
+}

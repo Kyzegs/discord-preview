@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "author": { "id": "80351110224678912", "username": "nelly", "global_name": "Nelly" },
+    "flags": 32768,
+    "components": [
+      { "type": 10, "content": "Hey @everyone and @here, but not mail@everyone or `@everyone`" },
+      { "type": 10, "content": "Commands: </ping:1200000000000000001> </role add:1200000000000000002> </mod user ban:1200000000000000003>" },
+      { "type": 10, "content": "Roles: <@&1400000000000000003> <@&1400000000000000004> <@&1400000000000000005>" },
+      { "type": 10, "content": "Go to <id:customize>, <id:browse>, <id:guide> or <id:linked-roles>" },
+      { "type": 10, "content": "Links: https://discord.com/channels/1000000000000000000/1100000000000000001 and https://discord.com/channels/1000000000000000000/1100000000000000001/1300000000000000001 and an unknown https://discord.com/channels/1000000000000000000/1100000000000000099" }
+    ]
+  },
+  "resolve": {
+    "roles": {
+      "1400000000000000003": { "name": "Red team", "color": 15548997 },
+      "1400000000000000004": { "name": "Blue team", "color": 3447003 },
+      "1400000000000000005": { "name": "No colour", "color": 0 }
+    },
+    "channels": { "1100000000000000001": { "name": "general" } }
+  }
+}
