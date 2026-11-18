@@ -1,0 +1,42 @@
+{
+  "payload": {
+    "author": {
+      "id": "80351110224678912",
+      "username": "nelly",
+      "global_name": "Nelly"
+    },
+    "timestamp": "2026-01-01T10:00:00.000Z",
+    "embeds": [
+      {
+        "type": "rich",
+        "title": "A linked title",
+        "url": "https://example.com/post",
+        "description": "Provider, author link, sized thumbnail and image.",
+        "color": 15548997,
+        "provider": {
+          "name": "Example News",
+          "url": "https://example.com"
+        },
+        "author": {
+          "name": "Ana",
+          "url": "https://example.com/ana",
+          "icon_url": "https://cdn.discordapp.com/embed/avatars/1.png"
+        },
+        "thumbnail": {
+          "url": "https://cdn.discordapp.com/embed/avatars/2.png",
+          "width": 128,
+          "height": 128
+        },
+        "image": {
+          "url": "https://cdn.discordapp.com/embed/avatars/3.png",
+          "width": 1200,
+          "height": 600
+        },
+        "footer": {
+          "text": "Footer"
+        },
+        "timestamp": "2026-01-01T08:00:00.000Z"
+      }
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "payload": {
+    "author": {
+      "id": "80351110224678912",
+      "username": "nelly",
+      "global_name": "Nelly"
+    },
+    "timestamp": "2026-01-01T10:00:00.000Z",
+    "content": "https://tenor.com/view/wave",
+    "embeds": [
+      {
+        "type": "gifv",
+        "url": "https://tenor.com/view/wave",
+        "provider": {
+          "name": "Tenor",
+          "url": "https://tenor.co"
+        },
+        "thumbnail": {
+          "url": "https://cdn.discordapp.com/embed/avatars/5.png",
+          "width": 498,
+          "height": 280
+        },
+        "video": {
+          "url": "https://media.tenor.com/wave.mp4",
+          "width": 498,
+          "height": 280
+        }
+      }
+    ]
+  }
+}

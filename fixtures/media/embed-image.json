@@ -1,0 +1,22 @@
+{
+  "payload": {
+    "author": {
+      "id": "80351110224678912",
+      "username": "nelly",
+      "global_name": "Nelly"
+    },
+    "timestamp": "2026-01-01T10:00:00.000Z",
+    "content": "https://example.com/cat.png",
+    "embeds": [
+      {
+        "type": "image",
+        "url": "https://example.com/cat.png",
+        "thumbnail": {
+          "url": "https://cdn.discordapp.com/embed/avatars/4.png",
+          "width": 800,
+          "height": 600
+        }
+      }
+    ]
+  }
+}

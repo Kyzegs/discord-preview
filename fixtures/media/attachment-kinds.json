@@ -1,0 +1,49 @@
+{
+  "payload": {
+    "author": {
+      "id": "80351110224678912",
+      "username": "nelly",
+      "global_name": "Nelly"
+    },
+    "timestamp": "2026-01-01T10:00:00.000Z",
+    "content": "Every kind of file",
+    "attachments": [
+      {
+        "id": "1300000000000000101",
+        "filename": "clip.mp4",
+        "content_type": "video/mp4",
+        "size": 5242880,
+        "url": "https://cdn.discordapp.com/attachments/1/2/clip.mp4",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "id": "1300000000000000102",
+        "filename": "song.mp3",
+        "content_type": "audio/mpeg",
+        "size": 3145728,
+        "url": "https://cdn.discordapp.com/attachments/1/2/song.mp3"
+      },
+      {
+        "id": "1300000000000000103",
+        "filename": "notes_final.pdf",
+        "title": "notes final (v2).pdf",
+        "content_type": "application/pdf",
+        "size": 81234,
+        "url": "https://cdn.discordapp.com/attachments/1/2/notes_final.pdf"
+      },
+      {
+        "id": "1300000000000000104",
+        "filename": "readme",
+        "size": 512,
+        "url": "https://cdn.discordapp.com/attachments/1/2/readme"
+      },
+      {
+        "id": "1300000000000000105",
+        "filename": "no-type.webm",
+        "size": 1048576,
+        "url": "https://cdn.discordapp.com/attachments/1/2/no-type.webm"
+      }
+    ]
+  }
+}

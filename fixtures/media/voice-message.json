@@ -1,0 +1,22 @@
+{
+  "payload": {
+    "author": {
+      "id": "80351110224678912",
+      "username": "nelly",
+      "global_name": "Nelly"
+    },
+    "timestamp": "2026-01-01T10:00:00.000Z",
+    "flags": 8192,
+    "attachments": [
+      {
+        "id": "1300000000000000301",
+        "filename": "voice-message.ogg",
+        "content_type": "audio/ogg",
+        "size": 40960,
+        "url": "https://cdn.discordapp.com/attachments/1/2/voice-message.ogg",
+        "duration_secs": 7.42,
+        "waveform": "AAAKICtFYH6WqLnI09rf4N3TxLCZf2RIMBkKBhEoQl54kau+zNTY1s/AqpN6YUhAOD0+R01ZZXF6gIGBfHVtZWBdXV5fYGBgX15c"
+      }
+    ]
+  }
+}

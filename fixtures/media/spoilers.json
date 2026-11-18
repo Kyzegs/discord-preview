@@ -1,0 +1,42 @@
+{
+  "payload": {
+    "author": {
+      "id": "80351110224678912",
+      "username": "nelly",
+      "global_name": "Nelly"
+    },
+    "timestamp": "2026-01-01T10:00:00.000Z",
+    "content": "Spoilers",
+    "attachments": [
+      {
+        "id": "1300000000000000001",
+        "filename": "SPOILER_ending.png",
+        "content_type": "image/png",
+        "size": 204801,
+        "url": "https://cdn.discordapp.com/embed/avatars/1.png",
+        "proxy_url": "https://cdn.discordapp.com/embed/avatars/1.png",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "1300000000000000002",
+        "filename": "photo-2.png",
+        "content_type": "image/png",
+        "size": 204802,
+        "url": "https://cdn.discordapp.com/embed/avatars/2.png",
+        "proxy_url": "https://cdn.discordapp.com/embed/avatars/2.png",
+        "width": 800,
+        "height": 600,
+        "flags": 8,
+        "description": "The twist"
+      },
+      {
+        "id": "1300000000000000201",
+        "filename": "SPOILER_leak.txt",
+        "content_type": "text/plain",
+        "size": 2048,
+        "url": "https://cdn.discordapp.com/attachments/1/2/SPOILER_leak.txt"
+      }
+    ]
+  }
+}

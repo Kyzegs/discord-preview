@@ -155,9 +155,11 @@ export interface PreviewEmbed {
   color?: number;
   author?: { name?: string; url?: string; icon_url?: string };
   footer?: { text?: string; icon_url?: string };
-  image?: { url?: string };
-  thumbnail?: { url?: string };
+  image?: { url?: string; proxy_url?: string; width?: number; height?: number };
+  thumbnail?: { url?: string; proxy_url?: string; width?: number; height?: number };
   fields?: { name?: string; value?: string; inline?: boolean }[];
+  video?: { url?: string; proxy_url?: string; width?: number; height?: number };
+  provider?: { name?: string; url?: string };
 }
 
 export interface PreviewPollMedia {
@@ -188,6 +190,8 @@ export interface PreviewAttachment {
   width?: number | null;
   ephemeral?: boolean;
   duration_secs?: number;
+  waveform?: string;
+  title?: string;
   flags?: number;
 }
 
