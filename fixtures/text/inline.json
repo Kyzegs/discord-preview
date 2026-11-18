@@ -1,0 +1,7 @@
+{
+  "payload": {
+    "author": { "id": "80351110224678912", "username": "nelly", "global_name": "Nelly" },
+    "content": "**bold with *italic* inside** __underline with _italic___ ___underline italic___ ~~**strike bold**~~\nA ||hidden **spoiler** with <@80351110224678912>|| in a line\nInline ``code with ` a backtick`` and `**not bold** <@1>` and ```one line block```\n<https://example.com/no-brackets> and https://example.com/trailing. and [**bold label**](https://example.com/label)\n[https://example.com](https://evil.example) stays text"
+  },
+  "resolve": { "users": { "80351110224678912": { "name": "Nelly" } } }
+}
