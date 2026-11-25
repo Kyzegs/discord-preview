@@ -1,4 +1,4 @@
-import { fit, Mosaic, Video } from './attachments.tsx';
+import { Mosaic, useFit, Video } from './attachments.tsx';
 import { arr, bool, obj, safeHref, str } from './guard.ts';
 import { inline, Markdown } from './markdown.tsx';
 import { dateText, hex, IMG, LINK, type Look, mediaSrc, Thumb } from './shared.tsx';
@@ -13,22 +13,23 @@ function stamp(v: unknown, look: Look) {
   return s && Number.isFinite(ms) ? dateText(ms, { dateStyle: 'short', timeStyle: 'short' }, look) : '';
 }
 
-// A large embed image in a box sized from the payload, or the whole maxW x maxH box (the image contained in it) when the
-// payload gives no size: either way its space is reserved, so nothing moves when it loads.
+// A large embed image in a box sized from the payload, or from the image once it loads when the payload gives no size.
+// Until then (and if it fails) it holds the whole maxW x maxH box, the image contained in it.
 function Big({ m, look, maxW = 400, maxH = 300 }: { m: Media; look: Look; maxW?: number; maxH?: number }) {
-  const sized = fit(m?.width, m?.height, maxW, maxH);
-  const box = sized ?? { width: `${maxW}px`, aspectRatio: `${maxW} / ${maxH}` };
   const src = mediaSrc(m?.url, look);
-  if (!sized && src) return <img {...IMG} src={src} alt="" className="block max-w-full rounded-[4px] object-contain" style={box} />;
+  const [sized, measure] = useFit(src, m?.width, m?.height, maxW, maxH);
+  const box = sized ?? { width: `${maxW}px`, aspectRatio: `${maxW} / ${maxH}` };
+  if (!sized && src) return <img {...IMG} {...measure} src={src} alt="" className="block max-w-full rounded-[4px] object-contain" style={box} />;
   if (!src) return <div aria-hidden className="max-w-full rounded-[4px]" style={{ ...box, background: look.P.bg }} />;
   return <img {...IMG} src={src} alt="" className="block max-w-full rounded-[4px] object-cover" style={box} />;
 }
 
-// The small image at the top right, at most 80 by 80.
+// The small image at the top right, at most 80 by 80; an 80px square until an unsized one loads (or if it fails).
 function SideThumb({ m, look }: { m: Media; look: Look }) {
-  const box = fit(m?.width, m?.height, 80, 80);
   const src = mediaSrc(m?.url, look);
-  if (!box || !src) return <Thumb url={m?.url} look={look} className="mt-2 ml-4 size-20 self-start rounded-[4px] @max-[320px]:size-12" />;
+  const [box, measure] = useFit(src, m?.width, m?.height, 80, 80);
+  if (!src) return <Thumb url={m?.url} look={look} className="mt-2 ml-4 size-20 self-start rounded-[4px] @max-[320px]:size-12" />;
+  if (!box) return <img {...IMG} {...measure} src={src} alt="" className="mt-2 ml-4 size-20 shrink-0 self-start rounded-[4px] object-cover @max-[320px]:size-12" />;
   return <img {...IMG} src={src} alt="" className="mt-2 ml-4 shrink-0 self-start rounded-[4px] object-contain" style={box} />;
 }
 

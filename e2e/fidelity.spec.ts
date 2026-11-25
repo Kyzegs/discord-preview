@@ -515,3 +515,17 @@ test.describe('fidelity', () => {
     });
   }
 });
+
+// Discord always knows a media's size; a hand-built payload often doesn't, so the preview measures the image once it
+// loads and fits it in Discord's 400x300 embed box (here a local 1800x945 picture, served by the app itself).
+test('an unsized embed image takes the shape it loads at, on desktop and on a phone', async ({ page }) => {
+  await open(page, 'embed');
+  await page.evaluate(() => window.__setProps({ payload: { embeds: [{ title: 'Unsized', image: { url: 'http://127.0.0.1:4171/samples/unsized-1800x945.svg' } }] } }));
+  const img = page.locator('#preview img[src$="unsized-1800x945.svg"]');
+  await expect.poll(async () => Math.round((await box(img)).height)).toBe(210);
+  await size(img, 400, 210);
+  await page.locator('#preview').evaluate((e) => void (e.style.width = '390px')); // the app's box is 800px whatever the viewport
+  const b = await box(img);
+  expect(b.width).toBeLessThan(400);
+  expect(Math.abs(b.height - (b.width * 945) / 1800)).toBeLessThanOrEqual(1);
+});

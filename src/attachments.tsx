@@ -1,4 +1,4 @@
-import { type CSSProperties, useState } from 'react';
+import { type CSSProperties, type SyntheticEvent, useState } from 'react';
 import { arr, int, num, obj, safeHref, snowflake, str } from './guard.ts';
 import { type AreaProps, fileSize, Icon, IMG, LINK, type Look, mediaSrc, Spoiler } from './shared.tsx';
 import type { PreviewAttachment } from './types.ts';
@@ -17,6 +17,28 @@ export function fit(w: unknown, h: unknown, maxW: number, maxH: number): CSSProp
   const dw = Math.max(1, Math.round(W * s));
   const dh = Math.max(1, Math.round(H * s));
   return { width: `${dw}px`, aspectRatio: `${dw} / ${dh}` };
+}
+
+type Media = HTMLImageElement | HTMLVideoElement;
+type Measure = { ref?: (el: Media | null) => void; onLoad?: (e: SyntheticEvent<Media>) => void; onLoadedMetadata?: (e: SyntheticEvent<Media>) => void };
+
+// fit() on the payload's size, else on the size the browser reads once `src` loads: hand-built payloads often leave
+// width and height out, where Discord's media proxy always fills them in. Spread `measure` on the <img> or <video>.
+// Until it loads (and on the server) the box is undefined, so the caller's placeholder shows, and an error keeps it.
+export function useFit(src: string | undefined, w: unknown, h: unknown, maxW: number, maxH: number): [CSSProperties | undefined, Measure] {
+  const [got, setGot] = useState<{ src?: string; w: number; h: number }>();
+  const sized = fit(w, h, maxW, maxH);
+  if (sized) return [sized, {}];
+  const read = (el: Media) => {
+    const [W, H] = 'videoWidth' in el ? [el.videoWidth, el.videoHeight] : [el.naturalWidth, el.naturalHeight];
+    // the same answer keeps the same state, so the ref (called again on every render) doesn't loop
+    if (W && H) setGot((p) => (p && p.src === src && p.w === W && p.h === H ? p : { src, w: W, h: H }));
+  };
+  const onLoad = (e: SyntheticEvent<Media>) => read(e.currentTarget);
+  // the ref catches media that loaded before its handlers were attached (a hydrated server render); right after a src
+  // change the element still reports the old picture's size, so only a current one counts
+  const ref = (el: Media | null) => el && el.currentSrc === el.src && read(el);
+  return [got && got.src === src ? fit(got.w, got.h, maxW, maxH) : undefined, { ref, onLoad, onLoadedMetadata: onLoad }];
 }
 
 export function duration(v: unknown): string {
@@ -73,12 +95,14 @@ export function Video({ url, poster, width, height, maxW = 550, maxH = 350, loop
   const [playing, setPlaying] = useState(false);
   const src = mediaSrc(url, look);
   const still = mediaSrc(poster, look);
-  const style = fit(width, height, maxW, maxH) ?? { width: `${Math.min(400, maxW)}px`, aspectRatio: '16 / 9' };
+  // unsized, the poster measures the box, and once open the video's own metadata does
+  const [box, measure] = useFit(still ?? src, width, height, maxW, maxH);
+  const style = box ?? { width: `${Math.min(400, maxW)}px`, aspectRatio: '16 / 9' };
   if (!src) return <div aria-hidden className="max-w-full rounded-lg" style={{ ...style, background: look.P.embed }} />;
-  if (playing) return <video controls autoPlay loop={loop} src={src} poster={still} className="block max-w-full rounded-lg bg-black" style={style} />;
+  if (playing) return <video {...measure} controls autoPlay loop={loop} src={src} poster={still} className="block max-w-full rounded-lg bg-black" style={style} />;
   return (
     <div className="relative grid max-w-full place-items-center overflow-hidden rounded-lg bg-black" style={style}>
-      {still && <img {...IMG} src={still} alt="" className="absolute inset-0 size-full object-cover" />}
+      {still && <img {...IMG} {...measure} src={still} alt="" className="absolute inset-0 size-full object-cover" />}
       <PlayButton label="Play video" onPlay={() => setPlaying(true)} className="relative size-12" />
     </div>
   );
@@ -92,16 +116,19 @@ export interface MosaicItem {
   height?: unknown;
 }
 
-// An image with Discord's ALT badge when it has a description. `box` sizes a lone image; in a grid it fills its cell.
-function Pic({ item, look, single, box }: { item: MosaicItem; look: Look; single?: boolean; box?: CSSProperties }) {
+// An image with Discord's ALT badge when it has a description. A lone image gets its own box (see useFit), a 16:9
+// placeholder until an unsized one loads; in a grid it fills its cell.
+function Pic({ item, look, single }: { item: MosaicItem; look: Look; single?: boolean }) {
   const src = mediaSrc(item.url, look);
   const alt = str(item.alt, 1024);
+  const [fitted, measure] = useFit(src, item.width, item.height, 550, 350);
+  const box = fitted ?? { width: '400px', aspectRatio: '16 / 9' };
   return (
     <div className={single ? 'relative' : 'relative size-full'}>
       {src ? (
-        <img {...IMG} src={src} alt={alt} className={`block object-cover ${single ? (box ? 'max-w-full' : 'max-h-[350px] max-w-[min(550px,100%)]') : 'size-full'}`} style={single ? box : undefined} />
+        <img {...IMG} {...(single ? measure : {})} src={src} alt={alt} className={`block ${single ? `max-w-full ${fitted ? 'object-cover' : 'object-contain'}` : 'size-full object-cover'}`} style={single ? box : undefined} />
       ) : (
-        <div aria-hidden className={single ? 'max-w-full' : 'size-full'} style={{ ...(single ? (box ?? { width: '400px', aspectRatio: '16 / 9' }) : {}), background: look.P.embed }} />
+        <div aria-hidden className={single ? 'max-w-full' : 'size-full'} style={{ ...(single ? box : {}), background: look.P.embed }} />
       )}
       {alt && <span className="absolute bottom-1.5 left-1.5 rounded bg-black/60 px-1 text-[10px] leading-4 font-bold text-white">ALT</span>}
     </div>
@@ -124,7 +151,7 @@ export function Mosaic({ items: raw, look, cell }: { items: readonly MosaicItem[
     return (
       <div className="w-fit max-w-full overflow-hidden rounded-lg">
         <Spoiler on={item.spoiler}>
-          <Pic item={item} look={look} single box={fit(item.width, item.height, 550, 350)} />
+          <Pic item={item} look={look} single />
         </Spoiler>
       </div>
     );
