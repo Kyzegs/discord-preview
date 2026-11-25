@@ -304,3 +304,20 @@ test('element: mediaUrl as a function property only', async () => {
   await tick();
   assert.ok(el.querySelector('img[src="https://proxy.example/?u=https%3A%2F%2Fcdn.example%2Fa.png"]'));
 });
+
+test('element: unsized media takes its box from the size it loads at', async () => {
+  const el = make((e) => (e.payload = { embeds: [{ title: 'T', image: { url: 'https://cdn.example/wide.png' }, thumbnail: { url: 'https://cdn.example/tall.png' } }] }));
+  await tick();
+  const load = (src: string, w: number, h: number) => {
+    const img = el.querySelector(`img[src="${src}"]`)!;
+    Object.defineProperties(img, { naturalWidth: { value: w }, naturalHeight: { value: h } });
+    img.dispatchEvent(new Event('load'));
+  };
+  const style = (src: string) => el.querySelector(`img[src="${src}"]`)?.getAttribute('style') ?? '';
+  assert.match(style('https://cdn.example/wide.png'), /width: ?400px; ?aspect-ratio: ?400 \/ 300/);
+  load('https://cdn.example/wide.png', 1800, 945);
+  load('https://cdn.example/tall.png', 40, 100); // shrunk into 80x80
+  await tick();
+  assert.match(style('https://cdn.example/wide.png'), /width: ?400px; ?aspect-ratio: ?400 \/ 210/);
+  assert.match(style('https://cdn.example/tall.png'), /width: ?32px; ?aspect-ratio: ?32 \/ 80/);
+});

@@ -26,6 +26,20 @@ test('media: sizes, durations and fitting boxes', () => {
   for (const bad of [0, -5, Number.NaN, '100', 1e9, null]) assert.equal(fit(bad, 100, 550, 350), undefined);
 });
 
+test('media: unsized media holds a placeholder box on the server, then fits its measured size without upscaling', () => {
+  // the sizes useFit applies once an image loads: an embed image (400x300), a thumbnail (80x80), a lone attachment (550x350)
+  assert.deepEqual(fit(1800, 945, 400, 300), { width: '400px', aspectRatio: '400 / 210' });
+  assert.deepEqual(fit(945, 1800, 400, 300), { width: '158px', aspectRatio: '158 / 300' });
+  assert.deepEqual(fit(200, 100, 400, 300), { width: '200px', aspectRatio: '200 / 100' });
+  assert.deepEqual(fit(1800, 945, 80, 80), { width: '80px', aspectRatio: '80 / 42' });
+  assert.deepEqual(fit(1800, 945, 550, 350), { width: '550px', aspectRatio: '550 / 289' });
+  const embed = render({ embeds: [{ title: 'T', image: { url: 'https://e.example/wide.png' }, thumbnail: { url: 'https://e.example/t.png' } }] });
+  assert.ok(embed.includes('width:400px;aspect-ratio:400 / 300') && embed.includes('object-contain'));
+  assert.ok(embed.includes('size-20') && embed.includes('src="https://e.example/t.png"'));
+  assert.ok(render({ attachments: [{ filename: 'a.png', url: 'https://cdn.example/a.png' }] }).includes('width:400px;aspect-ratio:16 / 9'));
+  assert.ok(render({ attachments: [{ filename: 'a.mp4', url: 'https://cdn.example/a.mp4' }] }).includes('width:400px;aspect-ratio:16 / 9'));
+});
+
 test('media: waveform decoding is defensive', () => {
   assert.deepEqual(waveform('/wAA', 3), [1, 0, 0]);
   for (const bad of ['not base64!', '', 5, '====', 'A'.repeat(100_000)]) assert.ok(waveform(bad).every((v) => v === 0), String(bad).slice(0, 20));

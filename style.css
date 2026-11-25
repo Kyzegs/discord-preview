@@ -660,10 +660,6 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
   height: 100%;
 }
 
-.max-h-\[350px\]:is(.discord-preview, .discord-preview *) {
-  max-height: 350px;
-}
-
 .max-h-\[560px\]:is(.discord-preview, .discord-preview *) {
   max-height: 560px;
 }
@@ -746,10 +742,6 @@ button:is(.discord-preview, .discord-preview *), input:where([type="button"], [t
 
 .max-w-\[min\(520px\,100\%\)\]:is(.discord-preview, .discord-preview *) {
   max-width: min(520px, 100%);
-}
-
-.max-w-\[min\(550px\,100\%\)\]:is(.discord-preview, .discord-preview *) {
-  max-width: min(550px, 100%);
 }
 
 .max-w-full:is(.discord-preview, .discord-preview *) {

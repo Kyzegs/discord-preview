@@ -1,4 +1,4 @@
-import { expect, test, type BrowserContext, type Page } from '@playwright/test';
+import { expect, test, type BrowserContext, type Page, type Route } from '@playwright/test';
 import { fixtures } from '../test/fixtures.ts';
 
 // Pixel tolerance for comparing an app's screenshot with the plain-HTML one: a pixel differs when a channel is off by
@@ -332,11 +332,19 @@ for (const app of ['vue-ssr', 'astro-island'] as const) {
           }).observe(document, { childList: true, subtree: true });
           new PerformanceObserver((list) => window.__shifts.push(...list.getEntries().map((e) => (e as unknown as { value: number }).value))).observe({ type: 'layout-shift', buffered: true });
         });
-        await show(page, app, name);
+        // pictures wait until the client has taken over: unsized media then takes the size it loads at, one resize on
+        // purpose that isn't hydration's
+        const held: Route[] = [];
+        await page.route(/^(?!http:\/\/127\.0\.0\.1[:/])https?:/, (route) => (route.request().resourceType() === 'image' ? void held.push(route) : route.fallback()));
+        await page.goto(APPS[app](name), { waitUntil: 'domcontentloaded' }); // the load event waits for pictures
+        await page.locator('#preview .discord-preview').waitFor();
+        await page.waitForFunction(() => typeof window.__setProps === 'function');
+        await page.evaluate(() => document.fonts.ready);
         await page.waitForTimeout(300);
-        clean(page);
         expect(await page.evaluate(() => window.__shifts)).toEqual([]);
         if (app === 'vue-ssr') expect(await page.evaluate(() => window.__removed)).toEqual([]);
+        await Promise.all(held.map((r) => r.fallback().catch(() => {})));
+        clean(page);
       });
     }
   });

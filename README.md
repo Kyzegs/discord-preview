@@ -138,6 +138,7 @@ Sizes, spacing and colours follow measurements of Discord's web client (default 
 - Text: Discord markdown (bold, italic, underline, strikethrough, headings, subtext, quotes and `>>>` quotes, nested lists, spoilers, inline and fenced code), links and masked links, user, role, channel, slash-command and navigation mentions, `@everyone` and `@here`, channel and message links, custom emoji, jumbo emoji, every timestamp style, and the full date in a tooltip over a timestamp and the message time.
 - Embeds: rich embeds (provider, author, title, description, fields, thumbnail, image, footer, timestamp, colour), image, GIF, video and article embeds, and multi-image embed galleries.
 - Attachments: images in Discord's mosaic of 1 to 10 with ALT badges, video, audio, voice messages with their waveform, other files with their size, spoilers, and stickers.
+- Media without a `width` and `height` (a hand-built payload; Discord always fills them in) takes the size it loads at, in the same box Discord would give it.
 - Components: buttons in every style (premium too), string, user, role, mentionable and channel selects (filled from `resolve`), and Components V2: containers with accent colour and spoiler, sections with a thumbnail or button, text displays, media galleries, files and separators.
 - Modals: title, labels and descriptions, short and paragraph text inputs, selects, file upload, radio groups, checkbox groups and checkboxes, and the legacy action-row form.
 - Reactions: normal and super reactions, with counts and burst colours.
